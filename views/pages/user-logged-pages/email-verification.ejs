@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email verification</title>
+    <link rel="stylesheet" href="/css/user-logged-css/email-verification.css">
+    <!-- Google Font family import -->
+    <style>@import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@700&display=swap');</style>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1>Please confirm your email address</h1>
+            <form action="" method="post">
+                <div class="input-cont">
+                    <input type="number" class="code-input" id="email-verify-code" type="text" placeholder="Enter verification code">
+                    <div class="code_msg"></div>
+                </div>
+                <div class="btn-cont">
+                    <button class="btn" id="code-submit">Confirm email address</button>
+                </div>
+                <div class="btn-cont resend">
+                    <button class="btn" id="email-verify-code-resend">Resend verification code</button>
+                </div>
+            </form>
+            <div id="code-send-next-time-show" style="text-align: center; color: #161414; font-size: 80%; margin: 6px 0;"><span class="txt"></span> <span class="tm"></span></div>
+            <input type="text" id="temporarily-store-seconds" style="display: none;">
+        </div>
+        <div class="floating-alert-notification"></div>
+        <div id="load-animation"></div>
+    </section>
+    <script src="/scripts/user-logged-scripts/email-verification.js"></script>
+</body>
+</html>

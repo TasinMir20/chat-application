@@ -1,0 +1,11 @@
+@media all and (max-width: 1300px) {
+    .sections .container {
+        width: 1100px;
+    }
+}
+
+@media all and (max-width: 1150px) {
+    .sections .container {
+        width: 95%;
+    }
+}

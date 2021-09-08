@@ -1,0 +1,268 @@
+/* defult valus start */
+
+* {
+    box-sizing: border-box;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: #333333;
+}
+img {
+    width: 100%;
+    height: auto;
+}
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+:focus {
+    outline: 0;
+}
+.section {
+    width: 100%;
+    padding: 90px 0;
+}
+.container {
+    width: 1170px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+@media all and (max-width: 1174px) {
+    .container {
+        width: 90%;
+    }
+}
+.clearfix::after {
+    display: bl "";
+    clear: both;
+}
+
+/* defult valus end */
+
+/*  Start Deful valus for this Designe */
+body {
+    font-family: 'Kaisei Opti', serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666666;
+    background-color: #f2f2f2;
+}
+
+.section {
+    width: 100%;
+    height: 100vh;
+}
+
+.section .container form  {
+    width: 400px;
+    margin: 0 auto;
+    padding: 80px 0;
+}
+.section .container  h1 {
+    text-align: center;
+}
+
+.section .container form .input-cont .code-input {
+    background: none;
+    color: #000000;
+    height: 44px;
+    font-size: 18px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #c6c6c6;
+}
+
+.section .container form .input-cont .code-input:focus {
+    border-bottom: 3px solid #0590c7;
+}
+
+.section .container form .input-cont .code-input::placeholder {
+    font-size: 14px;
+}
+
+
+
+.section .container form .input-cont {
+    width: 100%;
+}
+
+.section .container form  .btn-cont .btn {
+    width: 100%;
+    display: block;
+    background-color: #263026;
+    border: none;
+    color: white;
+    padding: 15px 0;
+    text-decoration: none;
+    margin: 20px 0 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.section .container form  .resend .btn {
+    margin-top: 10px;
+}
+
+
+
+
+
+
+/* Floating notification CSS  */
+ 
+@keyframes floatingMsgAnimate {
+
+    10% {
+        right: 20px;
+        top: 40px;
+    }
+    50%  {
+        right: 20px;
+        top: 40px;
+    }
+    70%  {
+        right: 20px;
+        top: 40px;
+        opacity: 1;
+    }
+    71% {
+        opacity: 0.4;
+    }
+    100%  {
+        top: 40px;
+        right: -400px
+    }
+    
+    
+}
+
+
+.floating-alert-notification {
+    position: fixed;
+    top: -50px;
+    right: 20px;
+    width: 300px;
+    overflow: hidden;
+    display: none;
+    z-index: 100;
+}
+
+
+.floating-alert-notification.show {
+    display: block;
+    animation-name: floatingMsgAnimate;
+    animation-duration: 3s;
+}
+
+
+
+ .floating-alert-notification .danger-alert {
+    border-radius: 5px;
+    padding: 10px 30px;
+    background-color: #f44336;
+    color: white;
+    opacity: 0.83;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 15px;
+
+}
+
+
+ .floating-alert-notification .success-alert {
+    border-radius: 5px;
+    padding: 10px 30px;
+    background-color: #04AA6D;
+    color: white;
+    opacity: 0.83;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 15px;
+
+}
+
+
+small {
+    font-size: 80%;
+    font-weight: 400;
+    color: lightcoral;
+}
+
+
+
+
+
+/* Loading animation of the actins >> Start */
+#load-animation .load-bg {
+    background-color: #0000007a;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+#load-animation .load-bg .loading {
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px solid #43aa8b;
+    width: 110px;
+    height: 110px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    z-index: 1001;
+  }
+  
+  
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+@media all and (max-width: 500px) {
+    #load-animation .load-bg .loading {
+        border-width: 5px;
+        width: 70px;
+        height: 70px;
+    }
+    
+}
+/* Loading animation of the actins >> End */
+
+
+
+
+
+
+
+
+
+@media all and (max-width: 550px) {
+    .section .container form  {
+        width: 100%;
+    }
+}

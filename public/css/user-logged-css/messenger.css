@@ -1,0 +1,706 @@
+
+/* default values start */
+html {
+    height: 100%;
+}
+body,
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+    margin: 0;
+    padding: 0;
+}
+ul, 
+li,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+:focus {
+    outline: 0;
+}
+
+.sections {
+    width: 100%;
+    padding: 30px 0;
+}
+.container {
+    width: 95%;
+    margin: 0 auto;
+}
+.clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+/* default values end */
+
+
+/* Font Family */
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('/fonts/Montserrat-Medium.woff2') format('woff2'),
+        url('/fonts/Montserrat-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('/fonts/Montserrat-Regular.woff2') format('woff2'),
+        url('/fonts/Montserrat-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-SemiBold';
+    src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2'),
+        url('/fonts/Montserrat-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('/fonts/Montserrat-Bold.woff2') format('woff2'),
+        url('/fonts/Montserrat-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-ExtraLight';
+    src: url('/fonts/Montserrat-ExtraLight.woff2') format('woff2'),
+        url('/fonts/Montserrat-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Lato */
+@font-face {
+    font-family: 'Lato-Bold';
+    src: url('/fonts/Lato-Bold.woff2') format('woff2'),
+        url('/fonts/Lato-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Light';
+    src: url('/fonts/Lato-Light.woff2') format('woff2'),
+        url('/fonts/Lato-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Regular';
+    src: url('/fonts/Lato-Regular.woff2') format('woff2'),
+        url('/fonts/Lato-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+/* Font Family end */
+
+body {
+    width: 100%;
+    font-family: Lato-Regular;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+}
+
+.sections {
+    background-color: rgb(86, 202, 231);
+}
+
+.sections .container {
+    width: 1300px;
+    background-color: antiquewhite;
+}
+
+.sections .container .messenger-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sections .container .messenger-container .sidebar {
+    height: 700px;
+    color: #fff;
+}
+
+
+/* chat list right sidebar */
+.sections .container .messenger-container .chat-list-left-sidebar {
+    overflow: hidden;
+    background-color: #2c3e50;
+    width: 35%;
+}
+
+/* self profile */
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile {
+    width: 100%;
+    height: 100px;
+    padding: 20px 20px 20px 40px;
+    overflow: hidden;
+    font-family: Montserrat-SemiBold;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    overflow: hidden;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .img-wrap {
+    width: 58px;
+    height: 58px;
+    overflow: hidden;
+    border-radius: 50%;
+    padding: 3px;
+    border: 2px solid #2ecc71;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap img {
+    border-radius: 50%;
+    height: 100%;
+
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .self-name {
+    padding: 20px;
+}
+
+/* search user */
+.sections .container .messenger-container .chat-list-left-sidebar .search-users {
+    position: relative;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .search-users input {
+    padding: 15px 20px;
+    font-size: 15px;
+    width: 100%;
+    border: none;
+    background: #32465a;
+    color: #f5f5f5;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users input:focus {
+    background: #435f7a;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users input::placeholder {
+    color: #f5f5f5;
+
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users i {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 14px;
+    position: absolute;
+    right: 8px;
+    top: 0;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results {
+    width: 80%;
+    overflow: hidden;
+    position: absolute;
+    top: 101%;
+    left: 1%;
+    z-index: 100;
+    border-radius: 5px;
+    box-shadow: -1px 4px 11px -2px rgba(0,0,0,0.64);
+
+}
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user {
+    background-color: #435f7a;
+    border-bottom: 1px solid rgb(110, 110, 110);
+    display: flex;
+    justify-content: flex-start;
+    padding: 5px 10px;
+    cursor: pointer;
+    
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user .img-wrap {
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user .img-wrap img {
+    width: 100%; 
+    height: 100%;
+    border-radius: 50%;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user p {
+    padding: 8px 0;
+    margin-left: 10px;
+}
+
+
+
+
+
+
+
+
+/* chat list */
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list {
+    width: 100%;
+    height: 87%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list::-webkit-scrollbar {
+    display: none;
+  }
+  
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgb(82 86 86);
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user:hover {
+    background-color: #32465a;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap {
+    margin: 0 15px 0 5px;
+    overflow: hidden;
+    font-size: 8px;
+    width: 46px;
+    height: 46px;
+
+}
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap img {
+    border-radius: 50%;
+    height: 100%;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap i {
+    position: absolute;
+    top: 10px;
+    left: 22px;
+    font-size: 9px;
+    color: #2ecc71;
+    border: 2px solid #2c3e50;
+    border-radius: 50%;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap span {
+    position: absolute;
+    top: 6px;
+    left: 11px;
+    padding: 1px;
+    color: #333;
+    background-color: #93e9b7;
+    font-weight: bold;
+    border: 2px solid #2c3e50;
+    border-radius: 40%;
+    width: 24px;
+    text-align: center;
+}
+
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .meta {
+    font-size: 14px;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .meta .name {
+    font-family: Montserrat-Medium;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .meta .last-message {
+    font-family:  Lato-Light;
+    font-size: 13px;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .meta .last-msg-time {
+    font-family:  Montserrat-ExtraLight;
+    font-size: 12px;
+    position: absolute;
+    top: 6px;
+    right: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Message right sidebar */
+.sections .container .messenger-container .messages-right-sidebar {
+    width: 65%;
+    background-color: rgb(2, 146, 182);
+}
+
+/* chatbox-header */
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 15px;
+    position: relative;
+    background-color: #f5f5f5;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap {
+    overflow: hidden;
+    font-size: 8px;
+    width: 46px;
+    height: 46px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap img {
+    border-radius: 50%;
+    height: 100%;
+} 
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap i {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 10px;
+    color: #2ecc71;
+    border: 2px solid #f5f5f5;
+    border-radius: 50%;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap span {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    padding: 1px;
+    color: #333;
+    background-color: #93e9b7;
+    font-weight: bold;
+    border: 2px solid #f5f5f5;
+    border-radius: 40%;
+    width: 24px;
+    text-align: center;
+}
+
+
+
+
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta {
+    font-size: 14px;
+    margin-left: 15px;
+    padding: 5px 0;
+}
+
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .name {
+    color: #32465A;
+    font-family: Montserrat-Bold;
+    padding-bottom: 3px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .act {
+    color: #32465A;
+    font-family: Montserrat-Medium;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* chat-box */
+.sections .container .messenger-container .messages-right-sidebar .chat-box {
+    background-color: #e6eaea;
+    height: 83.3%;
+    padding: 5px 10px 10px 10px;
+    overflow: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column-reverse;
+    
+    
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box::-webkit-scrollbar {
+    display: none;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .inner-chat-box {
+    overflow-x: hidden;
+    
+}
+
+
+
+
+/* ************************** */
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .author-img {
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .author-img img {
+    height: 100%;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta {
+    width: 70%;
+    font-size: 14px;
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
+    display: inline-block;
+    padding: 7px 15px;
+    border-radius: 20px;
+    text-align: justify;
+    position: relative;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message {
+    font-family: Montserrat-Regular;
+    word-break: break-word;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message span {
+    padding: 0;
+    margin: 0;
+    width:100%;
+    padding:0; 
+    color: inherit; 
+    background-color: inherit;
+    font-family: inherit; 
+    font-size:inherit; 
+    border:0;
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message xmp {
+    padding: 0;
+    margin: 0;
+    width:100%;
+    padding:0; 
+    color: inherit; 
+    background-color: inherit;
+    font-family: inherit; 
+    font-size:inherit; 
+    border:0;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .msg-time {
+    font-family: Montserrat-Regular;
+    font-size: 10px;
+    text-align: center;
+    position: absolute;
+    top: 30%;
+    width: 180px;
+    display: block;
+    background-color: #000000c0;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    z-index: 100;
+    box-shadow: -1px 2px 8px 2px rgba(0,0,0,0.55);
+    display: none;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner:hover .msg-time {
+    display: block;
+}
+
+
+
+
+
+
+/* Incoming message */
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message {
+    /* background-color: #83c5be; */
+    justify-content: start;
+}
+
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta {
+    margin-left: 7px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner {
+    background-color: #435f7a;
+    color: #f5f5f5;
+    float: left;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner .msg-time {
+    left: 100.3%;
+}
+
+
+
+
+
+
+/* Outgoing message */
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message {
+    /* background-color: #006d77; */
+    justify-content: end;
+   /*  flex-direction: row-reverse; */
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .author-img {
+    display: none;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta {
+    margin-right: 7px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
+    background-color: #f5f5f5;
+    color: #32465a;
+    float: right;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner .msg-time {
+    right: 100.3%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Message input */
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form {
+    background-color: #d7dcdc;
+    display: flex;
+    justify-content: space-between;
+}
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form div {
+}
+
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-msg-cont {
+    width: 89%;
+    overflow: hidden;
+
+}
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-msg-cont #input-msg {
+    border: none;
+    padding: 14px 32px 14px 15px;
+    font-size: 0.8em;
+    color: #32465a;
+    display: block;
+    width: 100%;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-file-cont {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-file-cont i {
+    cursor: pointer;
+    font-size: 18px;
+    padding: 13px;
+    color: #2c3e50;
+}
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-file-cont input {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+
+
+
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form #msg-sent-btn {
+    cursor: pointer;
+    border: none;
+    padding: 12px 15px;
+    cursor: pointer;
+    background: #32465a;
+    color: #f5f5f5;
+}
+.sections .container .messenger-container .messages-right-sidebar .msg-input-form #msg-sent-btn i {
+    font-size: 17px;
+}
