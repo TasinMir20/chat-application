@@ -56,10 +56,29 @@ exports.messenger = async (req, res, next) => {
 
 
     try {
-
         const userData = req.userData;
 
-        res.render("pages/user-logged-pages/messenger.ejs", {userData});
+        // Last chatting user ID getting process provide
+        let involvedConversations = await Conversation.find({ 
+            $or: [
+                { creatorObjId: userData._id },
+                { participantObjId: userData._id }
+            ]}).limit(1).sort({updatedAt: -1});
+
+            involvedConversations = involvedConversations[0];
+
+            let lastChatUserId;
+            if (involvedConversations) {
+                if (String(involvedConversations.creatorObjId) === String(userData._id)) {
+                    lastChatUserId = involvedConversations.participantObjId;
+                } else {
+                    lastChatUserId = involvedConversations.creatorObjId;
+                }
+            }
+            
+
+
+        res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChatUserId});
 
     } catch (err) {
         next(err);

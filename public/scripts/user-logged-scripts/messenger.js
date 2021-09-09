@@ -14,7 +14,20 @@ body.onoffline = selfOffline;
 
 
 
+// when screen less than 768px and click ".left-arrow i" -> right side chat conversions hide and show left side user chat list
+function chatListOfUserShowAndChatHide() {
+    document.querySelector(".chat-list-left-sidebar").classList.add("show");
+    document.querySelector(".messages-right-sidebar").classList.add("hide");
+}
+document.querySelector(".left-arrow i").onclick = chatListOfUserShowAndChatHide;
 
+
+
+
+
+
+
+/************************************************* API Function start form here to END ************************************/
 
 function chatList() {
 
@@ -32,8 +45,8 @@ function chatList() {
     .then((data) => {
         const t = document.querySelector(".chat-list");
 
-        if (data.chatListSingleUser) {
-            t.innerHTML = data.chatListSingleUser;
+        if (data.chatListUsers) {
+            t.innerHTML = data.chatListUsers;
         } else {
             t.innerHTML = "<p>No previous chat</p>";
         }
@@ -45,8 +58,7 @@ function chatList() {
         console.log(reason);
     })
 }
-document.querySelector("body").onload = chatList;
-
+window.addEventListener("load", chatList);
 
 
 
@@ -85,60 +97,64 @@ document.querySelector("#search").onkeyup = searchUsersToChat;
 
 
 function fetchUserChats(id, isItSearch) {
+    
+
+    if (window.innerWidth < 770) {
+        // START -- when screen less than 768px -> left side user chat list users hide and show chat conversions
+        document.querySelector(".chat-list-left-sidebar").classList.remove("show");
+        document.querySelector(".messages-right-sidebar").classList.remove("hide");
+        // END -- when screen less than 768px -> left side user chat list users hide and show chat conversions
+    }
+
+
 
     document.querySelector(".search-results").innerHTML = "";
     document.querySelector("#msg-sent-btn").value = id;
 
-    const apiUrl = "/api/user/messenger/fetch-chats";
+    if (id) {
 
-    fetch(apiUrl, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify({participant: id, isItSearch})
-    })
-    .then((res) => res.json())
-    .then((data) => {
+        const apiUrl = "/api/user/messenger/fetch-chats";
+        fetch(apiUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({participant: id, isItSearch})
+        })
+        .then((res) => res.json())
+        .then((data) => {
 
-        // chat header name update front when switched to other chat
-        document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
+            // chat header name update front when switched to other chat
+            document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
 
-        // chat list message update front when switched to other chat
-        if (data.msg) {
+            // chat list message update front when switched to other chat
+            if (data.msg) {
 
-            
+                
+                document.querySelector(".chat-box").innerHTML = data.msg;
+            } else {
+                document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
 
-
-
-
-
-
-
-
-
-
-            document.querySelector(".chat-box").innerHTML = data.msg;
-        } else {
-            document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
-
-            if (isItSearch) {
-                const chatList = document.querySelector(".chat-list");
-                // the searched user already inserted or not in chat list
-                const a = chatList.innerHTML.match(id);
-                if (!a) {
-                    chatList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatList);
+                if (isItSearch) {
+                    const chatList = document.querySelector(".chat-list");
+                    // the searched user already inserted or not in chat list
+                    const a = chatList.innerHTML.match(id);
+                    if (!a) {
+                        chatList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatList);
+                    }
                 }
             }
-        }
-        
-    })
+        })
+
+    } else {
+        document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
+    }
 
 }
 
-// It has been called here to view the last conversation when load web page
-fetchUserChats("61377e147a5baf047ce6c51c"); // this function also called in HTML every single chat List user
+// fetchUserChats(lastChatUserId); // this function also called onload event in HTML to view the last conversation when load web page
+// and also called every single chat List user
 
 
 
@@ -188,7 +204,6 @@ function sendMessage(event) {
 
 }
 
-
 msgSentBtn.addEventListener("click", sendMessage);
 
 
@@ -197,28 +212,28 @@ msgSentBtn.addEventListener("click", sendMessage);
 
 
 
-function socketEventNameUpdate() {
+function socketEvent() {
     
     let socket = io();
 
     // socket.io server to client
-    const mySelf = document.querySelector("#user-selft-id").value;
-    const recipient= document.querySelector("#msg-sent-btn").value;
-    const sEventNsme = mySelf+recipient;
+    const mySelfId = document.querySelector("#user-selft-id").value;
+    const sEventNsme = mySelfId;
 
     socket.on(sEventNsme, function(data) {
 
-        const recipient = document.querySelector("#msg-sent-btn").value;
-        
-        console.log("Refresh")
+        console.log("Socket event Refresh")
 
-        const chatBox = document.querySelector(".chat-box");
-        chatBox.insertAdjacentHTML("afterbegin", data.theMessages);
+        const recipientId = document.querySelector("#msg-sent-btn").value;
 
-        // temporarily call it to show realtime chat
-        // fetchUserChats(recipient);
+        if (recipientId == data.sender) {
+
+            const chatBox = document.querySelector(".chat-box");
+            chatBox.insertAdjacentHTML("afterbegin", data.theMessages);
+        }
+
         
     });
 }
-// It has been called here to update the last conversation socketEventName when load web page
-socketEventNameUpdate(); // this function also called in HTML every single chat List user
+
+window.addEventListener("load", socketEvent);

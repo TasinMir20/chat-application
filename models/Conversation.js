@@ -13,6 +13,9 @@ const conversationSchema = new Schema({
     creatorObjId: String,
     participantObjId: String,
     conversationCreateTime: Number
+    
+}, {
+    timestamps: true
 });
 
 const Conversation = model("Conversation", conversationSchema);

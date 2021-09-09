@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="/css/user-logged-css/messenger.css">
     <link rel="stylesheet" href="/css/user-logged-css/messenger-responsive.css">
 </head>
-<body>
+
+<!-- fetchUserChats(lastChatUserId) this function called here to view the last conversation when load web page -->
+<body onload="fetchUserChats('<%= lastChatUserId %>');">
     <section class="sections">
         <div class="container">
             <div class="messenger-container">
@@ -84,14 +86,17 @@
                 </div>
                 <div class="messages-right-sidebar sidebar">
                     <div class="chatbox-header">
+                        <div class="left-arrow">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
                         <div class="img-wrap">
                             <img src="/images/users/profile-photo/man2.jpg" alt="">
                             <i class="fas fa-circle"></i>
                             <span>32 m</span>
                         </div>
                         <div class="meta">
-                            <p class="name">Sakib Mir</p>
-                            <p class="act">Typing</p>
+                            <p class="name">Demo Name</p>
+                            <p class="act"> Demo Typing</p>
                         </div>
                     </div>
                     <div class="chat-box">

@@ -11,60 +11,48 @@ exports.chatList_ApiController = async (req, res, next) => {
     try {
         const userData = req.userData;
 
-        // involved Conversations find
-        const involvedConversationsFind = await Conversation.find({ 
+        // find involved Conversations
+        const involvedConversations = await Conversation.find({ 
             $or: [
                 { creatorObjId: userData._id },
                 { participantObjId: userData._id }
-            ]});
+            ]}).sort({updatedAt: -1});
 
             // user find who involved to me with chatting
-            var chatListUserData1 = [];
-            if (involvedConversationsFind[0]) {
-                
-                for (let i = 0; i < involvedConversationsFind.length; i++) {
+            let chatListUsers = "";
+            if (involvedConversations[0]) {
 
-                    if (String(involvedConversationsFind[i].creatorObjId) === String(userData._id)) {
-                        const p = involvedConversationsFind[i].participantObjId;
-                        let chatListSingleFind = await User.findOne({_id: p});
-                        chatListUserData1[i] = chatListSingleFind;
+                let chatListUserSingle;
+                for (let i = 0; i < involvedConversations.length; i++) {
 
+                    if (String(involvedConversations[i].creatorObjId) === String(userData._id)) {
+                        const id = involvedConversations[i].participantObjId;
+                        chatListUserSingle = await User.findOne({_id: id});
                     } else {
-                        const p = involvedConversationsFind[i].creatorObjId;
-                        let chatListSingleFind = await User.findOne({_id: p});
-                        chatListUserData1[i] = chatListSingleFind;
+                        const id = involvedConversations[i].creatorObjId;
+                        chatListUserSingle = await User.findOne({_id: id});
                     }
+
+                    chatListUsers += `
+                        <div class="single-user" onclick="fetchUserChats('${chatListUserSingle._id}');">
+                            <div class="img-wrap">
+                                <img src="/images/users/profile-photo/man2.jpg" alt="">
+                                <i class="fas fa-circle"></i>
+                                <span>32 m</span>
+                            </div>
+                            <div class="meta">
+                                <p class="name">${chatListUserSingle.firstName} ${chatListUserSingle.lastName}</p>
+                                <p class="last-message">Good night!</p>
+                                <span class="last-msg-time">1 hour ago</span>
+                            </div>
+                        </div>`;
                 }
             } else {
-                console.log("List not found")
+                console.log("List not found");
             }
 
-
-        let chatListSingleUser = "";
-        if (chatListUserData1.length > 0) {
-            
-            for (let i = 0; i < chatListUserData1.length; i++) {
-            
-                chatListSingleUser += `
-                <div class="single-user" onclick="fetchUserChats('${chatListUserData1[i]._id}'); socketEventNameUpdate()">
-                    <div class="img-wrap">
-                        <img src="/images/users/profile-photo/man2.jpg" alt="">
-                        <i class="fas fa-circle"></i>
-                        <span>32 m</span>
-                    </div>
-                    <div class="meta">
-                        <p class="name">${chatListUserData1[i].firstName} ${chatListUserData1[i].lastName}</p>
-                        <p class="last-message">Good night!</p>
-                        <span class="last-msg-time">1 hour ago</span>
-                    </div>
-                </div>`;
-            }
-
-            return res.json({chatListSingleUser});
-        } else {
-
-            return res.json({chatListSingleUser});
-        }
+        
+        return res.json({chatListUsers});
 
 
     } catch (err) {
@@ -91,7 +79,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
                 let searchUser = "";
                 for (var i = 0; i < findUserToConversation.length; i++) {
                     
-                    searchUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true); socketEventNameUpdate()">
+                    searchUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
                                         <img src="/images/users/profile-photo/man3.jpg" alt="">
                                     </div>
@@ -114,71 +102,64 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
 exports.fetchUserChats_ApiController = async (req, res, next) => {
 
     let { participant, isItSearch } = req.body;
-
-
+    
     try {
         const userData = req.userData;
-        let participantData = await User.findOne({_id: participant});
-        const ConversationFind = await Conversation.findOne({ 
-            $or: [
-                { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
-                { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
-            ]});
 
-        let messages = "";
-        // messages = [];
-        if (ConversationFind) {
-            const conversations = ConversationFind.conversations;
-            conversations.reverse();
+        const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
+
+        if (isValidObjId) {
             
-            for (let i = 0; i < conversations.length; i++) {
+            const ConversationFind = await Conversation.findOne({ 
+                $or: [
+                    { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
+                    { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
+                ]});
+            
+            var messages = "";
+            if (ConversationFind) {
+                const conversations = ConversationFind.conversations;
+                conversations.reverse();
                 
-                let incomingOrOutgoing = "";
-                if (String(conversations[i].sender) === String(userData._id)) {
-                    incomingOrOutgoing = "outgoing-message";
+                for (let i = 0; i < conversations.length; i++) {
                     
-                } else {
-                    incomingOrOutgoing = "incoming-message";
-                }
-
-
-                const rawMessage = conversations[i].message;
-
-                let validatedMessage = rawMessage.replace(/</g, "&lt");
-                validatedMessage = validatedMessage.replace(/>/g, "&gt");
-
-                messages += `<div class="${incomingOrOutgoing} single-msg-box">
-                                <div class="author-img">
-                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        <p class="message">${validatedMessage}</p>
-                                        <span class="msg-time">November 20, 2020 at 10: 20 PM</span>
-                                    </div>
-                                </div>
-                            </div>`;
-
+                    let incomingOrOutgoing = "";
+                    if (String(conversations[i].sender) === String(userData._id)) {
+                        incomingOrOutgoing = "outgoing-message";
                         
-                // const msgObj = {
-                //     plainMessage: conversations[i].message,
-                //     imgUrl: conversations[i].imgUrl,
-                //     time: conversations[i].msgSendTime,
-                //     incomingOrOutgoing,
-                // }
+                    } else {
+                        incomingOrOutgoing = "incoming-message";
+                    }
 
-                // messages[i] = msgObj;
-                
+
+                    const rawMessage = conversations[i].message;
+
+                    let validatedMessage = rawMessage.replace(/</g, "&lt");
+                    validatedMessage = validatedMessage.replace(/>/g, "&gt");
+
+                    messages += `<div class="${incomingOrOutgoing} single-msg-box">
+                                    <div class="author-img">
+                                        <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                    </div>
+                                    <div class="msg-n-meta clearfix">
+                                        <div class="msg-inner">
+                                            <p class="message">${validatedMessage}</p>
+                                            <span class="msg-time">November 20, 2020 at 10: 20 PM</span>
+                                        </div>
+                                    </div>
+                                </div>`;
+                }
+    
+            } else {
+                console.log("Not found conversations");
             }
- 
-        } else {
-            console.log("Not found conversations");
-        }
 
-        // after search new user append in chat list
-        if (isItSearch) {
+            let participantData = await User.findOne({_id: participant});
             if (participantData) {
-                var newChatToAppendChatList = `<div class="single-user" onclick="fetchUserChats('${participantData._id}')">
+                
+                // after search new user append in chat list
+                if (isItSearch) {
+                    var newChatToAppendChatList = `<div class="single-user" onclick="fetchUserChats('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/man2.jpg" alt="">
                                 <i class="fas fa-circle"></i>
@@ -190,7 +171,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                                 <span class="last-msg-time">1 hour ago</span>
                             </div>
                         </div>`;
-
+                }
                 var fullName = `${participantData.firstName} ${participantData.lastName}`;
             }
         }
@@ -201,15 +182,6 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
         next(err);
     }
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -287,7 +259,6 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             let validatedMessage = rawMessage.replace(/</g, "&lt");
             validatedMessage = validatedMessage.replace(/>/g, "&gt");
 
-
             let theMessages = `<div class="incoming-message single-msg-box">
                                 <div class="author-img">
                                     <img src="/images/users/profile-photo/man3.jpg" alt="">
@@ -301,12 +272,11 @@ exports.sendMessage_ApiController = async (req, res, next) => {
                             </div>`;
 
 
-
-            const sEventNsme = recipient+userData._id;
+            const sEventNsme = recipient;
             // socket.io server to client
-            global.io.emit(sEventNsme, {theMessages});
+            global.io.emit(sEventNsme, {theMessages, sender: userData._id});
 
-            return res.json({send: sent ? true : false});
+            return res.json({send: sent});
 
         } else {
             console.log("participant not exist");
