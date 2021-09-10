@@ -385,15 +385,18 @@ body {
 .sections .container .messenger-container .messages-right-sidebar {
     width: 70%;
     background-color: rgb(2, 146, 182);
+    position: relative;
 }
 
 /* chatbox-header */
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header {
     overflow: hidden;
     display: flex;
-    flex-wrap: wrap;
+    height: 75px;
     padding: 0 15px;
     background-color: #f5f5f5;
+    align-items: center;
+
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow {
@@ -493,8 +496,9 @@ body {
     padding: 5px 10px 10px 10px;
     overflow: auto;
     display: flex;
-    flex-wrap: nowrap;
     flex-direction: column-reverse;
+    width: 100%;
+    height: calc(100% - 130px);
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box::-webkit-scrollbar {
@@ -636,9 +640,15 @@ body {
 
 /* Message input */
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form {
-    background-color: #d7dcdc;
+    background-color: #ffffff;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    padding: 0 20px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form div {
 }
@@ -646,12 +656,15 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-msg-cont {
     width: 89%;
     overflow: hidden;
+    
 
 }
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form .input-msg-cont #input-msg {
     border: none;
     padding: 14px 32px 14px 15px;
-    font-size: 0.8em;
+    font-size: 17px;
+    border: 1px solid #cecece;
+    border-radius: 5px;
     color: #32465a;
     display: block;
     width: 100%;
@@ -688,10 +701,11 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form #msg-sent-btn {
     cursor: pointer;
     border: none;
-    padding: 12px 15px;
+    padding: 15px 17px;
     cursor: pointer;
     background: #32465a;
     color: #f5f5f5;
+    border-radius: 5px;
 }
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form #msg-sent-btn i {
     font-size: 17px;

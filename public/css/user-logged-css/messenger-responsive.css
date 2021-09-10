@@ -10,7 +10,7 @@
     }
 }
 
-@media all and (max-width: 900px) {
+@media all and (max-width: 900px) and (min-width: 768px) {
     /* chat list right sidebar */
     .sections .container .messenger-container .chat-list-left-sidebar {
         width: 33%;
@@ -95,12 +95,6 @@
     .sections .container .messenger-container .messages-right-sidebar.hide {
         width: 0;
         /* display: none; */
-    }
-
-
-
-    .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
-        padding: 5px 10px;
     }
 
     .sections .container .messenger-container .messages-right-sidebar {
