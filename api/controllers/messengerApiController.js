@@ -51,9 +51,7 @@ exports.chatList_ApiController = async (req, res, next) => {
                 console.log("List not found");
             }
 
-        
         return res.json({chatListUsers});
-
 
     } catch (err) {
         next(err);
@@ -116,44 +114,17 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
                 ]});
             
-            var messages = "";
+            var conversations = "";
             if (ConversationFind) {
-                const conversations = ConversationFind.conversations;
+                conversations = ConversationFind.conversations;
                 conversations.reverse();
                 
-                for (let i = 0; i < conversations.length; i++) {
-                    
-                    let incomingOrOutgoing = "";
-                    if (String(conversations[i].sender) === String(userData._id)) {
-                        incomingOrOutgoing = "outgoing-message";
-                        
-                    } else {
-                        incomingOrOutgoing = "incoming-message";
-                    }
-
-
-                    const rawMessage = conversations[i].message;
-
-                    let validatedMessage = rawMessage.replace(/</g, "&lt");
-                    validatedMessage = validatedMessage.replace(/>/g, "&gt");
-
-                    messages += `<div class="${incomingOrOutgoing} single-msg-box">
-                                    <div class="author-img">
-                                        <img src="/images/users/profile-photo/man3.jpg" alt="">
-                                    </div>
-                                    <div class="msg-n-meta clearfix">
-                                        <div class="msg-inner">
-                                            <p class="message">${validatedMessage}</p>
-                                            <span class="msg-time">November 20, 2020 at 10: 20 PM</span>
-                                        </div>
-                                    </div>
-                                </div>`;
-                }
     
             } else {
                 console.log("Not found conversations");
             }
 
+            // egt recipient name
             let participantData = await User.findOne({_id: participant});
             if (participantData) {
                 
@@ -176,7 +147,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
             }
         }
         
-        return res.json({msg: messages, fullName, newChatToAppendChatList});
+        return res.json({conversations, fullName, newChatToAppendChatList});
 
     } catch (err) {
         next(err);
@@ -218,9 +189,6 @@ exports.sendMessage_ApiController = async (req, res, next) => {
 
             if (ConversationFind) {
                 // Conversation Updating
-                console.log("Conversation Update Step");
-                
-
                 let ConversationUpdate = await Conversation.updateOne({ $or: [
                     { $and: [ { creatorObjId: userData._id }, { participantObjId: recipient } ] },
                     { $and: [ { creatorObjId: recipient }, { participantObjId: userData._id } ] }
@@ -235,8 +203,6 @@ exports.sendMessage_ApiController = async (req, res, next) => {
 
             } else {
                 // Conversation creating
-                console.log("Conversation create Step");
-
                 const ConversationInsertStructure = new Conversation({
                     conversations: [
                         messageBody
@@ -253,28 +219,10 @@ exports.sendMessage_ApiController = async (req, res, next) => {
                 }
             }
 
-            
-
-            const rawMessage = messageBody.message;
-            let validatedMessage = rawMessage.replace(/</g, "&lt");
-            validatedMessage = validatedMessage.replace(/>/g, "&gt");
-
-            let theMessages = `<div class="incoming-message single-msg-box">
-                                <div class="author-img">
-                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        <p class="message">${validatedMessage}</p>
-                                        <span class="msg-time">November 20, 2020 at 10: 20 PM</span>
-                                    </div>
-                                </div>
-                            </div>`;
-
 
             const sEventNsme = recipient;
             // socket.io server to client
-            global.io.emit(sEventNsme, {theMessages, sender: userData._id});
+            global.io.emit(sEventNsme, messageBody);
 
             return res.json({send: sent});
 

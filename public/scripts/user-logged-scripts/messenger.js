@@ -112,6 +112,7 @@ function fetchUserChats(id, isItSearch) {
     document.querySelector("#msg-sent-btn").value = id;
 
     if (id) {
+        const mySelfId = document.querySelector("#user-selft-id").value;
 
         const apiUrl = "/api/user/messenger/fetch-chats";
         fetch(apiUrl, {
@@ -128,11 +129,51 @@ function fetchUserChats(id, isItSearch) {
             // chat header name update front when switched to other chat
             document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
 
-            // chat list message update front when switched to other chat
-            if (data.msg) {
 
+            // chat list message update to front when switched to other chat
+            if (data.conversations) {
                 
-                document.querySelector(".chat-box").innerHTML = data.msg;
+                let conversations = data.conversations;
+                let messages = "";
+                for (let i = 0; i < conversations.length; i++) {
+                    // Time convert to client local (Whole Date and time)
+                    const msgSendTime = conversations[i].msgSendTime;
+                    const msgDate = new Date(msgSendTime * 1000);
+                    const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
+                    const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+                    const localDateAndTime = `${date} at ${time}`;
+
+
+
+                    // defining this message incoming or outgoing
+                    let incomingOrOutgoing = "";
+                    if (String(conversations[i].sender) === String(mySelfId)) {
+                        incomingOrOutgoing = "outgoing-message";
+                        
+                    } else {
+                        incomingOrOutgoing = "incoming-message";
+                    }
+                    
+                    //  HTML tag conflation resolve
+                    const rawMessage = conversations[i].message;
+                    let validatedMessage = rawMessage.replace(/</g, "&lt");
+                    validatedMessage = validatedMessage.replace(/>/g, "&gt");
+
+                    // the message
+                    messages += `<div class="${incomingOrOutgoing} single-msg-box">
+                                    <div class="author-img">
+                                        <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                    </div>
+                                    <div class="msg-n-meta clearfix">
+                                        <div class="msg-inner">
+                                            <p class="message">${validatedMessage}</p>
+                                            <span class="msg-time">${localDateAndTime}</span>
+                                        </div>
+                                    </div>
+                                </div>`;
+                }
+
+                document.querySelector(".chat-box").innerHTML = messages;
             } else {
                 document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
 
@@ -162,9 +203,14 @@ const msgSentBtn = document.querySelector("#msg-sent-btn");
 function sendMessage(event) {
     event.preventDefault();
 
+    // Local Time (Whole Date and time)
+    const msgDate = new Date();
+    const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
+    const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+    const localDateAndTime = `${date} at ${time}`;
+
+
     const message = document.querySelector("#input-msg").value;
-
-
     const rawMessage = message;
     let validatedMessage = rawMessage.replace(/</g, "&lt");
     validatedMessage = validatedMessage.replace(/>/g, "&gt");
@@ -175,7 +221,7 @@ function sendMessage(event) {
                         <div class="msg-n-meta clearfix">
                             <div class="msg-inner">
                                 <p class="message">${validatedMessage}</p>
-                                <span class="msg-time">November 20, 2020 at 10: 20 PM</span>
+                                <span class="msg-time">${localDateAndTime}</span>
                             </div>
                         </div>
                     </div>`;
@@ -183,8 +229,6 @@ function sendMessage(event) {
 
     const chatBox = document.querySelector(".chat-box");
     chatBox.insertAdjacentHTML("afterbegin", theMessages);
-
-
 
     const recipient = this.value;
 
@@ -227,12 +271,35 @@ function socketEvent() {
         const recipientId = document.querySelector("#msg-sent-btn").value;
 
         if (recipientId == data.sender) {
+            // Time convert to client local (Whole Date and time)
+            const msgSendTime = data.msgSendTime;
+            const msgDate = new Date(msgSendTime * 1000);
+            const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
+            const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+            const localDateAndTime = `${date} at ${time}`;
+
+
+            //  HTML tag conflation resolve
+            const rawMessage = data.message;
+            let validatedMessage = rawMessage.replace(/</g, "&lt");
+            validatedMessage = validatedMessage.replace(/>/g, "&gt");
+
+            let theMessages = `<div class="incoming-message single-msg-box">
+                                <div class="author-img">
+                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                </div>
+                                <div class="msg-n-meta clearfix">
+                                    <div class="msg-inner">
+                                        <p class="message">${validatedMessage}</p>
+                                        <span class="msg-time">${localDateAndTime}</span>
+                                    </div>
+                                </div>
+                            </div>`;
+
 
             const chatBox = document.querySelector(".chat-box");
-            chatBox.insertAdjacentHTML("afterbegin", data.theMessages);
+            chatBox.insertAdjacentHTML("afterbegin", theMessages);
         }
-
-        
     });
 }
 
