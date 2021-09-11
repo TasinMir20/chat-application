@@ -162,36 +162,36 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 
 exports.sendMessage_ApiController = async (req, res, next) => {
 
-    const {message, recipient} = req.body;
+    const {message, recipientId} = req.body;
 
     try {
-        
+
         const userData = req.userData;
 
-        const isValidObjId = mongoose.Types.ObjectId.isValid(recipient);
-        const participantExist = isValidObjId ? await User.findOne({_id: recipient}) : null;
+        const isValidObjId = mongoose.Types.ObjectId.isValid(recipientId);
+        const participantExist = isValidObjId ? await User.findOne({_id: recipientId}) : null;
 
         const currentEpochTime = Math.floor(new Date().getTime()/1000);
         if (participantExist) {
             const ConversationFind = await Conversation.findOne({ 
                 $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipient } ] },
-                    { $and: [ { creatorObjId: recipient }, { participantObjId: userData._id } ] }
+                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipientId } ] },
+                    { $and: [ { creatorObjId: recipientId }, { participantObjId: userData._id } ] }
                 ]});
             
             const messageBody = {
                 message,
                 imgUrl: "img.png",
                 sender: userData._id,
-                receiver: recipient,
+                receiver: recipientId,
                 msgSendTime: currentEpochTime
             };
 
             if (ConversationFind) {
                 // Conversation Updating
                 let ConversationUpdate = await Conversation.updateOne({ $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipient } ] },
-                    { $and: [ { creatorObjId: recipient }, { participantObjId: userData._id } ] }
+                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipientId } ] },
+                    { $and: [ { creatorObjId: recipientId }, { participantObjId: userData._id } ] }
                 ]}, 
                     { $push: { conversations: messageBody }
                 });
@@ -208,7 +208,7 @@ exports.sendMessage_ApiController = async (req, res, next) => {
                         messageBody
                     ],
                     creatorObjId: userData._id,
-                    participantObjId: recipient,
+                    participantObjId: recipientId,
                     conversationCreateTime: currentEpochTime
                 });
 
@@ -220,8 +220,8 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             }
 
 
-            const sEventNsme = recipient;
-            // socket.io server to client
+            const sEventNsme = recipientId+"message";
+            // socket.io messages Event at server
             global.io.emit(sEventNsme, messageBody);
 
             return res.json({send: sent});
@@ -230,6 +230,22 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             console.log("participant not exist");
         }
 
+    } catch (err) {
+        next(err);
+    }
+
+}
+
+exports.typingMessage_ApiController = (req, res, next) => {
+
+    const userData = req.userData;
+
+    try {
+        const {recipientId} = req.body;
+        const typingEventName = recipientId+"typing";
+        // socket.io Typing Event at server
+        global.io.emit(typingEventName, {typer: userData._id});
+        res.json({});
     } catch (err) {
         next(err);
     }

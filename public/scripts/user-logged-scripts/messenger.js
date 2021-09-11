@@ -139,8 +139,8 @@ function fetchUserChats(id, isItSearch) {
                     // Time convert to client local (Whole Date and time)
                     const msgSendTime = conversations[i].msgSendTime;
                     const msgDate = new Date(msgSendTime * 1000);
-                    const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
-                    const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+                    const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
+                    const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
                     const localDateAndTime = `${date} at ${time}`;
 
 
@@ -205,8 +205,8 @@ function sendMessage(event) {
 
     // Local Time (Whole Date and time)
     const msgDate = new Date();
-    const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
-    const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+    const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
+    const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
     const localDateAndTime = `${date} at ${time}`;
 
 
@@ -230,7 +230,7 @@ function sendMessage(event) {
     const chatBox = document.querySelector(".chat-box");
     chatBox.insertAdjacentHTML("afterbegin", theMessages);
 
-    const recipient = this.value;
+    const recipientId = this.value;
 
     const apiUrl = "/api/user/messenger/send-message";
     fetch(apiUrl, {
@@ -239,7 +239,7 @@ function sendMessage(event) {
             'Content-Type': 'application/json'
         },
         method: "POST",
-        body: JSON.stringify({message, recipient})
+        body: JSON.stringify({message, recipientId})
     })
     .then((res) => res.json())
     .then((data) => {
@@ -255,27 +255,22 @@ msgSentBtn.addEventListener("click", sendMessage);
 
 
 
-
+const socket = io();
 function socketEvent() {
-    
-    let socket = io();
-
-    // socket.io server to client
     const mySelfId = document.querySelector("#user-selft-id").value;
-    const sEventNsme = mySelfId;
-
+    
+    // socket.io messages Listener at client
+    const sEventNsme = mySelfId+"message";
     socket.on(sEventNsme, function(data) {
-
         console.log("Socket event Refresh")
-
         const recipientId = document.querySelector("#msg-sent-btn").value;
 
-        if (recipientId == data.sender) {
+        if (String(recipientId) === String(data.sender)) {
             // Time convert to client local (Whole Date and time)
             const msgSendTime = data.msgSendTime;
             const msgDate = new Date(msgSendTime * 1000);
-            const date = msgDate.toLocaleString('default', { month: 'long', day: "numeric", year: 'numeric'});
-            const time = msgDate.toLocaleString('default', { hour: "numeric", minute: "numeric"});
+            const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
+            const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
             const localDateAndTime = `${date} at ${time}`;
 
 
@@ -296,11 +291,62 @@ function socketEvent() {
                                 </div>
                             </div>`;
 
-
             const chatBox = document.querySelector(".chat-box");
             chatBox.insertAdjacentHTML("afterbegin", theMessages);
         }
     });
-}
 
+
+
+
+
+    // socket.io Typing Listener at client
+    const typingEventName = mySelfId+"typing";
+    socket.on(typingEventName, function(data) {
+        const recipientId = document.querySelector("#msg-sent-btn").value;
+        if (String(recipientId) === String(data.typer)) {
+
+            if (timeOut != null) {
+                clearTimeout(timeOut);
+            }
+            document.querySelector(".messages-right-sidebar .act").innerText = "Typing..";
+    
+            timeOut = setTimeout(function() {
+                document.querySelector(".messages-right-sidebar .act").innerText = "Active";
+            }, 2000);
+
+        }
+
+        
+    });
+}
 window.addEventListener("load", socketEvent);
+
+
+
+
+
+
+
+// typing Message Event sent by API request
+function typingMessage() {
+    const recipientId = document.querySelector("#msg-sent-btn").value;
+
+    const apiUrl = "/api/user/messenger/typing";
+    fetch(apiUrl, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({recipientId})
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        
+    })
+}
+document.querySelector("#input-msg").onkeyup = typingMessage;
+
+
+
