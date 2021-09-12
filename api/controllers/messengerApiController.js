@@ -19,12 +19,12 @@ exports.chatList_ApiController = async (req, res, next) => {
             ]}).sort({updatedAt: -1});
 
             // user find who involved to me with chatting
-            let chatListUsers = "";
+            let chatListUsers = [];
             if (involvedConversations[0]) {
-
-                let chatListUserSingle;
+                
                 for (let i = 0; i < involvedConversations.length; i++) {
 
+                    let chatListUserSingle = "";
                     if (String(involvedConversations[i].creatorObjId) === String(userData._id)) {
                         const id = involvedConversations[i].participantObjId;
                         chatListUserSingle = await User.findOne({_id: id});
@@ -33,25 +33,28 @@ exports.chatList_ApiController = async (req, res, next) => {
                         chatListUserSingle = await User.findOne({_id: id});
                     }
 
-                    chatListUsers += `
-                        <div class="single-user" onclick="fetchUserChats('${chatListUserSingle._id}');">
-                            <div class="img-wrap">
-                                <img src="/images/users/profile-photo/man2.jpg" alt="">
-                                <i class="fas fa-circle"></i>
-                                <span>32 m</span>
-                            </div>
-                            <div class="meta">
-                                <p class="name">${chatListUserSingle.firstName} ${chatListUserSingle.lastName}</p>
-                                <p class="last-message">Good night!</p>
-                                <span class="last-msg-time">1 hour ago</span>
-                            </div>
-                        </div>`;
+                    let userLimitData;
+                    if (chatListUserSingle) {
+
+                        userLimitData = {
+                            _id: chatListUserSingle._id,
+                            firstName: chatListUserSingle.firstName,
+                            lastName: chatListUserSingle.lastName,
+                            othersData: {
+                                lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime
+                            }
+                        };
+                    }
+
+                    
+                    chatListUsers[i] = userLimitData;
+
                 }
             } else {
                 console.log("List not found");
             }
 
-        return res.json({chatListUsers});
+            return res.json({chatListUsers});
 
     } catch (err) {
         next(err);
@@ -130,11 +133,10 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 
                 // after search new user append in chat list
                 if (isItSearch) {
-                    var newChatToAppendChatList = `<div class="single-user" onclick="fetchUserChats('${participantData._id}')">
+                    var newChatToAppendChatList = 
+                        `<div class="single-user" onclick="fetchUserChats('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/man2.jpg" alt="">
-                                <i class="fas fa-circle"></i>
-                                <span>32 m</span>
                             </div>
                             <div class="meta">
                                 <p class="name">${participantData.firstName} ${participantData.lastName}</p>

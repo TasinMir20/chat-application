@@ -112,6 +112,7 @@ exports.signupApiController = async (req, res, next) => {
                 password: encryptedPassword,
                 othersData: {
                     userCreateTime: currentEpochTime,
+                    lastOnlineTime: 1,
                     emailVerified: false,
                     codeSendTimes: {
                         email_verify_code: 1,

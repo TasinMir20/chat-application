@@ -32,6 +32,7 @@ const userSchema = new Schema({
     },
     othersData: {
         userCreateTime: Number,
+        lastOnlineTime: Number,
         emailVerified: Boolean,
         codeSendTimes: {
             email_verify_code: Number,

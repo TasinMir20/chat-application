@@ -330,10 +330,24 @@ body {
     top: 9px;
     left: 21px;
     font-size: 9px;
-    color: #2ecc71;
     border: 2px solid #2c3e50;
     border-radius: 50%;
 }
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap i.green {
+    color: #2ecc71;
+}
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap i.yellow {
+    color: #f1c40f;
+}
+
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap i.red {
+    color: #e74c3c;
+}
+
+
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap span {
     position: absolute;
     top: 6px;

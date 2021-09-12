@@ -45,8 +45,60 @@ function chatList() {
     .then((data) => {
         const t = document.querySelector(".chat-list");
 
-        if (data.chatListUsers) {
-            t.innerHTML = data.chatListUsers;
+        const {chatListUsers} = data;
+        console.log(chatListUsers)
+
+        if (chatListUsers[0]) {
+
+            let chatListHTML = "";
+            for (let i = 0; i < chatListUsers.length; i++) {
+
+                let userOnlineOrOffline = "";
+                // check user online or not
+                if (chatListUsers[i].othersData.lastOnlineTime === 1) {
+                    userOnlineOrOffline = '<i class="green fas fa-circle"></i>';
+                } else {
+                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
+                    const seconds = currentEpochTime - chatListUsers[i].othersData.lastOnlineTime;
+                
+                    if (seconds > 86400) {
+                        userOnlineOrOffline = '<i class="red fas fa-circle"></i>';
+                        
+                    } else if (seconds > 43200) {
+                        userOnlineOrOffline = '<i class="yellow fas fa-circle"></i>';
+                    } else {
+                        let time;
+                        const min = Math.floor(seconds / 60);
+                        const andSec = Math.floor(seconds % 60);
+                        const hour = Math.floor(min / 60);
+                        const andMin = Math.floor(min % 60);
+                        if (hour < 1) {
+                            time = `${andMin}m`;
+                            if (andMin < 1) {
+                                time = `${andSec}s`;
+                            }
+                        } else  {
+                            time = `${hour}h`;
+                        }
+                        userOnlineOrOffline = `<span>${time}</span>`;
+                    } 
+                }
+
+                chatListHTML += `
+                        <div class="single-user" onclick="fetchUserChats('${chatListUsers[i]._id}');">
+                            <div class="img-wrap">
+                                <img src="/images/users/profile-photo/man2.jpg" alt="">
+                                ${userOnlineOrOffline}
+                            </div>
+                            <div class="meta">
+                                <p class="name">${chatListUsers[i].firstName} ${chatListUsers[i].lastName}</p>
+                                <p class="last-message">Good night!</p>
+                                <span class="last-msg-time">1 hour ago</span>
+                            </div>
+                        </div>`;
+            }
+
+            t.innerHTML = chatListHTML;
         } else {
             t.innerHTML = "<p>No previous chat</p>";
         }
@@ -314,11 +366,39 @@ function socketEvent() {
             timeOut = setTimeout(function() {
                 document.querySelector(".messages-right-sidebar .act").innerText = "Active";
             }, 2000);
-
         }
-
-        
     });
+
+
+
+
+
+
+    
+
+
+
+    // connect listener
+    socket.emit("newUserD", mySelfId);
+
+    socket.on("newUser", function(data) {
+        console.log("connected:- "+ data);
+        
+
+    })
+
+    // disconnect listener
+    socket.on("userD", function(data) {
+        console.log("disconnected:- "+data)
+
+    })
+
+
+
+
+
+
+
 }
 window.addEventListener("load", socketEvent);
 
