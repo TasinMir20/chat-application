@@ -133,8 +133,12 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 
                 // after search new user append in chat list
                 if (isItSearch) {
+                    // generate unique css class from user obj ID
+                    let str = String(participantData._id);
+                    let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+
                     var newChatToAppendChatList = 
-                        `<div class="single-user" onclick="fetchUserChats('${participantData._id}')">
+                        `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/man2.jpg" alt="">
                             </div>
@@ -146,10 +150,11 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                         </div>`;
                 }
                 var fullName = `${participantData.firstName} ${participantData.lastName}`;
+                var lastOnlineTime = participantData.othersData.lastOnlineTime;
             }
         }
         
-        return res.json({conversations, fullName, newChatToAppendChatList});
+        return res.json({conversations, fullName, lastOnlineTime, newChatToAppendChatList});
 
     } catch (err) {
         next(err);

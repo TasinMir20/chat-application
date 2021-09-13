@@ -55,7 +55,6 @@ app.use("/", routes);
 
 
 
-
 /* Configuration */
 const config = {
     PORT: process.env.PORT || 2000,
@@ -68,7 +67,6 @@ const config = {
 const URL = "mongodb://127.0.0.1:27017/login-register-new";
 
 mongoose.connect(URL, {useUnifiedTopology: true, useNewUrlParser: true})
-
 .then(() => {
     console.log("Database connected");
 

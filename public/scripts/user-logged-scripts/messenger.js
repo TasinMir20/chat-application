@@ -46,7 +46,6 @@ function chatList() {
         const t = document.querySelector(".chat-list");
 
         const {chatListUsers} = data;
-        console.log(chatListUsers)
 
         if (chatListUsers[0]) {
 
@@ -126,6 +125,11 @@ function chatList() {
 }
 window.addEventListener("load", chatList);
 
+// chatList() function in Interval to refresh user online offline time
+setInterval(() => {
+    chatList();
+}, 60000);
+
 
 
 
@@ -192,8 +196,29 @@ function fetchUserChats(id, isItSearch) {
         .then((res) => res.json())
         .then((data) => {
 
-            // chat header name update front when switched to other chat
+            // chat header name update when switched to other chat
             document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
+
+            
+            // chat header user or current chatting partner active-inactive update when switched to other chat
+            const element = document.querySelector(".chatbox-header .img-wrap i");
+            if (data.lastOnlineTime === 1) {
+                element.classList.remove("hide", "red", "yellow");
+                element.classList.add("green");
+            } else {
+                const currentEpochTime = Math.floor(new Date().getTime()/1000);
+                const seconds = currentEpochTime - data.lastOnlineTime;
+                
+                if (seconds > 86400) {
+                    element.classList.remove("hide", "yellow", "green");
+                    element.classList.add("red");
+                } else if (seconds < 86400) {
+                    element.classList.remove("hide", "red", "green");
+                    element.classList.add("yellow");
+                }
+
+            }
+            /////////////////////////////////////////////////////////
 
 
             // chat list message update to front when switched to other chat
@@ -252,6 +277,18 @@ function fetchUserChats(id, isItSearch) {
                     }
                 }
             }
+
+            // in chat list current conversation user background color change as selected
+            const str = id;
+            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+            const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
+            console.log(toRemoveClass)
+            for (let i = 0; i < toRemoveClass.length; i++) {
+                toRemoveClass[i].classList.remove("selected");
+            }
+            setTimeout(() => {
+                document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
+            }, 50)
         })
 
     } else {
@@ -392,21 +429,19 @@ function socketEvent() {
 
 
    // self connect event sent
-   socket.emit("newUserD", {id: mySelfId});
+   socket.emit("AnUserConnected", {id: mySelfId});
 
    // user connect listener
-   socket.on("newUser", function(data) {
-       console.log("connected:- "+ data.id);
+   socket.on("anUser", function(data) {
 
        // chat list user active inactive
        if (String(mySelfId) != String(data.id)) {
-           console.log("Step 1");
 
            const str = data.id;
            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
            const chatList = document.querySelector(".chat-list");
-           const exist = chatList.innerHTML.match(getUniqueCssClass);
+           const exist = chatList.innerHTML.match(data.id);
 
            if (exist) {
                document.querySelector(`.${getUniqueCssClass} .img-wrap span`).classList.add("hide");
@@ -414,56 +449,86 @@ function socketEvent() {
 
                element.classList.remove("hide", "red", "yellow");
                element.classList.add("green");
+
+
+
+                // viewed conversation user connect event - active
+                const recipientId = document.querySelector("#msg-sent-btn").value;
+                if (String(recipientId) === String(data.id)) {
+
+                    document.querySelector(".chatbox-header .img-wrap span").classList.add("hide");
+                    const element = document.querySelector(".chatbox-header .img-wrap i");
+
+                    element.classList.remove("hide", "red", "yellow");
+                    element.classList.add("green");
+                }
            }
        }
-
-
-       // viewed conversation user active or inactive
-       const recipientId = document.querySelector("#msg-sent-btn").value;
-       if (String(recipientId) === String(data.id)) {
-
-           
-
-       }
-
    })
 
-   // user disconnect listener
-   const interval = null;
-   socket.on("userD", function(data) {
-       console.log("disconnected:- "+data.id)
+    // user disconnect listener
+    let interval = null;
+    socket.on("AnUserD", function(data) {
 
-       const str = data.id;
-       const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+        const str = data.id;
+        const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
-       const chatList = document.querySelector(".chat-list");
-       const exist = chatList.innerHTML.match(getUniqueCssClass);
+        const chatList = document.querySelector(".chat-list");
+        const exist = chatList.innerHTML.match(data.id);
 
-       if (exist) {
-           const element = document.querySelector(`.${getUniqueCssClass} .img-wrap i`);
-           element.classList.add("hide");
+        if (exist) {
 
-           const inactiveTimeElement = document.querySelector(`.${getUniqueCssClass} .img-wrap span`);
-           inactiveTimeElement.classList.remove("hide");
-           inactiveTimeElement.innerText = "fw s";
+            const element = document.querySelector(`.${getUniqueCssClass} .img-wrap i`);
+            element.classList.add("hide");
 
-
-           if (interval != null) {
-               clearInterval(interval);
-           }
+            const inactiveTimeElement = document.querySelector(`.${getUniqueCssClass} .img-wrap span`);
+            inactiveTimeElement.classList.remove("hide");
+            inactiveTimeElement.innerText = "fw s"; 
 
 
-           const inactiveTime = Math.floor(new Date().getTime()/1000);
-           interval = setInterval(() => {
-               const currentEpochTime = Math.floor(new Date().getTime()/1000);
-               const a = currentEpochTime - inactiveTime;
 
-               inactiveTimeElement.innerText = `${a}s`;
 
-           }, 2000)
-       }
+            // viewed conversation user disconnect event - inactive
+            const recipientId = document.querySelector("#msg-sent-btn").value;
+            if (String(recipientId) === String(data.id)) {
+                if (interval != null) {
+                    clearInterval(interval);
+                }
 
-   })
+
+                const element = document.querySelector(".chatbox-header .img-wrap i");
+                element.classList.add("hide");
+
+                const oppositePartnerInactiveTime = document.querySelector(".chatbox-header .img-wrap span");
+                oppositePartnerInactiveTime.classList.remove("hide");
+                oppositePartnerInactiveTime.innerText = "fw s";
+
+                const whenInactive = Math.floor(new Date().getTime()/1000);
+                interval = setInterval(() => {
+                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
+                    let seconds = currentEpochTime - whenInactive;
+
+                    const min = Math.floor(seconds / 60);
+                    const andSec = Math.floor(seconds % 60);
+                    const hour = Math.floor(min / 60);
+                    const andMin = Math.floor(min % 60);
+                    if (hour < 1) {
+                        inactiveTime = `${andMin}m`;
+                        if (andMin < 1) {
+                            inactiveTime = `${andSec}s`;
+                        }
+                    } else  {
+                        inactiveTime = `${hour}h`;
+                    }
+
+                    oppositePartnerInactiveTime.innerText = inactiveTime;
+
+                }, 60000)
+                
+            }
+        }
+
+    })
 
 
 

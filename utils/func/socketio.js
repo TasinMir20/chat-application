@@ -3,31 +3,29 @@ const User = require('../../models/User');
 async function s() {
     
     io.on("connection", (socket) => {
-
-        socket.on("newUserD", async (data) => {
+        // connect Listener at server
+        socket.on("AnUserConnected", async (data) => {
+            // user connect update to database
             const up = await User.updateOne(
                 { _id: data.id }, 
                 { "othersData.lastOnlineTime":  1
             });
             
-            console.log("connected:- "+ data.id);
-            // user connect event sent to front end
-            global.io.emit("newUser", {id: data.id});
-            console.log("connect");
+            // an user connect event sent to others user front end
+            global.io.emit("anUser", {id: data.id});
 
 
             socket.on("disconnect", async () => {
-                // user disconnect event sent to front end
-                global.io.emit("userD", {id: data.id});
+                // an user disconnect event sent to others user front end
+                global.io.emit("AnUserD", {id: data.id});
 
                 const currentEpochTime = Math.floor(new Date().getTime()/1000);
-                const up = await User.updateOne(
+                // last disconnect time update to database
+                await User.updateOne(
                     { _id: data.id }, 
                     { "othersData.lastOnlineTime":  currentEpochTime
                 });
 
-                console.log(up);
-                console.log("disconnected:- "+ data.id);
             });
         });
     })

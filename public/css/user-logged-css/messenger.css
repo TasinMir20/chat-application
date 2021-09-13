@@ -308,6 +308,9 @@ body {
     cursor: pointer;
     user-select: none;
 }
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user.selected {
+    background-color: #32465a;
+}
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user:hover {
     background-color: #32465a;
 }
@@ -476,7 +479,9 @@ body {
     width: 24px;
     text-align: center;
 }
-
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap .hide {
+    display: none;
+}
 
 
 
