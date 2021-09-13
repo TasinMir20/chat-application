@@ -53,42 +53,56 @@ function chatList() {
             let chatListHTML = "";
             for (let i = 0; i < chatListUsers.length; i++) {
 
-                let userOnlineOrOffline = "";
+                let circleVisibility = "";
+                let circleColor = "";
+                let inactiveTimeVisibility = "";
+                let inactiveTime = "";
                 // check user online or not
                 if (chatListUsers[i].othersData.lastOnlineTime === 1) {
-                    userOnlineOrOffline = '<i class="green fas fa-circle"></i>';
+                    inactiveTimeVisibility = "hide";
+                    circleColor = 'green';
                 } else {
+                    
                     const currentEpochTime = Math.floor(new Date().getTime()/1000);
                     const seconds = currentEpochTime - chatListUsers[i].othersData.lastOnlineTime;
                 
                     if (seconds > 86400) {
-                        userOnlineOrOffline = '<i class="red fas fa-circle"></i>';
+                        inactiveTimeVisibility = "hide";
+                        circleColor = 'red';
                         
                     } else if (seconds > 43200) {
-                        userOnlineOrOffline = '<i class="yellow fas fa-circle"></i>';
+                        inactiveTimeVisibility = "hide";
+                        circleColor = 'yellow';
                     } else {
-                        let time;
+                        circleVisibility = "hide";
+                        
                         const min = Math.floor(seconds / 60);
                         const andSec = Math.floor(seconds % 60);
                         const hour = Math.floor(min / 60);
                         const andMin = Math.floor(min % 60);
                         if (hour < 1) {
-                            time = `${andMin}m`;
+                            inactiveTime = `${andMin}m`;
                             if (andMin < 1) {
-                                time = `${andSec}s`;
+                                inactiveTime = `${andSec}s`;
                             }
                         } else  {
-                            time = `${hour}h`;
+                            inactiveTime = `${hour}h`;
                         }
-                        userOnlineOrOffline = `<span>${time}</span>`;
+                        
                     } 
                 }
 
+                // generate unique css class from user obj ID
+                let str = chatListUsers[i]._id;
+                let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+
+
                 chatListHTML += `
-                        <div class="single-user" onclick="fetchUserChats('${chatListUsers[i]._id}');">
+                        <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/man2.jpg" alt="">
-                                ${userOnlineOrOffline}
+                                <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
+                                <span class="${inactiveTimeVisibility}">${inactiveTime}</span>
                             </div>
                             <div class="meta">
                                 <p class="name">${chatListUsers[i].firstName} ${chatListUsers[i].lastName}</p>
@@ -377,21 +391,79 @@ function socketEvent() {
     
 
 
+   // self connect event sent
+   socket.emit("newUserD", {id: mySelfId});
 
-    // connect listener
-    socket.emit("newUserD", mySelfId);
+   // user connect listener
+   socket.on("newUser", function(data) {
+       console.log("connected:- "+ data.id);
 
-    socket.on("newUser", function(data) {
-        console.log("connected:- "+ data);
-        
+       // chat list user active inactive
+       if (String(mySelfId) != String(data.id)) {
+           console.log("Step 1");
 
-    })
+           const str = data.id;
+           const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
-    // disconnect listener
-    socket.on("userD", function(data) {
-        console.log("disconnected:- "+data)
+           const chatList = document.querySelector(".chat-list");
+           const exist = chatList.innerHTML.match(getUniqueCssClass);
 
-    })
+           if (exist) {
+               document.querySelector(`.${getUniqueCssClass} .img-wrap span`).classList.add("hide");
+               const element = document.querySelector(`.${getUniqueCssClass} .img-wrap i`);
+
+               element.classList.remove("hide", "red", "yellow");
+               element.classList.add("green");
+           }
+       }
+
+
+       // viewed conversation user active or inactive
+       const recipientId = document.querySelector("#msg-sent-btn").value;
+       if (String(recipientId) === String(data.id)) {
+
+           
+
+       }
+
+   })
+
+   // user disconnect listener
+   const interval = null;
+   socket.on("userD", function(data) {
+       console.log("disconnected:- "+data.id)
+
+       const str = data.id;
+       const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+
+       const chatList = document.querySelector(".chat-list");
+       const exist = chatList.innerHTML.match(getUniqueCssClass);
+
+       if (exist) {
+           const element = document.querySelector(`.${getUniqueCssClass} .img-wrap i`);
+           element.classList.add("hide");
+
+           const inactiveTimeElement = document.querySelector(`.${getUniqueCssClass} .img-wrap span`);
+           inactiveTimeElement.classList.remove("hide");
+           inactiveTimeElement.innerText = "fw s";
+
+
+           if (interval != null) {
+               clearInterval(interval);
+           }
+
+
+           const inactiveTime = Math.floor(new Date().getTime()/1000);
+           interval = setInterval(() => {
+               const currentEpochTime = Math.floor(new Date().getTime()/1000);
+               const a = currentEpochTime - inactiveTime;
+
+               inactiveTimeElement.innerText = `${a}s`;
+
+           }, 2000)
+       }
+
+   })
 
 
 

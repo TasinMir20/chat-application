@@ -362,6 +362,11 @@ body {
     text-align: center;
 }
 
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap .hide {
+    display: none;
+}
+
+
 
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .meta {
     font-size: 14px;
@@ -442,9 +447,20 @@ body {
     top: 1px;
     left: 0px;
     font-size: 10px;
-    color: #2ecc71;
     border: 2px solid #f5f5f5;
     border-radius: 50%;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap i.green {
+    color: #2ecc71;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap i.yellow {
+
+    color: #f1c40f;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap i.red {
+    color: #e74c3c;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap span {

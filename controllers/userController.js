@@ -10,6 +10,10 @@ const {codeSaveDBandMailSend} = require("../utils/func/func")
 exports.mainPathController = async (req, res, next) => {
 
     try {
+
+        return res.redirect("/user/messenger");
+
+
         const fullName = req.userData.firstName + ' ' + req.userData.lastName;
         const username = req.userData.username;
         res.render("pages/user-logged-pages/user-main.ejs", {dataPass: {username, fullName}});
@@ -54,11 +58,10 @@ exports.emailVerification = async (req, res, next) => {
 
 exports.messenger = async (req, res, next) => {
 
-
     try {
         const userData = req.userData;
 
-        // Last chatting user ID getting process provide
+        // Last chatting user ID getting process and provide in ejs
         let involvedConversations = await Conversation.find({ 
             $or: [
                 { creatorObjId: userData._id },
@@ -76,8 +79,6 @@ exports.messenger = async (req, res, next) => {
                 }
             }
             
-
-
         res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChatUserId});
 
     } catch (err) {
