@@ -43,11 +43,14 @@ function chatList() {
     })
     .then((res) => res.json())
     .then((data) => {
-        const t = document.querySelector(".chat-list");
+        const chatList = document.querySelector(".chat-list");
 
         const {chatListUsers} = data;
 
         if (chatListUsers[0]) {
+            // both left-sidebar and right-sidebar show when at least one previous users exist in chat list
+            document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+            document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
             let chatListHTML = "";
             for (let i = 0; i < chatListUsers.length; i++) {
@@ -111,9 +114,12 @@ function chatList() {
                         </div>`;
             }
 
-            t.innerHTML = chatListHTML;
+            chatList.innerHTML = chatListHTML;
         } else {
-            t.innerHTML = "<p>No previous chat</p>";
+            // only left-sidebar show when no previous users in chat list
+            document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
+
+            chatList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
         }
 
         
@@ -165,7 +171,7 @@ document.querySelector("#search").onkeyup = searchUsersToChat;
 
 
 
-
+let incre = 0;
 function fetchUserChats(id, isItSearch) {
     
 
@@ -196,6 +202,11 @@ function fetchUserChats(id, isItSearch) {
         .then((res) => res.json())
         .then((data) => {
 
+            // when no previous user in the chat list then search someone and click on it- show chat box
+            document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");
+            document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+            document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+
             // chat header name update when switched to other chat
             document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
 
@@ -205,10 +216,35 @@ function fetchUserChats(id, isItSearch) {
             if (data.lastOnlineTime === 1) {
                 element.classList.remove("hide", "red", "yellow");
                 element.classList.add("green");
+                document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
             } else {
                 const currentEpochTime = Math.floor(new Date().getTime()/1000);
                 const seconds = currentEpochTime - data.lastOnlineTime;
-                
+
+                /////////////////////////////////////////
+                const min = Math.floor(seconds / 60);
+                const andSec = Math.floor(seconds % 60);
+                const hour = Math.floor(min / 60);
+                const andMin = Math.floor(min % 60);
+                const day = Math.floor(hour / 24);
+
+                let inactiveTime = "";
+                if (day < 1) {
+                    if (hour < 1) {
+                        inactiveTime = `${andMin}m`;
+                        if (andMin < 1) {
+                            inactiveTime = `${andSec}s`;
+                        }
+                    } else  {
+                        inactiveTime = `${hour}h`;
+                    }
+                } else {
+                    inactiveTime = `${day}d`;
+                }
+                document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
+                /////////////////////////////////////////
+
+
                 if (seconds > 86400) {
                     element.classList.remove("hide", "yellow", "green");
                     element.classList.add("red");
@@ -217,13 +253,14 @@ function fetchUserChats(id, isItSearch) {
                     element.classList.add("yellow");
                 }
 
+
             }
             /////////////////////////////////////////////////////////
 
 
             // chat list message update to front when switched to other chat
             if (data.conversations) {
-                
+
                 let conversations = data.conversations;
                 let messages = "";
                 for (let i = 0; i < conversations.length; i++) {
@@ -233,7 +270,6 @@ function fetchUserChats(id, isItSearch) {
                     const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
                     const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
                     const localDateAndTime = `${date} at ${time}`;
-
 
 
                     // defining this message incoming or outgoing
@@ -266,15 +302,25 @@ function fetchUserChats(id, isItSearch) {
 
                 document.querySelector(".chat-box").innerHTML = messages;
             } else {
-                document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
+                document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
 
                 if (isItSearch) {
                     const chatList = document.querySelector(".chat-list");
+
+                    // If No previous user in chat list so first remove the "You have no connected people to chat with" message
+                    const noUcL = chatList.innerHTML.match('no-u-chat-list">');
+                    if (noUcL) {
+                        chatList.innerHTML = "";
+                    }
+
+
                     // the searched user already inserted or not in chat list
-                    const a = chatList.innerHTML.match(id);
-                    if (!a) {
+                    const alreadyExist = chatList.innerHTML.match(id);
+                    if (!alreadyExist) {
                         chatList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatList);
                     }
+
+                    
                 }
             }
 
@@ -282,17 +328,19 @@ function fetchUserChats(id, isItSearch) {
             const str = id;
             const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
             const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
-            console.log(toRemoveClass)
+
             for (let i = 0; i < toRemoveClass.length; i++) {
                 toRemoveClass[i].classList.remove("selected");
             }
-            setTimeout(() => {
+            if (incre > 0) {
                 document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
-            }, 50)
-        })
+            }
+            incre++;
+            
+        });
 
     } else {
-        document.querySelector(".chat-box").innerHTML = "<h1 style='color:black;'>No conversation yet</h1>";
+        document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
     }
 
 }
@@ -331,6 +379,14 @@ function sendMessage(event) {
 
 
     const chatBox = document.querySelector(".chat-box");
+
+    // if the first message so first remove the "No conversation yet" message
+    const noConversation = chatBox.innerHTML.match('no-conv-yet">');
+    if (noConversation) {
+        chatBox.innerHTML = "";
+    }
+
+    // append every single message
     chatBox.insertAdjacentHTML("afterbegin", theMessages);
 
     const recipientId = this.value;
@@ -412,10 +468,10 @@ function socketEvent() {
             if (timeOut != null) {
                 clearTimeout(timeOut);
             }
-            document.querySelector(".messages-right-sidebar .act").innerText = "Typing..";
+            document.querySelector(".messages-right-sidebar .act").innerText = "Typing...";
     
             timeOut = setTimeout(function() {
-                document.querySelector(".messages-right-sidebar .act").innerText = "Active";
+                document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
             }, 2000);
         }
     });
@@ -461,6 +517,8 @@ function socketEvent() {
 
                     element.classList.remove("hide", "red", "yellow");
                     element.classList.add("green");
+
+                    document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
                 }
            }
        }
@@ -497,43 +555,46 @@ function socketEvent() {
 
 
                 const element = document.querySelector(".chatbox-header .img-wrap i");
+                element.classList.remove("green");
                 element.classList.add("hide");
 
                 const oppositePartnerInactiveTime = document.querySelector(".chatbox-header .img-wrap span");
                 oppositePartnerInactiveTime.classList.remove("hide");
                 oppositePartnerInactiveTime.innerText = "fw s";
+                document.querySelector(".messages-right-sidebar .act").innerText = "a few seconds";
 
                 const whenInactive = Math.floor(new Date().getTime()/1000);
                 interval = setInterval(() => {
-                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
-                    let seconds = currentEpochTime - whenInactive;
+                    const isActive = document.querySelector(".chatbox-header .img-wrap").innerHTML.match("green");
 
-                    const min = Math.floor(seconds / 60);
-                    const andSec = Math.floor(seconds % 60);
-                    const hour = Math.floor(min / 60);
-                    const andMin = Math.floor(min % 60);
-                    if (hour < 1) {
-                        inactiveTime = `${andMin}m`;
-                        if (andMin < 1) {
-                            inactiveTime = `${andSec}s`;
+                    if (!isActive) {
+                        const currentEpochTime = Math.floor(new Date().getTime()/1000);
+                        let seconds = currentEpochTime - whenInactive;
+
+                        const min = Math.floor(seconds / 60);
+                        const andSec = Math.floor(seconds % 60);
+                        const hour = Math.floor(min / 60);
+                        const andMin = Math.floor(min % 60);
+
+                        let inactiveTime = "";
+                        if (hour < 1) {
+                            inactiveTime = `${andMin}m`;
+                            if (andMin < 1) {
+                                inactiveTime = `${andSec}s`;
+                            }
+                        } else  {
+                            inactiveTime = `${hour}h`;
                         }
-                    } else  {
-                        inactiveTime = `${hour}h`;
+
+                        oppositePartnerInactiveTime.innerText = inactiveTime;
+                        document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
                     }
-
-                    oppositePartnerInactiveTime.innerText = inactiveTime;
-
                 }, 60000)
                 
             }
         }
 
     })
-
-
-
-
-
 
 
 }

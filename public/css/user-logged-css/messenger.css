@@ -154,7 +154,7 @@ body {
 .sections .container {
     max-width: 1536px;
     height: 100%;
-    background-color: antiquewhite;
+    background-color: #ffffff;
 }
 
 .sections .container .messenger-container {
@@ -293,6 +293,12 @@ body {
     overflow-x: hidden;
     overflow-y: scroll;
 }
+
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list .no-u-chat-list {
+    margin: 20% auto;
+    text-align: center;
+}
+
 
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list::-webkit-scrollbar {
     display: none;
@@ -540,11 +546,10 @@ body {
     display: none;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .inner-chat-box {
-    overflow-x: hidden;
-    
+.sections .container .messenger-container .messages-right-sidebar .chat-box .no-conv-yet {
+    color:black;
+    margin: 37% auto;
 }
-
 
 
 
@@ -745,3 +750,40 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .msg-input-form #msg-sent-btn i {
     font-size: 17px;
 }
+
+
+
+
+
+
+
+
+
+
+/* When no previous user in the chat list */
+.sections .container .messenger-container .sidebar.w0 {
+    width: 0;
+}
+
+.sections .container .messenger-container.no-previous-people {
+    justify-content: center;
+}
+.sections .container .messenger-container.no-previous-people .chat-list-left-sidebar {
+    width: 700px;
+}
+
+.sections .container .messenger-container.no-previous-people .messages-right-sidebar {
+    width: 0;
+}
+
+@media all and (max-width: 710px) {
+    .sections .container .messenger-container.no-previous-people .chat-list-left-sidebar {
+        width: 100%;
+    }
+}
+
+
+
+
+
+
