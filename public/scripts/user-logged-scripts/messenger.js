@@ -143,28 +143,38 @@ let timeOut = null;
 function searchUsersToChat() {
     const searchKeyWord = document.querySelector("#search").value;
 
-    if (timeOut != null) {
-        clearTimeout(timeOut);
+    if (searchKeyWord) {
+
+        if (timeOut != null) {
+            clearTimeout(timeOut);
+        }
+
+        timeOut = setTimeout(() => {
+            const apiUrl = "/api/user/messenger/search-users";
+            fetch(apiUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({searchKeyWord})
+            })
+            .then((res) => res.json())
+            .then((data) => {
+
+                if (data.foundUser) {
+                    document.querySelector(".search-results").innerHTML = data.foundUser;
+                } else {
+                    document.querySelector(".search-results").innerHTML = "";
+                }
+
+            });
+
+        }, 500);
+
+    } else {
+        document.querySelector(".search-results").innerHTML = "";
     }
-
-    timeOut = setTimeout(() => {
-        const apiUrl = "/api/user/messenger/search-users";
-        fetch(apiUrl, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: JSON.stringify({searchKeyWord})
-        })
-        .then((res) => res.json())
-        .then((data) => {
-
-            document.querySelector(".search-results").innerHTML = data.searchUser;
-
-        })
-
-    }, 500)
 
 }
 document.querySelector("#search").onkeyup = searchUsersToChat;

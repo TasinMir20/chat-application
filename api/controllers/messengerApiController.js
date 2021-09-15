@@ -67,31 +67,46 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
     const {searchKeyWord} = req.body;
 
     try {
-        const findUserToConversation = await User.find({
-            $or: [
-                { firstName: searchKeyWord },
-                { lastName: searchKeyWord },
-                { username: searchKeyWord },
-                { email: searchKeyWord }
-            ]});
 
-            if (findUserToConversation) {
+        if (searchKeyWord) {
 
-                let searchUser = "";
+            function es(str) {
+                return str.replace(/[-\/\\^$*+?()|[\]{}]/g, "");
+            };
+            const KeyWordRegExp = new RegExp("^" + es(searchKeyWord), "i");
+            // search in Database
+            const findUserToConversation = await User.find({
+                $or: [
+                    { firstName: KeyWordRegExp },
+                    { lastName: KeyWordRegExp },
+                    { username: KeyWordRegExp },
+                    { email: KeyWordRegExp },
+                ]});
+
+            
+
+            let foundUser = "";
+            if (findUserToConversation[0]) {
+
                 for (var i = 0; i < findUserToConversation.length; i++) {
-                    
-                    searchUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true);">
+                    foundUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
                                         <img src="/images/users/profile-photo/man3.jpg" alt="">
                                     </div>
                                     <p>${findUserToConversation[i].firstName} ${findUserToConversation[i].lastName}</p>
                                 </div>`;
                 }
-
-                return res.json({ searchUser });
+                return res.json({ foundUser });
             }
+            
+            // not found user to chat
+            foundUser = `<div class="search-single-user">
+                            <p>Not found user</p>
+                        </div>`;
+            return res.json({ foundUser });
+        }
 
-            return res.json({});
+        return res.json({});
         
     } catch (err) {
         next(err);

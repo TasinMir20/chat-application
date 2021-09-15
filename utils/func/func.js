@@ -178,10 +178,10 @@ async function codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName) 
             const sentTo = userData.email;
             subject = subject || "Password recovery code";
             themMailMsg = `<div style="width: 100%; font-size: 15px; line-height: 21px; color: rgb(20, 24, 35); font-family: arial, sans-serif;">
-                                    <div style="margin-top: 16px; margin-bottom: 20px;">Hi ${userData.username},</div>
-                                    <p style="color: rgb(109, 109, 108);">${plainTextMsg}</p>
-                                    <span style="color: rgb(20, 24, 35); background: rgb(231, 243, 255); display: inline-block; padding: 14px 32px; border: 1px solid rgb(24, 119, 242); border-radius: 7px; font-size: 17px; font-family: Roboto; font-weight: 700;">${theCode}</span>
-                                </div>`;
+                                <div style="margin-top: 16px; margin-bottom: 20px;">Hi ${userData.username},</div>
+                                <p style="color: rgb(109, 109, 108);">${plainTextMsg}</p>
+                                <span style="color: rgb(20, 24, 35); background: rgb(231, 243, 255); display: inline-block; padding: 14px 32px; border: 1px solid rgb(24, 119, 242); border-radius: 7px; font-size: 17px; font-family: Roboto; font-weight: 700;">${theCode}</span>
+                            </div>`;
 
 
             let mail = {};
