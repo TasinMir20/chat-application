@@ -35,18 +35,23 @@ exports.chatList_ApiController = async (req, res, next) => {
 
                     let userLimitData;
                     if (chatListUserSingle) {
+                        const totalMessagesLen = involvedConversations[i].conversations.length;
+                        const sender = involvedConversations[i].conversations[totalMessagesLen - 1].sender;
+                        const lastMessageFull = involvedConversations[i].conversations[totalMessagesLen - 1].message;
+                        let lastMessage = lastMessageFull.length > 30 ? `${lastMessageFull.slice(0, 30)}...` : lastMessageFull;
+                        lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
+                        
 
                         userLimitData = {
                             _id: chatListUserSingle._id,
                             firstName: chatListUserSingle.firstName,
                             lastName: chatListUserSingle.lastName,
-                            othersData: {
-                                lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime
-                            }
+                            lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime,
+                            lastMessage,
+                            lastMessageTime: involvedConversations[i].conversations[totalMessagesLen - 1].msgSendTime
                         };
                     }
 
-                    
                     chatListUsers[i] = userLimitData;
 
                 }
@@ -159,8 +164,8 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                             </div>
                             <div class="meta">
                                 <p class="name">${participantData.firstName} ${participantData.lastName}</p>
-                                <p class="last-message">Good night!</p>
-                                <span class="last-msg-time">1 hour ago</span>
+                                <p class="last-message">.</p>
+                                <span class="last-msg-time">.</span>
                             </div>
                         </div>`;
                 }

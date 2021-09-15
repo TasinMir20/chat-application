@@ -30,7 +30,6 @@ document.querySelector(".left-arrow i").onclick = chatListOfUserShowAndChatHide;
 /************************************************* API Function start form here to END ************************************/
 
 function chatList() {
-
     const apiUrl = "/api/user/messenger/chat-list";
 
     fetch(apiUrl, {
@@ -54,20 +53,19 @@ function chatList() {
 
             let chatListHTML = "";
             for (let i = 0; i < chatListUsers.length; i++) {
+                const currentEpochTime = Math.floor(new Date().getTime()/1000);
 
                 let circleVisibility = "";
                 let circleColor = "";
                 let inactiveTimeVisibility = "";
                 let inactiveTime = "";
                 // check user online or not
-                if (chatListUsers[i].othersData.lastOnlineTime === 1) {
+                if (chatListUsers[i].lastOnlineTime === 1) {
                     inactiveTimeVisibility = "hide";
                     circleColor = 'green';
                 } else {
-                    
-                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
-                    const seconds = currentEpochTime - chatListUsers[i].othersData.lastOnlineTime;
-                
+                    // last online time
+                    const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
                     if (seconds > 86400) {
                         inactiveTimeVisibility = "hide";
                         circleColor = 'red';
@@ -90,13 +88,39 @@ function chatList() {
                         } else  {
                             inactiveTime = `${hour}h`;
                         }
-                        
                     } 
                 }
+
+                // last message time
+                const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
+                const min = Math.floor(seconds / 60);
+                const andSec = Math.floor(seconds % 60);
+                const hour = Math.floor(min / 60);
+                const andMin = Math.floor(min % 60);
+                const day = Math.floor(hour / 24);
+                let lastMsgTime = "";
+                if (day < 1) {
+                    if (hour < 1) {
+                        lastMsgTime = `${andMin}m ago`;
+                        if (andMin < 1) {
+                            lastMsgTime = `${andSec}s ago`;
+                        }
+                    } else  {
+                        lastMsgTime = `${hour}h ago`;
+                    }
+                } else {
+                    lastMsgTime = `${day}d ago`;
+                }
+
 
                 // generate unique css class from user obj ID
                 let str = chatListUsers[i]._id;
                 let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+
+                //  HTML tag conflation resolve
+                const rawMessage = chatListUsers[i].lastMessage;
+                let validatedMessage = rawMessage.replace(/</g, "&lt");
+                validatedMessage = validatedMessage.replace(/>/g, "&gt");
 
 
                 chatListHTML += `
@@ -108,8 +132,8 @@ function chatList() {
                             </div>
                             <div class="meta">
                                 <p class="name">${chatListUsers[i].firstName} ${chatListUsers[i].lastName}</p>
-                                <p class="last-message">Good night!</p>
-                                <span class="last-msg-time">1 hour ago</span>
+                                <p class="last-message">${validatedMessage}</p>
+                                <span class="last-msg-time">${lastMsgTime}</span>
                             </div>
                         </div>`;
             }
@@ -121,19 +145,17 @@ function chatList() {
 
             chatList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
         }
-
-        
         
     })
     .catch (function(reason) {
         console.log(reason);
-    })
+    });
 }
 window.addEventListener("load", chatList);
 
 // chatList() function in Interval to refresh user online offline time
 setInterval(() => {
-    chatList();
+    // chatList();
 }, 60000);
 
 
@@ -168,6 +190,9 @@ function searchUsersToChat() {
                     document.querySelector(".search-results").innerHTML = "";
                 }
 
+            })
+            .catch (function(reason) {
+                console.log(reason);
             });
 
         }, 500);
@@ -183,7 +208,6 @@ document.querySelector("#search").onkeyup = searchUsersToChat;
 
 let incre = 0;
 function fetchUserChats(id, isItSearch) {
-    
 
     if (window.innerWidth < 770) {
         // START -- when screen less than 768px -> left side user chat list users hide and show chat conversions
@@ -191,8 +215,6 @@ function fetchUserChats(id, isItSearch) {
         document.querySelector(".messages-right-sidebar").classList.remove("hide");
         // END -- when screen less than 768px -> left side user chat list users hide and show chat conversions
     }
-
-
 
     document.querySelector(".search-results").innerHTML = "";
     document.querySelector("#msg-sent-btn").value = id;
@@ -347,6 +369,9 @@ function fetchUserChats(id, isItSearch) {
             }
             incre++;
             
+        })
+        .catch (function(reason) {
+            console.log(reason);
         });
 
     } else {
@@ -360,63 +385,83 @@ function fetchUserChats(id, isItSearch) {
 
 
 
-const msgSentBtn = document.querySelector("#msg-sent-btn");
 function sendMessage(event) {
     event.preventDefault();
 
-    // Local Time (Whole Date and time)
-    const msgDate = new Date();
-    const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
-    const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
-    const localDateAndTime = `${date} at ${time}`;
+    const message = document.querySelector("#input-msg").value.trim();
+    if (message) {
+        const recipientId = this.value;
+        // Local Time (Whole Date and time)
+        const msgDate = new Date();
+        const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
+        const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
+        const localDateAndTime = `${date} at ${time}`;
 
 
-    const message = document.querySelector("#input-msg").value;
-    const rawMessage = message;
-    let validatedMessage = rawMessage.replace(/</g, "&lt");
-    validatedMessage = validatedMessage.replace(/>/g, "&gt");
-    let theMessages = `<div class="outgoing-message single-msg-box">
-                        <div class="author-img">
-                            <img src="/images/users/profile-photo/man3.jpg" alt="">
-                        </div>
-                        <div class="msg-n-meta clearfix">
-                            <div class="msg-inner">
-                                <p class="message">${validatedMessage}</p>
-                                <span class="msg-time">${localDateAndTime}</span>
-                            </div>
-                        </div>
-                    </div>`;
+        
+        const rawMessage = message;
+        let validatedMessage = rawMessage.replace(/</g, "&lt");
+        validatedMessage = validatedMessage.replace(/>/g, "&gt");
+        let theMessages = `<div class="outgoing-message single-msg-box">
+                                <div class="author-img">
+                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                </div>
+                                <div class="msg-n-meta clearfix">
+                                    <div class="msg-inner">
+                                        <p class="message">${validatedMessage}</p>
+                                        <span class="msg-time">${localDateAndTime}</span>
+                                    </div>
+                                </div>
+                            </div>`;
 
 
-    const chatBox = document.querySelector(".chat-box");
+        const chatBox = document.querySelector(".chat-box");
 
-    // if the first message so first remove the "No conversation yet" message
-    const noConversation = chatBox.innerHTML.match('no-conv-yet">');
-    if (noConversation) {
-        chatBox.innerHTML = "";
+        // if the first message so first remove the "No conversation yet" message
+        const noConversation = chatBox.innerHTML.match('no-conv-yet">');
+        if (noConversation) {
+            chatBox.innerHTML = "";
+        }
+
+        // append every single message
+        chatBox.insertAdjacentHTML("afterbegin", theMessages);
+
+
+
+
+        // self last message and last message send time update in chat list
+        const str = recipientId;
+        const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+        const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
+        //  HTML tag conflation resolve
+        let validatedMessage1 = lastMessage.replace(/</g, "&lt");
+        validatedMessage1 = validatedMessage1.replace(/>/g, "&gt");
+        document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${validatedMessage1}`;
+        document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
+        ////////////
+
+
+
+        const apiUrl = "/api/user/messenger/send-message";
+        fetch(apiUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({message, recipientId})
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            document.querySelector("#input-msg").value = "";
+        })
+        .catch (function(reason) {
+            console.log(reason);
+        });
     }
 
-    // append every single message
-    chatBox.insertAdjacentHTML("afterbegin", theMessages);
-
-    const recipientId = this.value;
-
-    const apiUrl = "/api/user/messenger/send-message";
-    fetch(apiUrl, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify({message, recipientId})
-    })
-    .then((res) => res.json())
-    .then((data) => {
-        document.querySelector("#input-msg").value = "";
-    })
-
 }
-
+const msgSentBtn = document.querySelector("#msg-sent-btn");
 msgSentBtn.addEventListener("click", sendMessage);
 
 
@@ -431,9 +476,9 @@ function socketEvent() {
     // socket.io messages Listener at client
     const sEventNsme = mySelfId+"message";
     socket.on(sEventNsme, function(data) {
-        console.log("Socket event Refresh")
         const recipientId = document.querySelector("#msg-sent-btn").value;
-
+ 
+        // Message update real time in viewed conversion
         if (String(recipientId) === String(data.sender)) {
             // Time convert to client local (Whole Date and time)
             const msgSendTime = data.msgSendTime;
@@ -463,6 +508,23 @@ function socketEvent() {
             const chatBox = document.querySelector(".chat-box");
             chatBox.insertAdjacentHTML("afterbegin", theMessages);
         }
+        
+
+        // last message and last message send time update in chat list
+        const chatList = document.querySelector(".chat-list");
+        const exist = chatList.innerHTML.match(data.sender);
+        if (exist) {
+            const str = data.sender;
+            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+            const lastMessage = data.message.length > 30 ? `${data.message.slice(0, 30)}...` : data.message;
+            //  HTML tag conflation resolve
+            const rawMessage = lastMessage;
+            let validatedMessage = rawMessage.replace(/</g, "&lt");
+            validatedMessage = validatedMessage.replace(/>/g, "&gt");
+            document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = validatedMessage;
+            document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
+        }
+
     });
 
 
@@ -599,13 +661,10 @@ function socketEvent() {
                         oppositePartnerInactiveTime.innerText = inactiveTime;
                         document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
                     }
-                }, 60000)
-                
+                }, 60000);
             }
         }
-
     })
-
 
 }
 window.addEventListener("load", socketEvent);
@@ -633,6 +692,9 @@ function typingMessage() {
     .then((data) => {
         
     })
+    .catch (function(reason) {
+        console.log(reason);
+     });
 }
 document.querySelector("#input-msg").onkeyup = typingMessage;
 

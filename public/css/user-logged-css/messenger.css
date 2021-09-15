@@ -147,7 +147,7 @@ body {
 }
 
 .sections {
-    background-color: rgb(86, 202, 231);
+    background-color: rgb(255, 255, 255);
     height: 100%;
 }
 
@@ -233,7 +233,6 @@ body {
 }
 
 .sections .container .messenger-container .chat-list-left-sidebar .search-users i {
-    cursor: pointer;
     font-size: 20px;
     padding: 14px;
     position: absolute;
@@ -307,7 +306,7 @@ body {
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user {
     overflow: hidden;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     padding: 10px 15px;
     border-bottom: 1px solid rgb(82 86 86);
     position: relative;
@@ -685,7 +684,7 @@ body {
     justify-content: space-between;
     align-items: center;
     height: 65px;
-    padding: 0 20px;
+    padding: 0 5px;
     position: absolute;
     bottom: 0;
     width: 100%;
