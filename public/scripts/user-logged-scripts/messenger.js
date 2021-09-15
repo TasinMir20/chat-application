@@ -155,7 +155,7 @@ window.addEventListener("load", chatList);
 
 // chatList() function in Interval to refresh user online offline time
 setInterval(() => {
-    // chatList();
+    chatList();
 }, 60000);
 
 
