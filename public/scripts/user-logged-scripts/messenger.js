@@ -426,6 +426,8 @@ function sendMessage(event) {
         // append every single message
         chatBox.insertAdjacentHTML("afterbegin", theMessages);
 
+        // Scroll bottom chat box when append message in chat box
+        chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
 
 
 
@@ -507,6 +509,10 @@ function socketEvent() {
 
             const chatBox = document.querySelector(".chat-box");
             chatBox.insertAdjacentHTML("afterbegin", theMessages);
+
+
+            // Scroll bottom chat box when append message in chat box
+            chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
         }
         
 

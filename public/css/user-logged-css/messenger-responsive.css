@@ -110,14 +110,3 @@
 
 }
 
-
-
-
-@media all and (max-height: 660px) {
-    /* chat-box */
-    .sections .container .messenger-container .messages-right-sidebar .chat-box {
-        height: 80.3%;
-    }
-
-
-}
