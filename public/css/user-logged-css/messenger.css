@@ -539,6 +539,7 @@ body {
     flex-direction: column-reverse;
     width: 100%;
     height: calc(100% - 130px);
+    scroll-behavior: smooth;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box::-webkit-scrollbar {
