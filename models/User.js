@@ -32,6 +32,7 @@ const userSchema = new Schema({
     },
     othersData: {
         userCreateTime: Number,
+        profilePic: String,
         lastOnlineTime: Number,
         emailVerified: Boolean,
         codeSendTimes: {

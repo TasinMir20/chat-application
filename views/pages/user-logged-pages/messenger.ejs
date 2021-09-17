@@ -19,7 +19,7 @@
                     <div class="self-profile">
                         <div class="wrap">
                             <div class="img-wrap">
-                                <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                <img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt="">
                             </div>
                             <input id="user-selft-id" type="text" value="<%= userData._id %>" style="display: none">
                             <p class="self-name"><%= `${userData.firstName} ${userData.lastName}`%></p>
@@ -90,7 +90,7 @@
                             <i class="fas fa-arrow-left"></i>
                         </div>
                         <div class="img-wrap">
-                            <img src="/images/users/profile-photo/man2.jpg" alt="">
+                            <img class="pic" src="/images/users/profile-photo/man2.jpg" alt="">
                             <i class="fas fa-circle"></i>
                             <span class="hide"></span>
                         </div>

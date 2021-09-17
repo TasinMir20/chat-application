@@ -126,7 +126,7 @@ function chatList() {
                 chatListHTML += `
                         <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
                             <div class="img-wrap">
-                                <img src="/images/users/profile-photo/man2.jpg" alt="">
+                                <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
                                 <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
                                 <span class="${inactiveTimeVisibility}">${inactiveTime}</span>
                             </div>
@@ -239,8 +239,9 @@ function fetchUserChats(id, isItSearch) {
             document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
             document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
-            // chat header name update when switched to other chat
+            // chat header name and profile pic update when switched to other chat
             document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
+            document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
 
             
             // chat header user or current chatting partner active-inactive update when switched to other chat
@@ -292,6 +293,7 @@ function fetchUserChats(id, isItSearch) {
 
             // chat list message update to front when switched to other chat
             if (data.conversations) {
+                const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
                 let conversations = data.conversations;
                 let messages = "";
@@ -306,11 +308,14 @@ function fetchUserChats(id, isItSearch) {
 
                     // defining this message incoming or outgoing
                     let incomingOrOutgoing = "";
+                    let messageAuthorPic = "";
                     if (String(conversations[i].sender) === String(mySelfId)) {
                         incomingOrOutgoing = "outgoing-message";
+                        messageAuthorPic = selfProfilePic;
                         
                     } else {
                         incomingOrOutgoing = "incoming-message";
+                        messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
                     }
                     
                     //  HTML tag conflation resolve
@@ -321,7 +326,7 @@ function fetchUserChats(id, isItSearch) {
                     // the message
                     messages += `<div class="${incomingOrOutgoing} single-msg-box">
                                     <div class="author-img">
-                                        <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                        <img src="${messageAuthorPic}" alt="">
                                     </div>
                                     <div class="msg-n-meta clearfix">
                                         <div class="msg-inner">
@@ -390,6 +395,7 @@ function sendMessage(event) {
 
     const message = document.querySelector("#input-msg").value.trim();
     if (message) {
+        const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
         const recipientId = this.value;
         // Local Time (Whole Date and time)
         const msgDate = new Date();
@@ -404,7 +410,7 @@ function sendMessage(event) {
         validatedMessage = validatedMessage.replace(/>/g, "&gt");
         let theMessages = `<div class="outgoing-message single-msg-box">
                                 <div class="author-img">
-                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                    <img src="${selfProfilePic}" alt="">
                                 </div>
                                 <div class="msg-n-meta clearfix">
                                     <div class="msg-inner">
@@ -482,6 +488,8 @@ function socketEvent() {
  
         // Message update real time in viewed conversion
         if (String(recipientId) === String(data.sender)) {
+            const oppositeAuthorPic = document.querySelector(".messages-right-sidebar .chatbox-header .img-wrap .pic").src;
+
             // Time convert to client local (Whole Date and time)
             const msgSendTime = data.msgSendTime;
             const msgDate = new Date(msgSendTime * 1000);
@@ -497,7 +505,7 @@ function socketEvent() {
 
             let theMessages = `<div class="incoming-message single-msg-box">
                                 <div class="author-img">
-                                    <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                    <img src="${oppositeAuthorPic}" alt="">
                                 </div>
                                 <div class="msg-n-meta clearfix">
                                     <div class="msg-inner">

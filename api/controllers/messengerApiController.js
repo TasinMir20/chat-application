@@ -46,6 +46,7 @@ exports.chatList_ApiController = async (req, res, next) => {
                             _id: chatListUserSingle._id,
                             firstName: chatListUserSingle.firstName,
                             lastName: chatListUserSingle.lastName,
+                            profilePic: chatListUserSingle.othersData.profilePic,
                             lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime,
                             lastMessage,
                             lastMessageTime: involvedConversations[i].conversations[totalMessagesLen - 1].msgSendTime
@@ -96,7 +97,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
                 for (var i = 0; i < findUserToConversation.length; i++) {
                     foundUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
-                                        <img src="/images/users/profile-photo/man3.jpg" alt="">
+                                        <img src="/images/users/profile-photo/${findUserToConversation[i].othersData.profilePic}" alt="">
                                     </div>
                                     <p>${findUserToConversation[i].firstName} ${findUserToConversation[i].lastName}</p>
                                 </div>`;
@@ -147,7 +148,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 console.log("Not found conversations");
             }
 
-            // egt recipient name
+            // recipient data
             let participantData = await User.findOne({_id: participant});
             if (participantData) {
                 
@@ -160,7 +161,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     var newChatToAppendChatList = 
                         `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${participantData._id}')">
                             <div class="img-wrap">
-                                <img src="/images/users/profile-photo/man2.jpg" alt="">
+                                <img src="/images/users/profile-photo/${participantData.othersData.profilePic}" alt="">
                             </div>
                             <div class="meta">
                                 <p class="name">${participantData.firstName} ${participantData.lastName}</p>
@@ -171,10 +172,11 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 }
                 var fullName = `${participantData.firstName} ${participantData.lastName}`;
                 var lastOnlineTime = participantData.othersData.lastOnlineTime;
+                var profilePic = participantData.othersData.profilePic;
             }
         }
         
-        return res.json({conversations, fullName, lastOnlineTime, newChatToAppendChatList});
+        return res.json({conversations, fullName, profilePic, lastOnlineTime, newChatToAppendChatList});
 
     } catch (err) {
         next(err);

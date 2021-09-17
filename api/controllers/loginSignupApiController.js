@@ -112,6 +112,7 @@ exports.signupApiController = async (req, res, next) => {
                 password: encryptedPassword,
                 othersData: {
                     userCreateTime: currentEpochTime,
+                    profilePic: "default_profile_pic.png",
                     lastOnlineTime: 1,
                     emailVerified: false,
                     codeSendTimes: {
