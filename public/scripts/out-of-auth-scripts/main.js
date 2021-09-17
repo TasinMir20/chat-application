@@ -78,7 +78,12 @@ function regApiRequest(event) {
 
     if (allFilled) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
 
         const dataObj = { firstName, lastName, regEmail, newPass, confirmPass };
@@ -232,7 +237,12 @@ function loginApiRequest(event) {
 
     if (allFilled) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
         const dataObj = { emailOrUsername, password, keepLogged };
 
@@ -336,7 +346,12 @@ function forgetPassEmail_ApiRequest(event) {
     const userOrEmail = document.querySelector("#forget-email-input").value;
     if (userOrEmail) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
         
         const dataObj = { userOrEmail };
         const apiUrl = "/api/ls/forget-email-submit";
@@ -408,7 +423,13 @@ function forgetPassCode_ApiRequest(event) {
 
     if (userEnteredCode && itsCode) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
+
 
         const dataObj = { userEnteredCode };
         const apiUrl = "/api/ls/forget-code-submit";
@@ -473,7 +494,12 @@ function forgetPassResendCode_ApiRequest(event) {
     event.preventDefault();
 
     // loading animation showing
-    document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+    document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
     const apiUrl = "/api/ls/forget-code-resend";
     fetch(apiUrl, {
@@ -591,7 +617,12 @@ function forgetPassPassword_ApiRequest() {
 
     if (forgetNewPass && forgetConfirmNewPass) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
         const dataObj = { forgetNewPass,  forgetConfirmNewPass };
         const apiUrl = "/api/ls/forget-password-submit";

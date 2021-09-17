@@ -714,3 +714,22 @@ document.querySelector("#input-msg").onkeyup = typingMessage;
 
 
 
+
+function logOut() {
+    const apiUrl = "/api/user/logout";
+    fetch(apiUrl, {
+        method: "POST"
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        if(data.logout) {
+            location.replace("/account");
+        } else {
+            location.reload();
+        }
+    })
+    .catch (function(reason) {
+        console.log(reason);
+     });
+}
+document.querySelector("#logout").onclick = logOut;

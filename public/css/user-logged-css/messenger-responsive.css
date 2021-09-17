@@ -18,7 +18,7 @@
 
     /* self profile */
     .sections .container .messenger-container .chat-list-left-sidebar .self-profile {
-        padding: 16px 0 16px 25px;
+        padding: 16px 0 16px 20px;
     }
 
 
@@ -31,6 +31,11 @@
     .sections .container .messenger-container .chat-list-left-sidebar .search-users input {
         font-size: 13px;
     }
+
+    .sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .self-name {
+        padding-left: 12px;
+    }
+
 
     .sections .container .messenger-container .chat-list-left-sidebar .search-users i {
         font-size: 16px;

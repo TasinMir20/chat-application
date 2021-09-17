@@ -11,7 +11,12 @@ function  emailVerify_ApiRequest(event) {
 
     if (userEnteredCode && itsCode) {
         // loading animation showing
-        document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+        document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
         const dataObj = { userEnteredCode };
         const apiUrl = "/api/user/email-verification";
@@ -79,7 +84,12 @@ function emailVerifyResendCode_ApiRequest(event) {
     event.preventDefault();
 
     // loading animation showing
-    document.querySelector("#load-animation").innerHTML = '<div class="load-bg"><div class="loading"></div></div>';
+    document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
 
     const apiUrl = "/api/user/email-verification-code-resend";
     fetch(apiUrl, {

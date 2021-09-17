@@ -12,7 +12,7 @@ exports.chatList_ApiController = async (req, res, next) => {
         const userData = req.userData;
 
         // find involved Conversations
-        const involvedConversations = await Conversation.find({ 
+        const involvedConversations = await Conversation.find({
             $or: [
                 { creatorObjId: userData._id },
                 { participantObjId: userData._id }

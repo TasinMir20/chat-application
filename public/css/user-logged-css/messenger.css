@@ -188,9 +188,10 @@ body {
 
 .sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
 .sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .img-wrap {
     width: 58px;
@@ -210,6 +211,35 @@ body {
     padding: 20px 0 20px 20px;
 }
 
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap #logout {
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: normal;
+    border: 1px solid rgb(199, 197, 197);
+    border-radius: 3px;
+    color: rgb(255, 255, 255);
+    background-color: #32465a;
+    border-color: rgb(118 117 117 / 59%);
+}
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap #logout:hover {
+    color: #333;
+    background-color: #ffffff;
+    border-color: #adadad;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap #logout i {
+    font-size: 16px;
+    margin-right: 3px;
+}
+
+
 /* search user */
 .sections .container .messenger-container .chat-list-left-sidebar .search-users {
     position: relative;
@@ -219,7 +249,7 @@ body {
     font-size: 15px;
     width: 100%;
     border: none;
-    background: #32465a;
+    background-color: #394c5e;
     color: #f5f5f5;
 }
 
@@ -308,7 +338,7 @@ body {
     display: flex;
     flex-wrap: nowrap;
     padding: 10px 15px;
-    border-bottom: 1px solid rgb(82 86 86);
+    border-bottom: 1px solid rgb(118 117 117 / 30%);
     position: relative;
     cursor: pointer;
     user-select: none;

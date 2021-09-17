@@ -20,7 +20,6 @@ routers.use("/account", notLogin, loginSignupRoutes);
 
 // User after logged routes
 routers.use("/user", isLogin, usersRoutes);
-routers.all("/logout", (req, res) => res.redirect("/api/user/logout")); // just redirect to main logout path
 
  
 
