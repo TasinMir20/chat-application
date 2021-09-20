@@ -4,7 +4,7 @@ const conversationSchema = new Schema({
     conversations: [
         {   
             message: String,
-            imgUrl: String,
+            attachmentName: String,
             sender: String,
             receiver: String,
             msgSendTime: Number

@@ -7,7 +7,7 @@ messenger.post("/search-users", searchUsersToChat_ApiController);
 messenger.post("/fetch-chats", fetchUserChats_ApiController);
 messenger.post("/send-message", messengerFileUpload, sendMessage_ApiController);
 messenger.post("/typing", typingMessage_ApiController);
-messenger.get("/images/:imag_name", messengerPrivateImages_ApiController);
+messenger.get("/files/:attachment_name", messengerPrivateImages_ApiController);
 
 
 
