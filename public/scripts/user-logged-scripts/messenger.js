@@ -208,6 +208,7 @@ document.querySelector("#search").onkeyup = searchUsersToChat;
 
 let incre = 0;
 function fetchUserChats(id, isItSearch) {
+    const participant = id;
 
     if (window.innerWidth < 770) {
         // START -- when screen less than 768px -> left side user chat list users hide and show chat conversions
@@ -217,9 +218,9 @@ function fetchUserChats(id, isItSearch) {
     }
 
     document.querySelector(".search-results").innerHTML = "";
-    document.querySelector("#msg-sent-btn").value = id;
+    document.querySelector("#msg-sent-btn").value = participant;
 
-    if (id) {
+    if (participant) {
         const mySelfId = document.querySelector("#user-selft-id").value;
 
         const apiUrl = "/api/user/messenger/fetch-chats";
@@ -229,7 +230,7 @@ function fetchUserChats(id, isItSearch) {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({participant: id, isItSearch})
+            body: JSON.stringify({participant, isItSearch})
         })
         .then((res) => res.json())
         .then((data) => {
@@ -325,16 +326,19 @@ function fetchUserChats(id, isItSearch) {
 
                     // the message
                     messages += `<div class="${incomingOrOutgoing} single-msg-box">
-                                    <div class="author-img">
-                                        <img src="${messageAuthorPic}" alt="">
+                                <div class="author-img">
+                                    <img src="${messageAuthorPic}" alt="">
+                                </div>
+                                <div class="msg-n-meta clearfix">
+                                    <div class="msg-inner">
+                                        ${conversations[i].imgUrl ?
+                                            `<img src="/api/user/messenger/images/${conversations[i].imgUrl}?rsp=${participant}" />` :
+                                            `<p class="message">${validatedMessage}</p>`
+                                        }
+                                        <span class="msg-time">${localDateAndTime}</span>
                                     </div>
-                                    <div class="msg-n-meta clearfix">
-                                        <div class="msg-inner">
-                                            <p class="message">${validatedMessage}</p>
-                                            <span class="msg-time">${localDateAndTime}</span>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                </div>
+                            </div>`;
                 }
 
                 document.querySelector(".chat-box").innerHTML = messages;
@@ -352,7 +356,7 @@ function fetchUserChats(id, isItSearch) {
 
 
                     // the searched user already inserted or not in chat list
-                    const alreadyExist = chatList.innerHTML.match(id);
+                    const alreadyExist = chatList.innerHTML.match(participant);
                     if (!alreadyExist) {
                         chatList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatList);
                     }
@@ -362,7 +366,7 @@ function fetchUserChats(id, isItSearch) {
             }
 
             // in chat list current conversation user background color change as selected
-            const str = id;
+            const str = participant;
             const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
             const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
 
@@ -393,10 +397,13 @@ function fetchUserChats(id, isItSearch) {
 function sendMessage(event) {
     event.preventDefault();
 
+    const recipientId = this.value;
+    const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
+
     const message = document.querySelector("#input-msg").value.trim();
-    if (message) {
-        const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
-        const recipientId = this.value;
+    const fileChosen = document.querySelector("#file-input");
+
+    if (message || fileChosen.files.length > 0) {
         // Local Time (Whole Date and time)
         const msgDate = new Date();
         const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
@@ -404,68 +411,101 @@ function sendMessage(event) {
         const localDateAndTime = `${date} at ${time}`;
 
 
-        
+        //////////////////////////////////////////
+        //////////////////////////////////////////
         const rawMessage = message;
-        let validatedMessage = rawMessage.replace(/</g, "&lt");
-        validatedMessage = validatedMessage.replace(/>/g, "&gt");
-        let theMessages = `<div class="outgoing-message single-msg-box">
-                                <div class="author-img">
-                                    <img src="${selfProfilePic}" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        <p class="message">${validatedMessage}</p>
-                                        <span class="msg-time">${localDateAndTime}</span>
+            let validatedMessage = rawMessage.replace(/</g, "&lt");
+            validatedMessage = validatedMessage.replace(/>/g, "&gt");
+            let theMessages = `<div class="outgoing-message single-msg-box">
+                                    <div class="author-img">
+                                        <img src="${selfProfilePic}" alt="">
                                     </div>
-                                </div>
-                            </div>`;
+                                    <div class="msg-n-meta clearfix">
+                                        <div class="msg-inner">
+                                            ${fileChosen.files.length > 0 ?
+                                                `<img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif" />` :
+                                                `<p class="message">${validatedMessage}</p>`
+                                            }
+                                            <span class="msg-time">${localDateAndTime}</span>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+            const chatBox = document.querySelector(".chat-box");
+
+            // if the first message so first remove the "No conversation yet" message
+            const noConversation = chatBox.innerHTML.match('no-conv-yet">');
+            if (noConversation) {
+                chatBox.innerHTML = "";
+            }
+
+            // append every single message
+            chatBox.insertAdjacentHTML("afterbegin", theMessages);
+
+            // Scroll bottom chat box when append message in chat box
+            chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
 
 
-        const chatBox = document.querySelector(".chat-box");
 
-        // if the first message so first remove the "No conversation yet" message
-        const noConversation = chatBox.innerHTML.match('no-conv-yet">');
-        if (noConversation) {
-            chatBox.innerHTML = "";
+            // self last message and last message send time update in chat list
+            const str = recipientId;
+            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+            const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
+            //  HTML tag conflation resolve
+            let validatedMessage1 = lastMessage.replace(/</g, "&lt");
+            validatedMessage1 = validatedMessage1.replace(/>/g, "&gt");
+            document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${fileChosen.files.length > 0 ? "Attachment" : validatedMessage1}`;
+            document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
+
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+
+
+        if (fileChosen.files.length > 0) {
+            const messageForm = document.querySelector(".msg-input-form");
+            const formData = new FormData(messageForm);
+            formData.append('theFile', fileChosen);
+            formData.append('recipientId', recipientId);
+
+            fileChosen.value = fileChosen.defaultValue;
+            // file send request to the server
+            const apiUrl = "/api/user/messenger/send-message";
+            fetch(apiUrl, {
+                method: "POST",
+                body: formData,
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                
+                const url = `/api/user/messenger/images/${data.imgSendResBack}?rsp=${recipientId}`;
+                document.querySelector(".chat-box .outgoing-message:first-child .msg-n-meta .msg-inner img").src = url;
+    
+
+            })
+            .catch (function(reason) {
+                console.log(reason);
+            });
+
+        } else if (message) {
+
+            const apiUrl = "/api/user/messenger/send-message";
+            fetch(apiUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({message, recipientId})
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                document.querySelector("#input-msg").value = "";
+            })
+            .catch (function(reason) {
+                console.log(reason);
+            });
         }
 
-        // append every single message
-        chatBox.insertAdjacentHTML("afterbegin", theMessages);
-
-        // Scroll bottom chat box when append message in chat box
-        chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
-
-
-
-        // self last message and last message send time update in chat list
-        const str = recipientId;
-        const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
-        const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
-        //  HTML tag conflation resolve
-        let validatedMessage1 = lastMessage.replace(/</g, "&lt");
-        validatedMessage1 = validatedMessage1.replace(/>/g, "&gt");
-        document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${validatedMessage1}`;
-        document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
-        ////////////
-
-
-
-        const apiUrl = "/api/user/messenger/send-message";
-        fetch(apiUrl, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: JSON.stringify({message, recipientId})
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            document.querySelector("#input-msg").value = "";
-        })
-        .catch (function(reason) {
-            console.log(reason);
-        });
     }
 
 }
@@ -509,13 +549,25 @@ function socketEvent() {
                                 </div>
                                 <div class="msg-n-meta clearfix">
                                     <div class="msg-inner">
-                                        <p class="message">${validatedMessage}</p>
+                                        ${data.imgUrl ?
+                                            `<img src="/api/user/messenger/images/${data.imgUrl}?rsp=${recipientId}" />` :
+                                            `<p class="message">${validatedMessage}</p>`
+                                        }
                                         <span class="msg-time">${localDateAndTime}</span>
                                     </div>
                                 </div>
                             </div>`;
 
             const chatBox = document.querySelector(".chat-box");
+
+            // if the first message so first remove the "No conversation yet" message
+            const noConversation = chatBox.innerHTML.match('no-conv-yet">');
+            if (noConversation) {
+                chatBox.innerHTML = "";
+            }
+
+
+            // append every single message
             chatBox.insertAdjacentHTML("afterbegin", theMessages);
 
 
@@ -536,6 +588,7 @@ function socketEvent() {
             let validatedMessage = rawMessage.replace(/</g, "&lt");
             validatedMessage = validatedMessage.replace(/>/g, "&gt");
             document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = validatedMessage;
+            document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `${data.imgUrl ? "Attachment" : validatedMessage}`;
             document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
         }
 

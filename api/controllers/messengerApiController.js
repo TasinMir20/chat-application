@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require("fs");
 const mongoose = require('mongoose'); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
 
 const User = require("../../models/User");
@@ -38,9 +40,10 @@ exports.chatList_ApiController = async (req, res, next) => {
                         const totalMessagesLen = involvedConversations[i].conversations.length;
                         const sender = involvedConversations[i].conversations[totalMessagesLen - 1].sender;
                         const lastMessageFull = involvedConversations[i].conversations[totalMessagesLen - 1].message;
-                        let lastMessage = lastMessageFull.length > 30 ? `${lastMessageFull.slice(0, 30)}...` : lastMessageFull;
+                        const messageImgName = involvedConversations[i].conversations[totalMessagesLen - 1].imgUrl;
+                        const lastMsg = messageImgName ? "Attachment" : lastMessageFull;
+                        let lastMessage = lastMsg.length > 30 ? `${lastMsg.slice(0, 30)}...` : lastMsg;
                         lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
-                        
 
                         userLimitData = {
                             _id: chatListUserSingle._id,
@@ -143,7 +146,6 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 conversations = ConversationFind.conversations;
                 conversations.reverse();
                 
-    
             } else {
                 console.log("Not found conversations");
             }
@@ -190,10 +192,15 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 
 
 exports.sendMessage_ApiController = async (req, res, next) => {
-
-    const {message, recipientId} = req.body;
-
+        let {message, recipientId} = req.body;
     try {
+
+        let imgUrl = "";
+        if (req.files) {
+            message = "";
+            imgUrl = String(req.files[0].filename);
+        }
+
 
         const userData = req.userData;
 
@@ -210,7 +217,7 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             
             const messageBody = {
                 message,
-                imgUrl: "img.png",
+                imgUrl,
                 sender: userData._id,
                 receiver: recipientId,
                 msgSendTime: currentEpochTime
@@ -253,7 +260,7 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             // socket.io messages Event at server
             global.io.emit(sEventNsme, messageBody);
 
-            return res.json({send: sent});
+            return res.json({send: sent, imgSendResBack: imgUrl});
 
         } else {
             console.log("participant not exist");
@@ -279,4 +286,50 @@ exports.typingMessage_ApiController = (req, res, next) => {
         next(err);
     }
 
+}
+
+
+exports.messengerPrivateImages_ApiController = async (req, res, next) => {
+    
+    try {
+        const participant = req.query.rsp
+        const userData = req.userData;
+
+        const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
+
+        if (isValidObjId) {
+
+            const ConversationFind = await Conversation.findOne({ 
+                $or: [
+                    { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
+                    { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
+                ]});
+        
+            if (ConversationFind) {
+                // const imagesIsPermitted = await Conversation.findOne({conversations: {$elemMatch: {imgUrl: req.params.imag_name}}});
+                const imagesIsPermitted = await Conversation.findOne({
+                    $and: [
+                    {_id: ConversationFind._id},
+                    {conversations: {$elemMatch: {imgUrl: req.params.imag_name}}}
+                ]});
+
+
+                if (imagesIsPermitted) {
+
+                    const requestedPath = `${path.resolve('./')}/private/messenger/images/${req.params.imag_name}`;
+                    if (fs.existsSync(requestedPath)) {
+                        return res.sendFile(requestedPath);
+                    }
+                }
+
+                
+            }
+
+        }
+
+        return res.sendFile(`${path.resolve('./')}/private/messenger/not-exist.svg`);
+
+    } catch (err) {
+        console.log(err)
+    }
 }
