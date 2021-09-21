@@ -27,15 +27,30 @@ exports.chatList_ApiController = async (req, res, next) => {
                 for (let i = 0; i < involvedConversations.length; i++) {
 
                     let chatListUserSingle = "";
+                    let id = "";
                     if (String(involvedConversations[i].creatorObjId) === String(userData._id)) {
-                        const id = involvedConversations[i].participantObjId;
+                        id = involvedConversations[i].participantObjId;
                         chatListUserSingle = await User.findOne({_id: id});
                     } else {
-                        const id = involvedConversations[i].creatorObjId;
+                        id = involvedConversations[i].creatorObjId;
                         chatListUserSingle = await User.findOne({_id: id});
                     }
 
-                    let userLimitData;
+                    // if user does not exist
+                    if (!chatListUserSingle) {
+                        chatListUserSingle = { 
+                            _id: id,
+                            firstName: 'User not',
+                            lastName: 'Exist',
+                            othersData: {
+                                profilePic: 'not-exist_profile_pic.jpg',
+                                lastOnlineTime: 0,
+                            }
+                        }
+                    }
+
+
+                    let userLimitedData;
                     if (chatListUserSingle) {
                         const totalMessagesLen = involvedConversations[i].conversations.length;
                         const sender = involvedConversations[i].conversations[totalMessagesLen - 1].sender;
@@ -45,7 +60,7 @@ exports.chatList_ApiController = async (req, res, next) => {
                         let lastMessage = lastMsg.length > 30 ? `${lastMsg.slice(0, 30)}...` : lastMsg;
                         lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
 
-                        userLimitData = {
+                        userLimitedData = {
                             _id: chatListUserSingle._id,
                             firstName: chatListUserSingle.firstName,
                             lastName: chatListUserSingle.lastName,
@@ -56,7 +71,7 @@ exports.chatList_ApiController = async (req, res, next) => {
                         };
                     }
 
-                    chatListUsers[i] = userLimitData;
+                    chatListUsers[i] = userLimitedData;
 
                 }
             } else {
@@ -152,6 +167,20 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 
             // recipient data
             let participantData = await User.findOne({_id: participant});
+
+            // if user does not exist
+            if (!participantData) {
+                participantData = { 
+                    firstName: 'User not',
+                    lastName: 'Exist',
+                    othersData: {
+                        profilePic: 'not-exist_profile_pic.jpg',
+                        lastOnlineTime: 0,
+                    }
+                }
+            }
+
+
             if (participantData) {
                 
                 // after search new user append in chat list
@@ -263,7 +292,7 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             return res.json({send: sent, imgSendResBack: attachmentName});
 
         } else {
-            console.log("participant not exist");
+            console.log("participant does not exist");
         }
 
     } catch (err) {

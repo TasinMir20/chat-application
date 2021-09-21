@@ -63,6 +63,9 @@ function chatList() {
                 if (chatListUsers[i].lastOnlineTime === 1) {
                     inactiveTimeVisibility = "hide";
                     circleColor = 'green';
+                } else if (chatListUsers[i].lastOnlineTime === 0) {
+                    inactiveTimeVisibility = "hide";
+                    circleVisibility = "hide";
                 } else {
                     // last online time
                     const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
@@ -245,12 +248,23 @@ function fetchUserChats(id, isItSearch) {
             document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
 
             
+            
+            document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
+            document.querySelector(".unavailable-to-sent-msg").style = "display: none";
             // chat header user or current chatting partner active-inactive update when switched to other chat
             const element = document.querySelector(".chatbox-header .img-wrap i");
             if (data.lastOnlineTime === 1) {
                 element.classList.remove("hide", "red", "yellow");
                 element.classList.add("green");
                 document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
+            } else if (data.lastOnlineTime === 0) {
+                element.classList.remove("green", "red", "yellow");
+                element.classList.add("hide");
+                document.querySelector(".messages-right-sidebar .act").innerText = "Unavailable";
+
+                // lastOnlineTime = 0 means user does not exist, if does not exist so message input form have to be hide
+                document.querySelector(".msg-form-wrap .msg-input-form").classList.add("hide")
+                document.querySelector(".unavailable-to-sent-msg").style = "display: block";
             } else {
                 const currentEpochTime = Math.floor(new Date().getTime()/1000);
                 const seconds = currentEpochTime - data.lastOnlineTime;

@@ -132,16 +132,23 @@
                     
 
                     </div>
-                    <form action="" class="msg-input-form" method="post" enctype="multipart/form-data">
-                        <div class="input-msg-cont">
-                            <input id="input-msg" type="text" placeholder="Write your message...">
+                    <div class="msg-form-wrap">
+                        <form action="" class="msg-input-form" method="post" enctype="multipart/form-data">
+                            <div class="input-msg-cont">
+                                <input id="input-msg" type="text" placeholder="Write your message...">
+                            </div>
+                            <div class="input-file-cont">
+                                <i class="fas fa-paperclip"></i>
+                                <input type="file" id="file-input" name="photo">
+                            </div>
+                            <button id="msg-sent-btn"><i class="fas fa-paper-plane"></i></button>
+                        </form>
+                        <div class="unavailable-to-sent-msg">
+                            <div class="wrap">
+                                <p>You unable to chat with this person!</p>
+                            </div>
                         </div>
-                        <div class="input-file-cont">
-                            <i class="fas fa-paperclip"></i>
-                            <input type="file" id="file-input" name="photo">
-                        </div>
-                        <button id="msg-sent-btn"><i class="fas fa-paper-plane"></i></button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

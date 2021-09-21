@@ -113,7 +113,7 @@ exports.signupApiController = async (req, res, next) => {
                 othersData: {
                     userCreateTime: currentEpochTime,
                     profilePic: "default_profile_pic.png",
-                    lastOnlineTime: 1,
+                    lastOnlineTime: currentEpochTime,
                     emailVerified: false,
                     codeSendTimes: {
                         email_verify_code: 1,
