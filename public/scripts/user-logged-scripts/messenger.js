@@ -311,7 +311,7 @@ function fetchUserChats(id, isItSearch) {
                 const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
                 let conversations = data.conversations;
-                let messages = "";
+                let eachMessageHTMLBody = "";
                 for (let i = 0; i < conversations.length; i++) {
                     // Time convert to client local (Whole Date and time)
                     const msgSendTime = conversations[i].msgSendTime;
@@ -332,30 +332,25 @@ function fetchUserChats(id, isItSearch) {
                         incomingOrOutgoing = "incoming-message";
                         messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
                     }
-                    
-                    //  HTML tag conflation resolve
-                    const rawMessage = conversations[i].message;
-                    let validatedMessage = rawMessage.replace(/</g, "&lt");
-                    validatedMessage = validatedMessage.replace(/>/g, "&gt");
 
-                    // the message
-                    messages += `<div class="${incomingOrOutgoing} single-msg-box">
-                                <div class="author-img">
-                                    <img src="${messageAuthorPic}" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        ${conversations[i].attachmentName ?
-                                            `<img src="/api/user/messenger/files/${conversations[i].attachmentName}?rsp=${participant}" />` :
-                                            `<p class="message">${validatedMessage}</p>`
-                                        }
-                                        <span class="msg-time">${localDateAndTime}</span>
-                                    </div>
-                                </div>
-                            </div>`;
+
+                    const cssClass = conversations[i].attachmentName ? "attachment-style" : "";
+                    const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
+                    // the message html structure
+                    eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
+                                        <div class="author-img">
+                                            <img src="${messageAuthorPic}" alt="">
+                                        </div>
+                                        <div class="msg-n-meta clearfix">
+                                            <div class="msg-inner ${cssClass}">
+                                                ${theMessage}
+                                            </div>
+                                            <span class="msg-time">${localDateAndTime}</span>
+                                        </div>
+                                    </div>`;
                 }
 
-                document.querySelector(".chat-box").innerHTML = messages;
+                document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
             } else {
                 document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
 
@@ -418,31 +413,37 @@ function sendMessage(event) {
     const fileChosen = document.querySelector("#file-input");
 
     if (message || fileChosen.files.length > 0) {
+        document.querySelector("#input-msg").value = "";
+
         // Local Time (Whole Date and time)
         const msgDate = new Date();
         const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
         const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
         const localDateAndTime = `${date} at ${time}`;
 
+
+        // My Self last message insert into the conversation
+        const cssClass = fileChosen.files.length > 0 ? "attachment-style" : "";
         const rawMessage = message;
         let validatedMessage = rawMessage.replace(/</g, "&lt");
         validatedMessage = validatedMessage.replace(/>/g, "&gt");
-        let theMessages = `<div class="outgoing-message single-msg-box">
-                                <div class="author-img">
-                                    <img src="${selfProfilePic}" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        ${fileChosen.files.length > 0 ?
-                                            `<img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif" />` :
-                                            `<p class="message">${validatedMessage}</p>`
-                                        }
-                                        <span class="msg-time">${localDateAndTime}</span>
-                                    </div>
-                                </div>
-                            </div>`;
+        let eachMessageHTMLBody = `<div class="outgoing-message single-msg-box">
+                                        <div class="author-img">
+                                            <img src="${selfProfilePic}" alt="">
+                                        </div>
+                                        <div class="msg-n-meta clearfix">
+                                            <div class="msg-inner ${cssClass}">
+                                                ${fileChosen.files.length > 0 ?
+                                                    `<img style="height: 80px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif" />` :
+                                                    `<p class="message">${validatedMessage}</p>`
+                                                }
+                                            </div>
+                                            <span class="msg-time">${localDateAndTime}</span>
+                                        </div>
+                                    </div>`;
 
         const chatBox = document.querySelector(".chat-box");
+
 
         // if the first message so first remove the "No conversation yet" message
         const noConversation = chatBox.innerHTML.match('no-conv-yet">');
@@ -450,8 +451,8 @@ function sendMessage(event) {
             chatBox.innerHTML = "";
         }
 
-        // append every single message
-        chatBox.insertAdjacentHTML("afterbegin", theMessages);
+        // append every single HTML message body
+        chatBox.insertAdjacentHTML("afterbegin", eachMessageHTMLBody);
 
         // Scroll bottom chat box when append message in chat box
         chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
@@ -472,14 +473,14 @@ function sendMessage(event) {
 
 
         if (fileChosen.files.length > 0) {
-            const loadingImg = document.querySelector(".chat-box .outgoing-message:first-child .msg-n-meta .msg-inner img");
+            // Attachment file message sending process
+            const insertAfterResponse = document.querySelector(".chat-box .outgoing-message:first-child .msg-n-meta .msg-inner");
             const messageForm = document.querySelector(".msg-input-form");
             const formData = new FormData(messageForm);
             formData.append('theFile', fileChosen);
             formData.append('recipientId', recipientId);
 
             fileChosen.value = fileChosen.defaultValue;
-
             const apiUrl = "/api/user/messenger/send-message";
             fetch(apiUrl, {
                 method: "POST",
@@ -487,15 +488,15 @@ function sendMessage(event) {
             })
             .then((res) => res.json())
             .then((data) => {
-                const url = `/api/user/messenger/files/${data.imgSendResBack}?rsp=${recipientId}`;
-                loadingImg.src = url;
+                const theMessage = messageHtmlInnerBody(data.attachmentName, "", recipientId);
+                insertAfterResponse.innerHTML = theMessage;
             })
             .catch (function(reason) {
                 console.log(reason);
             });
 
         } else if (message) {
-
+            // Text message sending process
             const apiUrl = "/api/user/messenger/send-message";
             fetch(apiUrl, {
                 headers: {
@@ -507,7 +508,7 @@ function sendMessage(event) {
             })
             .then((res) => res.json())
             .then((data) => {
-                document.querySelector("#input-msg").value = "";
+                
             })
             .catch (function(reason) {
                 console.log(reason);
@@ -546,25 +547,20 @@ function socketEvent() {
             const localDateAndTime = `${date} at ${time}`;
 
 
-            //  HTML tag conflation resolve
-            const rawMessage = data.message;
-            let validatedMessage = rawMessage.replace(/</g, "&lt");
-            validatedMessage = validatedMessage.replace(/>/g, "&gt");
-
-            let theMessages = `<div class="incoming-message single-msg-box">
-                                <div class="author-img">
-                                    <img src="${oppositeAuthorPic}" alt="">
-                                </div>
-                                <div class="msg-n-meta clearfix">
-                                    <div class="msg-inner">
-                                        ${data.attachmentName ?
-                                            `<img src="/api/user/messenger/files/${data.attachmentName}?rsp=${recipientId}" />` :
-                                            `<p class="message">${validatedMessage}</p>`
-                                        }
-                                        <span class="msg-time">${localDateAndTime}</span>
-                                    </div>
-                                </div>
-                            </div>`;
+            const cssClass = data.attachmentName ? "attachment-style" : "";
+            const theMessage = messageHtmlInnerBody(data.attachmentName, data.message, recipientId);
+            // the message html structure
+            let eachMessageHTMLBody = `<div class="incoming-message single-msg-box">
+                                            <div class="author-img">
+                                                <img src="${oppositeAuthorPic}" alt="">
+                                            </div>
+                                            <div class="msg-n-meta clearfix">
+                                                <div class="msg-inner ${cssClass}">
+                                                    ${theMessage}
+                                                </div>
+                                                <span class="msg-time">${localDateAndTime}</span>
+                                            </div>
+                                        </div>`;
 
             const chatBox = document.querySelector(".chat-box");
 
@@ -575,8 +571,8 @@ function socketEvent() {
             }
 
 
-            // append every single message
-            chatBox.insertAdjacentHTML("afterbegin", theMessages);
+            // append every single HTML message body
+            chatBox.insertAdjacentHTML("afterbegin", eachMessageHTMLBody);
 
 
             // Scroll bottom chat box when append message in chat box

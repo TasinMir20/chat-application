@@ -20,10 +20,7 @@ global.io = io;
 
 // socket io connect import
 const s = require('./utils/func/socketio');
-s()
-.then((a) => {
-    console.log(a);
-})
+s();
 
 
 dotenv.config(); // called dotenv

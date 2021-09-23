@@ -261,7 +261,6 @@ exports.sendMessage_ApiController = async (req, res, next) => {
                     { $push: { conversations: messageBody }
                 });
 
-                console.log(ConversationUpdate)
                 if (ConversationUpdate.nModified == 1) {
                     var sent = true;
                 }
@@ -288,8 +287,8 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             const sEventNsme = recipientId+"message";
             // socket.io messages Event at server
             global.io.emit(sEventNsme, messageBody);
-
-            return res.json({send: sent, imgSendResBack: attachmentName});
+            
+            return res.json({send: sent, attachmentName});
 
         } else {
             console.log("participant does not exist");

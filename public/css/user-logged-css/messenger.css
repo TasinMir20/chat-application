@@ -551,7 +551,6 @@ body {
 /* chat-box */
 .sections .container .messenger-container .messages-right-sidebar .chat-box {
     background-color: #e6eaea;
-    height: 83.3%;
     padding: 5px 10px 10px 10px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -593,22 +592,10 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta {
     width: 70%;
     font-size: 14px;
-}
-.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
-    display: inline-block;
-    padding: 7px 15px;
-    border-radius: 20px;
-    text-align: justify;
     position: relative;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message {
-    font-family: Montserrat-Regular;
-    word-break: break-word;
-}
-
-
-.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .msg-time {
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-time {
     font-family: Montserrat-Regular;
     font-size: 10px;
     text-align: center;
@@ -625,9 +612,58 @@ body {
     display: none;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner:hover .msg-time {
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta:hover .msg-time {
     display: block;
 }
+
+
+
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
+    overflow: hidden;
+    display: inline-block;
+    padding: 7px 15px;
+    border-radius: 20px;
+    text-align: left;
+}
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message {
+    font-family: Montserrat-Regular;
+    word-break: break-word;
+}
+
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner audio {
+    border-radius: 10px;
+}
+
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner audio, embed {
+    width: 700px;
+    max-width: 100%;
+}
+
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner embed {
+    height: 700px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner a {
+    display: block;
+    font-size: 50px;
+    text-align: center;
+    padding: 5px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner a:active {
+    color: black;
+}
+
 
 
 
@@ -644,16 +680,22 @@ body {
     margin-left: 7px;
 }
 
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-time {
+    left: 2%;
+}
+
 .sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner {
     background-color: #435f7a;
     color: #f5f5f5;
     float: left;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner .msg-time {
-    left: 2%;
-    
+.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner a {
+    background-color: #435f7a;
+    color: #f5f5f5;
+    border-radius: 3px;
 }
+
 
 
 
@@ -673,16 +715,20 @@ body {
     margin-right: 7px;
 }
 
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-time {
+    right: 2%;
+}
+
 .sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
     background-color: #f5f5f5;
     color: #32465a;
     float: right;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner .msg-time {
-    right: 2%;
+.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner a {
+    background-color: #f5f5f5;
+    color: #32465a;
 }
-
 
 
 
@@ -819,9 +865,3 @@ body {
         width: 100%;
     }
 }
-
-
-
-
-
-
