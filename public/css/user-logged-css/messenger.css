@@ -772,13 +772,14 @@ body {
     overflow: hidden;
 }
 .sections .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-msg-cont #input-msg {
-    padding: 14px 32px 14px 15px;
+    padding: 10px 0 0 15px;
     font-size: 17px;
     border: 1px solid #cecece;
     border-radius: 5px;
     color: #32465a;
     display: block;
     width: 100%;
+    resize: none;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-file-cont {

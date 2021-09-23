@@ -26,6 +26,46 @@ document.querySelector(".left-arrow i").onclick = chatListOfUserShowAndChatHide;
 
 
 
+// Start -> Reuseable function or component
+function messageHtmlInnerBody(attachment, textMessage, participant) {
+    // Text message or attachment
+    let attachmentTag = "";
+    let theMessage = "";
+    if (attachment) {
+        let attachmentName = attachment;
+        let extension = attachmentName.split('.').pop();
+        let attachmentPath = "/api/user/messenger/files/";
+        if (["jpg", "jpeg", "png", "gif", "tiff", "icon", "webp", "svg"].includes(extension)) {
+            attachmentTag = `<img src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
+
+        } else if (["mp3", "mpeg", "ogg", "wav", "m4a"].includes(extension)) {
+            attachmentTag = `<audio controls>
+                                <source src="${attachmentPath}${attachmentName}?rsp=${participant}" />
+                            </audio>`;
+        } else if (["pdf"].includes(extension)) {
+            attachmentTag = `<embed src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
+        } else {
+            attachmentTag = `<a target="_blank" class="fas fa-file-archive" title="click to download" href="${attachmentPath}${attachmentName}?rsp=${participant}"></a>`;
+        }
+
+        theMessage = attachmentTag;
+
+    } else {
+        //  HTML tag conflation resolve
+        const rawMessage = textMessage;
+        let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
+        // Line break or line ending replace with <br /> tag
+        validatedMessage = validatedMessage.replace(/\r\n/g, '<br />').replace(/[\r\n]/g, '<br />');
+        var textMessage = `<p class="message">${validatedMessage}</p>`;
+
+        theMessage = textMessage;
+    }
+
+    return theMessage;
+}
+// End -> Reuseable function or component
+
+
 
 /************************************************* API Function start form here to END ************************************/
 
@@ -122,8 +162,7 @@ function chatList() {
 
                 //  HTML tag conflation resolve
                 const rawMessage = chatListUsers[i].lastMessage;
-                let validatedMessage = rawMessage.replace(/</g, "&lt");
-                validatedMessage = validatedMessage.replace(/>/g, "&gt");
+                let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
 
 
                 chatListHTML += `
@@ -405,11 +444,17 @@ function fetchUserChats(id, isItSearch) {
 
 function sendMessage(event) {
     event.preventDefault();
+    
 
-    const recipientId = this.value;
+    const recipientId = document.querySelector("#msg-sent-btn").value;
     const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
-    const message = document.querySelector("#input-msg").value.trim();
+    const messageInput = document.querySelector("#input-msg");
+
+    // Keyboard keep appears on mobile after submit form
+    messageInput.focus();
+
+    const message = messageInput.value.replace(/  +/g, ' ').trim(); // multiple spaces replace with single space
     const fileChosen = document.querySelector("#file-input");
 
     if (message || fileChosen.files.length > 0) {
@@ -425,8 +470,9 @@ function sendMessage(event) {
         // My Self last message insert into the conversation
         const cssClass = fileChosen.files.length > 0 ? "attachment-style" : "";
         const rawMessage = message;
-        let validatedMessage = rawMessage.replace(/</g, "&lt");
-        validatedMessage = validatedMessage.replace(/>/g, "&gt");
+        let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
+        // Line break or line ending replace with <br /> tag
+        validatedMessage = validatedMessage.replace(/\r\n/g, '<br />').replace(/[\r\n]/g, '<br />');
         let eachMessageHTMLBody = `<div class="outgoing-message single-msg-box">
                                         <div class="author-img">
                                             <img src="${selfProfilePic}" alt="">
@@ -434,7 +480,7 @@ function sendMessage(event) {
                                         <div class="msg-n-meta clearfix">
                                             <div class="msg-inner ${cssClass}">
                                                 ${fileChosen.files.length > 0 ?
-                                                    `<img style="height: 80px;" src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif" />` :
+                                                    `<img style="height: 80px;" src="/images/utils-img/loading.gif" />` :
                                                     `<p class="message">${validatedMessage}</p>`
                                                 }
                                             </div>
@@ -463,8 +509,7 @@ function sendMessage(event) {
         const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
         const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
         //  HTML tag conflation resolve
-        let validatedMessage1 = lastMessage.replace(/</g, "&lt");
-        validatedMessage1 = validatedMessage1.replace(/>/g, "&gt");
+        let validatedMessage1 = lastMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
         document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${fileChosen.files.length > 0 ? "Attachment" : validatedMessage1}`;
         document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
 
@@ -518,9 +563,15 @@ function sendMessage(event) {
     }
 
 }
-const msgSentBtn = document.querySelector("#msg-sent-btn");
-msgSentBtn.addEventListener("click", sendMessage);
+document.querySelector("#msg-sent-btn").addEventListener("click", sendMessage);
 
+
+function messageSendByHitEnter(event){
+    if (event.keyCode == 13 && !event.ctrlKey) {
+        sendMessage(event);
+    }
+}
+document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitEnter);
 
 
 
@@ -589,8 +640,7 @@ function socketEvent() {
             const lastMessage = data.message.length > 30 ? `${data.message.slice(0, 30)}...` : data.message;
             //  HTML tag conflation resolve
             const rawMessage = lastMessage;
-            let validatedMessage = rawMessage.replace(/</g, "&lt");
-            validatedMessage = validatedMessage.replace(/>/g, "&gt");
+            let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
             document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = validatedMessage;
             document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `${data.attachmentName ? "Attachment" : validatedMessage}`;
             document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
