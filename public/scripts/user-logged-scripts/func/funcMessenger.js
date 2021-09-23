@@ -10,8 +10,8 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
             attachmentTag = `<img src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
 
         } else if (["mp3", "mpeg", "ogg", "wav", "m4a"].includes(extension)) {
-            attachmentTag = `<audio controls class="sqs-audio-player>
-                                <source src="${attachmentPath}${attachmentName}?rsp=${participant}" >
+            attachmentTag = `<audio controls>
+                                <source src="${attachmentPath}${attachmentName}?rsp=${participant}" />
                             </audio>`;
         } else if (["pdf"].includes(extension)) {
             attachmentTag = `<embed src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
