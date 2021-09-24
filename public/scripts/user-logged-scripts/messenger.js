@@ -14,7 +14,7 @@ body.onoffline = selfOffline;
 
 
 
-// when screen less than 768px and click ".left-arrow i" -> right side chat conversions hide and show left side user chat list
+// when screen less than 768px and click ".left-arrow i" -> right side chat conversions hide and show left side chat user list
 function chatListOfUserShowAndChatHide() {
     document.querySelector(".chat-list-left-sidebar").classList.add("show");
     document.querySelector(".messages-right-sidebar").classList.add("hide");
@@ -82,8 +82,8 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 
 /************************************************* API Function start form here to END ************************************/
 
-function chatList() {
-    const apiUrl = "/api/user/messenger/chat-list";
+function chatUserList() {
+    const apiUrl = "/api/user/messenger/chat-user-list";
 
     fetch(apiUrl, {
         headers: {
@@ -95,7 +95,7 @@ function chatList() {
     })
     .then((res) => res.json())
     .then((data) => {
-        const chatList = document.querySelector(".chat-list");
+        const chatUserList = document.querySelector(".chat-list");
 
         const {chatListUsers} = data;
 
@@ -104,7 +104,7 @@ function chatList() {
             document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
             document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
-            let chatListHTML = "";
+            let chatUserListHTML = "";
             for (let i = 0; i < chatListUsers.length; i++) {
                 const currentEpochTime = Math.floor(new Date().getTime()/1000);
 
@@ -178,7 +178,7 @@ function chatList() {
                 let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
 
 
-                chatListHTML += `
+                chatUserListHTML += `
                         <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
@@ -193,12 +193,12 @@ function chatList() {
                         </div>`;
             }
 
-            chatList.innerHTML = chatListHTML;
+            chatUserList.innerHTML = chatUserListHTML;
         } else {
             // only left-sidebar show when no previous users in chat list
             document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
 
-            chatList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
+            chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
         }
         
     })
@@ -206,11 +206,11 @@ function chatList() {
         console.log(reason);
     });
 }
-window.addEventListener("load", chatList);
+window.addEventListener("load", chatUserList);
 
-// chatList() function in Interval to refresh user online offline time
+// chatUserList() function in Interval to refresh user online offline time
 setInterval(() => {
-    chatList();
+    chatUserList();
 }, 60000);
 
 
@@ -407,19 +407,19 @@ function fetchUserChats(id, isItSearch) {
                 document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
 
                 if (isItSearch) {
-                    const chatList = document.querySelector(".chat-list");
+                    const chatUserList = document.querySelector(".chat-list");
 
                     // If No previous user in chat list so first remove the "You have no connected people to chat with" message
-                    const noUcL = chatList.innerHTML.match('no-u-chat-list">');
+                    const noUcL = chatUserList.innerHTML.match('no-u-chat-list">');
                     if (noUcL) {
-                        chatList.innerHTML = "";
+                        chatUserList.innerHTML = "";
                     }
 
 
                     // the searched user already inserted or not in chat list
-                    const alreadyExist = chatList.innerHTML.match(participant);
+                    const alreadyExist = chatUserList.innerHTML.match(participant);
                     if (!alreadyExist) {
-                        chatList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatList);
+                        chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
                     }
 
                     
@@ -464,7 +464,10 @@ function sendMessage(event) {
     const messageInput = document.querySelector("#input-msg");
 
     // Keyboard keep appears on mobile after submit form
-    messageInput.focus();
+    if (messageInput.value) {
+        messageInput.focus();
+    }
+    
 
     const message = messageInput.value.replace(/  +/g, ' ').trim(); // multiple spaces replace with single space
     const fileChosen = document.querySelector("#file-input");
@@ -670,8 +673,8 @@ function socketEvent() {
         
 
         // last message and last message send time update in chat list
-        const chatList = document.querySelector(".chat-list");
-        const exist = chatList.innerHTML.match(data.sender);
+        const chatUserList = document.querySelector(".chat-list");
+        const exist = chatUserList.innerHTML.match(data.sender);
         if (exist) {
             const str = data.sender;
             const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
@@ -727,8 +730,8 @@ function socketEvent() {
            const str = data.id;
            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
-           const chatList = document.querySelector(".chat-list");
-           const exist = chatList.innerHTML.match(data.id);
+           const chatUserList = document.querySelector(".chat-list");
+           const exist = chatUserList.innerHTML.match(data.id);
 
            if (exist) {
                document.querySelector(`.${getUniqueCssClass} .img-wrap span`).classList.add("hide");
@@ -762,8 +765,8 @@ function socketEvent() {
         const str = data.id;
         const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
-        const chatList = document.querySelector(".chat-list");
-        const exist = chatList.innerHTML.match(data.id);
+        const chatUserList = document.querySelector(".chat-list");
+        const exist = chatUserList.innerHTML.match(data.id);
 
         if (exist) {
 

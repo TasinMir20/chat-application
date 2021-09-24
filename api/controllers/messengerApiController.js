@@ -8,7 +8,7 @@ const Conversation = require("../../models/Conversation");
 
 
 
-exports.chatList_ApiController = async (req, res, next) => {
+exports.chatUserList_ApiController = async (req, res, next) => {
 
     try {
         const userData = req.userData;
@@ -189,7 +189,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     let str = String(participantData._id);
                     let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
-                    var newChatToAppendChatList = 
+                    var newChatToAppendChatUserList = 
                         `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/${participantData.othersData.profilePic}" alt="">
@@ -207,7 +207,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
             }
         }
         
-        return res.json({conversations, fullName, profilePic, lastOnlineTime, newChatToAppendChatList});
+        return res.json({conversations, fullName, profilePic, lastOnlineTime, newChatToAppendChatUserList});
 
     } catch (err) {
         next(err);
