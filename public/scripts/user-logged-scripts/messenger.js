@@ -42,8 +42,19 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
             attachmentTag = `<audio controls>
                                 <source src="${attachmentPath}${attachmentName}?rsp=${participant}" />
                             </audio>`;
+        } else if (["mp4", "mkv", "mov", "webm", "avi", "3gp"].includes(extension)) {
+            attachmentTag = `<video controls>
+                                <source src="${attachmentPath}${attachmentName}?rsp=${participant}">
+                            </video>`;
+
         } else if (["pdf"].includes(extension)) {
-            attachmentTag = `<embed src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
+            
+            if (screen.width < 768) {
+                attachmentTag = `<iframe src="${attachmentPath}${attachmentName}?rsp=${participant}"></iframe>`;
+            } else {
+                attachmentTag = `<embed src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
+            } 
+
         } else {
             attachmentTag = `<a target="_blank" class="fas fa-file-archive" title="click to download" href="${attachmentPath}${attachmentName}?rsp=${participant}"></a>`;
         }
