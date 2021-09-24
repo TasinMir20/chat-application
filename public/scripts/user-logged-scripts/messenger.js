@@ -35,8 +35,8 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
         let attachmentName = attachment;
         let extension = attachmentName.split('.').pop();
         let attachmentPath = "/api/user/messenger/files/";
-        if (["jpg", "jpeg", "png", "gif", "tiff", "icon", "webp", "svg"].includes(extension)) {
-            attachmentTag = `<img src="${attachmentPath}${attachmentName}?rsp=${participant}" />`;
+        if (["jpg", "jpeg", "png", "gif", "tiff", "ico", "webp", "svg"].includes(extension)) {
+            attachmentTag = `<img ondblclick="imgFullScreen('${attachmentPath}${attachmentName}?rsp=${participant}')" src="${attachmentPath}${attachmentName}?rsp=${participant}" title="double click to view full screen" />`;
 
         } else if (["mp3", "mpeg", "ogg", "wav", "m4a"].includes(extension)) {
             attachmentTag = `<audio controls>
@@ -56,7 +56,9 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
             } 
 
         } else {
-            attachmentTag = `<a target="_blank" class="fas fa-file-archive" title="click to download" href="${attachmentPath}${attachmentName}?rsp=${participant}"></a>`;
+            attachmentTag = `<div class="lnk-wrap">
+                                <a target="_blank" class="fas fa-file-archive" title="click to download" href="${attachmentPath}${attachmentName}?rsp=${participant}"></a>
+                            </div>`;
         }
 
         theMessage = attachmentTag;
@@ -456,7 +458,6 @@ function fetchUserChats(id, isItSearch) {
 function sendMessage(event) {
     event.preventDefault();
     
-
     const recipientId = document.querySelector("#msg-sent-btn").value;
     const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
@@ -583,6 +584,32 @@ function messageSendByHitEnter(event){
     }
 }
 document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitEnter);
+
+
+// Double to full screen chatting conversation Images
+function imgFullScreen(imgLink) {
+    const insertAbleElements = `<div class="inner">
+                        <div class="img-collapse"><i class="fas fa-times"></i></div>
+                        <div class="img-wrap">
+                            <img src="${imgLink}" alt="">
+                        </div>
+                    </div>`;
+
+    const imgFullScreenElement = document.querySelector("#img-full-screen");
+    imgFullScreenElement.innerHTML = insertAbleElements;
+    imgFullScreenElement.style = "display: block";
+
+
+    function imgScreenCollapse() {
+        const imgFullScreenElement = document.querySelector("#img-full-screen");
+        imgFullScreenElement.innerHTML = "";
+        imgFullScreenElement.style = "display: none";
+    }
+    document.querySelector("#img-full-screen .img-collapse i").onclick = imgScreenCollapse;
+}
+
+
+
 
 
 
