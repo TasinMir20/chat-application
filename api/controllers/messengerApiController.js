@@ -318,42 +318,32 @@ exports.typingMessage_ApiController = (req, res, next) => {
 
 
 exports.messengerPrivateImages_ApiController = async (req, res, next) => {
-    
     try {
         const participant = req.query.rsp
         const userData = req.userData;
-
         const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
-
         if (isValidObjId) {
-
             const ConversationFind = await Conversation.findOne({ 
-                $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
-                    { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
-                ]});
-        
-            if (ConversationFind) {
-                const imagesIsPermitted = await Conversation.findOne({
-                    $and: [
-                    {_id: ConversationFind._id},
-                    {conversations: {$elemMatch: {attachmentName: req.params.attachment_name}}}
-                ]});
-
-
-                if (imagesIsPermitted) {
-
-                    const requestedPath = `${path.resolve('./')}/private/messenger/files/${req.params.attachment_name}`;
-                    if (fs.existsSync(requestedPath)) {
-                        return res.sendFile(requestedPath);
+                $and: [
+                    {
+                        $or: [
+                            { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
+                            { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
+                        ]
+                    },
+                    {
+                        conversations: {$elemMatch: {attachmentName: req.params.attachment_name}}
                     }
+                ]
+            });
+
+            if (ConversationFind) {
+                const requestedPath = `${path.resolve('./')}/private/messenger/files/${req.params.attachment_name}`;
+                if (fs.existsSync(requestedPath)) {
+                    return res.sendFile(requestedPath);
                 }
-
-                
             }
-
         }
-
         return res.sendFile(`${path.resolve('./')}/private/messenger/not-exist.svg`);
 
     } catch (err) {
