@@ -12,6 +12,30 @@ function selfOffline() {
 body.onoffline = selfOffline;
 
 
+// Whole messenger full screen and Exit full screen
+function messengerFullScreenN_Exit() {
+    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+        // current working methods
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+        
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    }
+}
+document.querySelector(".chatbox-header").ondblclick = messengerFullScreenN_Exit;
+
 
 
 // when screen less than 768px and click ".left-arrow i" -> right side chat conversions hide and show left side chat user list
@@ -21,6 +45,58 @@ function chatListOfUserShowAndChatHide() {
 }
 document.querySelector(".left-arrow i").onclick = chatListOfUserShowAndChatHide;
 
+
+
+// Double click to Expand chatting conversation's Images
+function imgExpand(imgUri) {
+    const insertAbleElements = `<div class="inner">
+                                    <div class="img-collapse-trigger trigger"><i class="fas fa-times"></i></div>
+                                    <div class="full-screen-trigger trigger"><i class="fas fa-expand-arrows-alt"></i></div>
+                                    <div class="img-wrap">
+                                        <img src="${imgUri}" alt="">
+                                    </div>
+                                </div>`;
+
+    const imgExpandElement = document.querySelector("#img-expand");
+    imgExpandElement.innerHTML = insertAbleElements;
+    imgExpandElement.style = "display: block";
+
+    // check is already full screen
+    const isFullScreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement ? true : false;
+
+
+    // Do full screen
+    function fullScreen() {
+        document.querySelector("#img-expand .full-screen-trigger").style = "display: none";
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+        }
+    }
+    document.querySelector("#img-expand .full-screen-trigger i").onclick = fullScreen;
+
+    function imgScreenCollapse() {
+        const imgExpandElement = document.querySelector("#img-expand");
+        imgExpandElement.innerHTML = "";
+        imgExpandElement.style = "display: none";
+
+
+        if (!isFullScreen) {
+            // Exit full screen
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+    }
+    document.querySelector("#img-expand .img-collapse-trigger i").onclick = imgScreenCollapse;
+}
 
 
 
@@ -36,7 +112,7 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
         let extension = attachmentName.split('.').pop();
         let attachmentPath = "/api/user/messenger/files/";
         if (["jpg", "jpeg", "png", "gif", "tiff", "ico", "webp", "svg"].includes(extension)) {
-            attachmentTag = `<img ondblclick="imgFullScreen('${attachmentPath}${attachmentName}?rsp=${participant}')" src="${attachmentPath}${attachmentName}?rsp=${participant}" title="double click to view full screen" />`;
+            attachmentTag = `<img ondblclick="imgExpand('${attachmentPath}${attachmentName}?rsp=${participant}')" src="${attachmentPath}${attachmentName}?rsp=${participant}" title="double click to view full screen" />`;
 
         } else if (["mp3", "mpeg", "ogg", "wav", "m4a"].includes(extension)) {
             attachmentTag = `<audio controls>
@@ -463,14 +539,14 @@ function sendMessage(event) {
 
     const messageInput = document.querySelector("#input-msg");
 
-    // Keyboard keep appears on mobile after submit form
-    if (messageInput.value) {
-        messageInput.focus();
-    }
-    
-
     const message = messageInput.value.replace(/  +/g, ' ').trim(); // multiple spaces replace with single space
     const fileChosen = document.querySelector("#file-input");
+
+    // Keyboard keep appears on mobile after submit form
+    if (fileChosen.files.length == 0) {
+        messageInput.focus();
+    }
+
 
     if (message || fileChosen.files.length > 0) {
         document.querySelector("#input-msg").value = "";
@@ -587,30 +663,6 @@ function messageSendByHitEnter(event){
     }
 }
 document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitEnter);
-
-
-// Double to full screen chatting conversation Images
-function imgFullScreen(imgLink) {
-    const insertAbleElements = `<div class="inner">
-                        <div class="img-collapse"><i class="fas fa-times"></i></div>
-                        <div class="img-wrap">
-                            <img src="${imgLink}" alt="">
-                        </div>
-                    </div>`;
-
-    const imgFullScreenElement = document.querySelector("#img-full-screen");
-    imgFullScreenElement.innerHTML = insertAbleElements;
-    imgFullScreenElement.style = "display: block";
-
-
-    function imgScreenCollapse() {
-        const imgFullScreenElement = document.querySelector("#img-full-screen");
-        imgFullScreenElement.innerHTML = "";
-        imgFullScreenElement.style = "display: none";
-    }
-    document.querySelector("#img-full-screen .img-collapse i").onclick = imgScreenCollapse;
-}
-
 
 
 

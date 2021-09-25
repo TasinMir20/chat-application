@@ -447,6 +447,7 @@ body {
 
 /* chatbox-header */
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header {
+    user-select: none;
     overflow: hidden;
     display: flex;
     height: 75px;
@@ -864,12 +865,12 @@ body {
 }
 
 /* Messenger images full screen */
-#img-full-screen {
+#img-expand {
     overflow: hidden;
     display: none;
 }
 
-#img-full-screen .inner {
+#img-expand .inner {
     background-color: #000000e3;
     position: fixed;
     top: 0;
@@ -879,27 +880,37 @@ body {
     z-index: 1000;
 }
 
-#img-full-screen .img-collapse {
+#img-expand .trigger {
     position: absolute;
     top: 30px;
-    right: 30px;
     z-index: 1002;
 }
 
-#img-full-screen .img-collapse i {
-    font-size: 43px;
+#img-expand .img-collapse-trigger {
+    right: 30px;
+}
+
+#img-expand .full-screen-trigger {
+    left: 30px;
+}
+
+#img-expand .trigger i {
+    font-size: 26px;
     color: #d8d6d6;
     padding: 5px;
     cursor: pointer;
 }
 
-#img-full-screen  .inner .img-wrap {
+
+
+
+#img-expand  .inner .img-wrap {
     width: 100%;
     height: 100%;
     position: relative;
 }
 
-#img-full-screen .inner .img-wrap img {
+#img-expand .inner .img-wrap img {
     position: absolute;
     top: 50%;
     left: 50%;
