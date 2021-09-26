@@ -571,7 +571,7 @@ function sendMessage(event) {
                                         <div class="msg-n-meta clearfix">
                                             <div class="msg-inner ${cssClass}">
                                                 ${fileChosen.files.length > 0 ?
-                                                    `<img style="height: 80px;" src="/images/utils-img/loading.gif" />` :
+                                                    `<img style="height: 80px; width: 80px;" src="/images/utils-img/loading.gif" />` :
                                                     `<p class="message">${validatedMessage}</p>`
                                                 }
                                             </div>

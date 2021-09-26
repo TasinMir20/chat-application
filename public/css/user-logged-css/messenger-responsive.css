@@ -82,9 +82,9 @@
 }
 
 /* Message right sidebar conversation img */
-@media all and (min-width: 768px) {
+@media all and (max-width: 768px) {
     .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
-        width: 50%;
+        width: 100%;
     }
 }
 
