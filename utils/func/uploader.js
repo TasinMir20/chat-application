@@ -28,7 +28,7 @@ function uploader(subfolder_path, allowed_file_types, max_file_size, max_number_
         },
         fileFilter: (req, file, cb) => {
             if (req.files.length > max_number_of_files) {
-                cb(createError(`Maximum ${max_number_of_files} files are allowed to upload!`));
+                cb(createError(`More files were selected than allowed!`));
             } else {
  
                 if (allowed_file_types.includes(file.mimetype)) {

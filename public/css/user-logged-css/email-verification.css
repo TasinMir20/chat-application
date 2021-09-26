@@ -172,33 +172,25 @@ body {
     animation-duration: 3s;
 }
 
-
-
- .floating-alert-notification .danger-alert {
+.floating-alert-notification .alert-msg {
     border-radius: 5px;
     padding: 10px 30px;
-    background-color: #f44336;
-    color: white;
     opacity: 0.83;
     font-size: 15px;
     font-weight: 500;
     line-height: 1.5;
     margin-bottom: 15px;
+}
 
+ .floating-alert-notification .danger-alert {
+    background-color: #f44336;
+    color: white;
 }
 
 
  .floating-alert-notification .success-alert {
-    border-radius: 5px;
-    padding: 10px 30px;
     background-color: #04AA6D;
     color: white;
-    opacity: 0.83;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.5;
-    margin-bottom: 15px;
-
 }
 
 

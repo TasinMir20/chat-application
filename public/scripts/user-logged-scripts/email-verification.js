@@ -41,7 +41,7 @@ function  emailVerify_ApiRequest(event) {
 
                     // Floating message show if Email address confirmed
                     const element = document.querySelector(".floating-alert-notification");
-                    element.innerHTML = '<p class="success-alert">Email address confirmed successfully</p>';
+                    element.innerHTML = '<p class="success-alert alert-msg">Email address confirmed successfully</p>';
                     element.classList.add("show");
                     setTimeout(() => {
                         element.classList.remove("show");
@@ -152,7 +152,7 @@ function emailVerifyResendCode_ApiRequest(event) {
 
                 // Floating message show if verification code resent
                 const element = document.querySelector(".floating-alert-notification");
-                element.innerHTML = '<p class="success-alert">Verification code resent successfully</p>';
+                element.innerHTML = '<p class="success-alert alert-msg">Verification code resent successfully</p>';
                 element.classList.add("show");
                 setTimeout(() => {
                     element.classList.remove("show");
@@ -165,9 +165,9 @@ function emailVerifyResendCode_ApiRequest(event) {
                 const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
 
                 if (resendCodeAfter.length > 2) {
-                    element.innerHTML = `<p class="danger-alert">Try again after ${resendCodeAfter}</p>`;
+                    element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
                 } else {
-                    element.innerHTML = `<p class="danger-alert">Try again later!</p>`;
+                    element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
                 }
 
                 element.classList.add("show");

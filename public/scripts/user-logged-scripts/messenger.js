@@ -50,8 +50,8 @@ document.querySelector(".left-arrow i").onclick = chatListOfUserShowAndChatHide;
 // Double click to Expand chatting conversation's Images
 function imgExpand(imgUri) {
     const insertAbleElements = `<div class="inner">
-                                    <div class="img-collapse-trigger trigger"><i class="fas fa-times"></i></div>
-                                    <div class="full-screen-trigger trigger"><i class="fas fa-expand-arrows-alt"></i></div>
+                                    <div class="img-collapse-trigger trigger"><i class="fas fa-times" title="Collapse"></i></div>
+                                    <div class="full-screen-trigger trigger"><i class="fas fa-expand-arrows-alt" title="Full screen"></i></div>
                                     <div class="img-wrap">
                                         <img src="${imgUri}" alt="">
                                     </div>
@@ -112,7 +112,7 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
         let extension = attachmentName.split('.').pop();
         let attachmentPath = "/api/user/messenger/files/";
         if (["jpg", "jpeg", "png", "gif", "tiff", "ico", "webp", "svg"].includes(extension)) {
-            attachmentTag = `<img ondblclick="imgExpand('${attachmentPath}${attachmentName}?rsp=${participant}')" src="${attachmentPath}${attachmentName}?rsp=${participant}" title="double click to view full screen" />`;
+            attachmentTag = `<img ondblclick="imgExpand('${attachmentPath}${attachmentName}?rsp=${participant}')" src="${attachmentPath}${attachmentName}?rsp=${participant}" title="double click to expand" />`;
 
         } else if (["mp3", "mpeg", "ogg", "wav", "m4a"].includes(extension)) {
             attachmentTag = `<audio controls>
@@ -171,112 +171,120 @@ function chatUserList() {
     })
     .then((res) => res.json())
     .then((data) => {
-        const chatUserList = document.querySelector(".chat-list");
 
-        const {chatListUsers} = data;
+        if (!(data.error === "server error")) {
 
-        if (chatListUsers[0]) {
-            // both left-sidebar and right-sidebar show when at least one previous users exist in chat list
-            document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
-            document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+            const chatUserList = document.querySelector(".chat-list");
 
-            let chatUserListHTML = "";
-            for (let i = 0; i < chatListUsers.length; i++) {
-                const currentEpochTime = Math.floor(new Date().getTime()/1000);
+            const {chatListUsers} = data;
 
-                let circleVisibility = "";
-                let circleColor = "";
-                let inactiveTimeVisibility = "";
-                let inactiveTime = "";
-                // check user online or not
-                if (chatListUsers[i].lastOnlineTime === 1) {
-                    inactiveTimeVisibility = "hide";
-                    circleColor = 'green';
-                } else if (chatListUsers[i].lastOnlineTime === 0) {
-                    inactiveTimeVisibility = "hide";
-                    circleVisibility = "hide";
-                } else {
-                    // last online time
-                    const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
-                    if (seconds > 86400) {
+            if (chatListUsers[0]) {
+                // both left-sidebar and right-sidebar show when at least one previous users exist in chat list
+                document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+                document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+
+                let chatUserListHTML = "";
+                for (let i = 0; i < chatListUsers.length; i++) {
+                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
+
+                    let circleVisibility = "";
+                    let circleColor = "";
+                    let inactiveTimeVisibility = "";
+                    let inactiveTime = "";
+                    // check user online or not
+                    if (chatListUsers[i].lastOnlineTime === 1) {
                         inactiveTimeVisibility = "hide";
-                        circleColor = 'red';
-                        
-                    } else if (seconds > 43200) {
+                        circleColor = 'green';
+                    } else if (chatListUsers[i].lastOnlineTime === 0) {
                         inactiveTimeVisibility = "hide";
-                        circleColor = 'yellow';
-                    } else {
                         circleVisibility = "hide";
-                        
-                        const min = Math.floor(seconds / 60);
-                        const andSec = Math.floor(seconds % 60);
-                        const hour = Math.floor(min / 60);
-                        const andMin = Math.floor(min % 60);
+                    } else {
+                        // last online time
+                        const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
+                        if (seconds > 86400) {
+                            inactiveTimeVisibility = "hide";
+                            circleColor = 'red';
+                            
+                        } else if (seconds > 43200) {
+                            inactiveTimeVisibility = "hide";
+                            circleColor = 'yellow';
+                        } else {
+                            circleVisibility = "hide";
+                            
+                            const min = Math.floor(seconds / 60);
+                            const andSec = Math.floor(seconds % 60);
+                            const hour = Math.floor(min / 60);
+                            const andMin = Math.floor(min % 60);
+                            if (hour < 1) {
+                                inactiveTime = `${andMin}m`;
+                                if (andMin < 1) {
+                                    inactiveTime = `${andSec}s`;
+                                }
+                            } else  {
+                                inactiveTime = `${hour}h`;
+                            }
+                        } 
+                    }
+
+                    // last message time
+                    const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
+                    const min = Math.floor(seconds / 60);
+                    const andSec = Math.floor(seconds % 60);
+                    const hour = Math.floor(min / 60);
+                    const andMin = Math.floor(min % 60);
+                    const day = Math.floor(hour / 24);
+                    let lastMsgTime = "";
+                    if (day < 1) {
                         if (hour < 1) {
-                            inactiveTime = `${andMin}m`;
+                            lastMsgTime = `${andMin}m ago`;
                             if (andMin < 1) {
-                                inactiveTime = `${andSec}s`;
+                                lastMsgTime = `${andSec}s ago`;
                             }
                         } else  {
-                            inactiveTime = `${hour}h`;
+                            lastMsgTime = `${hour}h ago`;
                         }
-                    } 
-                }
-
-                // last message time
-                const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
-                const min = Math.floor(seconds / 60);
-                const andSec = Math.floor(seconds % 60);
-                const hour = Math.floor(min / 60);
-                const andMin = Math.floor(min % 60);
-                const day = Math.floor(hour / 24);
-                let lastMsgTime = "";
-                if (day < 1) {
-                    if (hour < 1) {
-                        lastMsgTime = `${andMin}m ago`;
-                        if (andMin < 1) {
-                            lastMsgTime = `${andSec}s ago`;
-                        }
-                    } else  {
-                        lastMsgTime = `${hour}h ago`;
+                    } else {
+                        lastMsgTime = `${day}d ago`;
                     }
-                } else {
-                    lastMsgTime = `${day}d ago`;
+
+
+                    // generate unique css class from user obj ID
+                    let str = chatListUsers[i]._id;
+                    let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+
+                    //  HTML tag conflation resolve
+                    const rawMessage = chatListUsers[i].lastMessage;
+                    let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
+
+
+                    chatUserListHTML += `
+                            <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
+                                <div class="img-wrap">
+                                    <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
+                                    <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
+                                    <span class="${inactiveTimeVisibility}">${inactiveTime}</span>
+                                </div>
+                                <div class="meta">
+                                    <p class="name">${chatListUsers[i].firstName} ${chatListUsers[i].lastName}</p>
+                                    <p class="last-message">${validatedMessage}</p>
+                                    <span class="last-msg-time">${lastMsgTime}</span>
+                                </div>
+                            </div>`;
                 }
 
+                chatUserList.innerHTML = chatUserListHTML;
+            } else {
+                // only left-sidebar show when no previous users in chat list
+                document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
 
-                // generate unique css class from user obj ID
-                let str = chatListUsers[i]._id;
-                let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
-
-                //  HTML tag conflation resolve
-                const rawMessage = chatListUsers[i].lastMessage;
-                let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
-
-
-                chatUserListHTML += `
-                        <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
-                            <div class="img-wrap">
-                                <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
-                                <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
-                                <span class="${inactiveTimeVisibility}">${inactiveTime}</span>
-                            </div>
-                            <div class="meta">
-                                <p class="name">${chatListUsers[i].firstName} ${chatListUsers[i].lastName}</p>
-                                <p class="last-message">${validatedMessage}</p>
-                                <span class="last-msg-time">${lastMsgTime}</span>
-                            </div>
-                        </div>`;
+                chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
             }
 
-            chatUserList.innerHTML = chatUserListHTML;
         } else {
-            // only left-sidebar show when no previous users in chat list
-            document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
-
-            chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
+            document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+            throw new Error('Server Error');
         }
-        
+
     })
     .catch (function(reason) {
         console.log(reason);
@@ -314,13 +322,18 @@ function searchUsersToChat() {
             })
             .then((res) => res.json())
             .then((data) => {
+                if (!(data.error === "server error")) {
 
-                if (data.foundUser) {
-                    document.querySelector(".search-results").innerHTML = data.foundUser;
+                    if (data.foundUser) {
+                        document.querySelector(".search-results").innerHTML = data.foundUser;
+                    } else {
+                        document.querySelector(".search-results").innerHTML = "";
+                    }
+
                 } else {
-                    document.querySelector(".search-results").innerHTML = "";
+                    document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+                    throw new Error('Server Error');
                 }
-
             })
             .catch (function(reason) {
                 console.log(reason);
@@ -365,156 +378,161 @@ function fetchUserChats(id, isItSearch) {
         })
         .then((res) => res.json())
         .then((data) => {
+            if (!(data.error === "server error")) {
 
-            // when no previous user in the chat list then search someone and click on it- show chat box
-            document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");
-            document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
-            document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+                // when no previous user in the chat list then search someone and click on it- show chat box
+                document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");
+                document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+                document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
-            // chat header name and profile pic update when switched to other chat
-            document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
-            document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
+                // chat header name and profile pic update when switched to other chat
+                document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
+                document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
 
-            
-            
-            document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
-            document.querySelector(".unavailable-to-sent-msg").style = "display: none";
-            // chat header user or current chatting partner active-inactive update when switched to other chat
-            const element = document.querySelector(".chatbox-header .img-wrap i");
-            if (data.lastOnlineTime === 1) {
-                element.classList.remove("hide", "red", "yellow");
-                element.classList.add("green");
-                document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
-            } else if (data.lastOnlineTime === 0) {
-                element.classList.remove("green", "red", "yellow");
-                element.classList.add("hide");
-                document.querySelector(".messages-right-sidebar .act").innerText = "Unavailable";
+                
+                
+                document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
+                document.querySelector(".unavailable-to-sent-msg").style = "display: none";
+                // chat header user or current chatting partner active-inactive update when switched to other chat
+                const element = document.querySelector(".chatbox-header .img-wrap i");
+                if (data.lastOnlineTime === 1) {
+                    element.classList.remove("hide", "red", "yellow");
+                    element.classList.add("green");
+                    document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
+                } else if (data.lastOnlineTime === 0) {
+                    element.classList.remove("green", "red", "yellow");
+                    element.classList.add("hide");
+                    document.querySelector(".messages-right-sidebar .act").innerText = "Unavailable";
 
-                // lastOnlineTime = 0 means user does not exist, if does not exist so message input form have to be hide
-                document.querySelector(".msg-form-wrap .msg-input-form").classList.add("hide")
-                document.querySelector(".unavailable-to-sent-msg").style = "display: block";
-            } else {
-                const currentEpochTime = Math.floor(new Date().getTime()/1000);
-                const seconds = currentEpochTime - data.lastOnlineTime;
-
-                /////////////////////////////////////////
-                const min = Math.floor(seconds / 60);
-                const andSec = Math.floor(seconds % 60);
-                const hour = Math.floor(min / 60);
-                const andMin = Math.floor(min % 60);
-                const day = Math.floor(hour / 24);
-
-                let inactiveTime = "";
-                if (day < 1) {
-                    if (hour < 1) {
-                        inactiveTime = `${andMin}m`;
-                        if (andMin < 1) {
-                            inactiveTime = `${andSec}s`;
-                        }
-                    } else  {
-                        inactiveTime = `${hour}h`;
-                    }
+                    // lastOnlineTime = 0 means user does not exist, if does not exist so message input form have to be hide
+                    document.querySelector(".msg-form-wrap .msg-input-form").classList.add("hide")
+                    document.querySelector(".unavailable-to-sent-msg").style = "display: block";
                 } else {
-                    inactiveTime = `${day}d`;
-                }
-                document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
-                /////////////////////////////////////////
+                    const currentEpochTime = Math.floor(new Date().getTime()/1000);
+                    const seconds = currentEpochTime - data.lastOnlineTime;
 
+                    /////////////////////////////////////////
+                    const min = Math.floor(seconds / 60);
+                    const andSec = Math.floor(seconds % 60);
+                    const hour = Math.floor(min / 60);
+                    const andMin = Math.floor(min % 60);
+                    const day = Math.floor(hour / 24);
 
-                if (seconds > 86400) {
-                    element.classList.remove("hide", "yellow", "green");
-                    element.classList.add("red");
-                } else if (seconds < 86400) {
-                    element.classList.remove("hide", "red", "green");
-                    element.classList.add("yellow");
-                }
-
-
-            }
-            /////////////////////////////////////////////////////////
-
-
-            // chat list message update to front when switched to other chat
-            if (data.conversations) {
-                const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
-
-                let conversations = data.conversations;
-                let eachMessageHTMLBody = "";
-                for (let i = 0; i < conversations.length; i++) {
-                    // Time convert to client local (Whole Date and time)
-                    const msgSendTime = conversations[i].msgSendTime;
-                    const msgDate = new Date(msgSendTime * 1000);
-                    const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
-                    const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
-                    const localDateAndTime = `${date} at ${time}`;
-
-
-                    // defining this message incoming or outgoing
-                    let incomingOrOutgoing = "";
-                    let messageAuthorPic = "";
-                    if (String(conversations[i].sender) === String(mySelfId)) {
-                        incomingOrOutgoing = "outgoing-message";
-                        messageAuthorPic = selfProfilePic;
-                        
+                    let inactiveTime = "";
+                    if (day < 1) {
+                        if (hour < 1) {
+                            inactiveTime = `${andMin}m`;
+                            if (andMin < 1) {
+                                inactiveTime = `${andSec}s`;
+                            }
+                        } else  {
+                            inactiveTime = `${hour}h`;
+                        }
                     } else {
-                        incomingOrOutgoing = "incoming-message";
-                        messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
+                        inactiveTime = `${day}d`;
+                    }
+                    document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
+                    /////////////////////////////////////////
+
+
+                    if (seconds > 86400) {
+                        element.classList.remove("hide", "yellow", "green");
+                        element.classList.add("red");
+                    } else if (seconds < 86400) {
+                        element.classList.remove("hide", "red", "green");
+                        element.classList.add("yellow");
                     }
 
 
-                    const cssClass = conversations[i].attachmentName ? "attachment-style" : "";
-                    const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
-                    // the message html structure
-                    eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
-                                        <div class="author-img">
-                                            <img src="${messageAuthorPic}" alt="">
-                                        </div>
-                                        <div class="msg-n-meta clearfix">
-                                            <div class="msg-inner ${cssClass}">
-                                                ${theMessage}
+                }
+                /////////////////////////////////////////////////////////
+
+
+                // chat list message update to front when switched to other chat
+                if (data.conversations) {
+                    const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
+
+                    let conversations = data.conversations;
+                    let eachMessageHTMLBody = "";
+                    for (let i = 0; i < conversations.length; i++) {
+                        // Time convert to client local (Whole Date and time)
+                        const msgSendTime = conversations[i].msgSendTime;
+                        const msgDate = new Date(msgSendTime * 1000);
+                        const date = msgDate.toLocaleString('en-US', { month: 'long', day: "numeric", year: 'numeric'});
+                        const time = msgDate.toLocaleString('en-US', { hour: "numeric", minute: "numeric"});
+                        const localDateAndTime = `${date} at ${time}`;
+
+
+                        // defining this message incoming or outgoing
+                        let incomingOrOutgoing = "";
+                        let messageAuthorPic = "";
+                        if (String(conversations[i].sender) === String(mySelfId)) {
+                            incomingOrOutgoing = "outgoing-message";
+                            messageAuthorPic = selfProfilePic;
+                            
+                        } else {
+                            incomingOrOutgoing = "incoming-message";
+                            messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
+                        }
+
+
+                        const cssClass = conversations[i].attachmentName ? "attachment-style" : "";
+                        const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
+                        // the message html structure
+                        eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
+                                            <div class="author-img">
+                                                <img src="${messageAuthorPic}" alt="">
                                             </div>
-                                            <span class="msg-time">${localDateAndTime}</span>
-                                        </div>
-                                    </div>`;
+                                            <div class="msg-n-meta clearfix">
+                                                <div class="msg-inner ${cssClass}">
+                                                    ${theMessage}
+                                                </div>
+                                                <span class="msg-time">${localDateAndTime}</span>
+                                            </div>
+                                        </div>`;
+                    }
+
+                    document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
+                } else {
+                    document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
+
+                    if (isItSearch) {
+                        const chatUserList = document.querySelector(".chat-list");
+
+                        // If No previous user in chat list so first remove the "You have no connected people to chat with" message
+                        const noUcL = chatUserList.innerHTML.match('no-u-chat-list">');
+                        if (noUcL) {
+                            chatUserList.innerHTML = "";
+                        }
+
+
+                        // the searched user already inserted or not in chat list
+                        const alreadyExist = chatUserList.innerHTML.match(participant);
+                        if (!alreadyExist) {
+                            chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
+                        }
+
+                        
+                    }
                 }
 
-                document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
+                // in chat list current conversation user background color change as selected
+                const str = participant;
+                const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+                const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
+
+                for (let i = 0; i < toRemoveClass.length; i++) {
+                    toRemoveClass[i].classList.remove("selected");
+                }
+                if (incre > 0) {
+                    document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
+                }
+                incre++;
+
             } else {
-                document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
-
-                if (isItSearch) {
-                    const chatUserList = document.querySelector(".chat-list");
-
-                    // If No previous user in chat list so first remove the "You have no connected people to chat with" message
-                    const noUcL = chatUserList.innerHTML.match('no-u-chat-list">');
-                    if (noUcL) {
-                        chatUserList.innerHTML = "";
-                    }
-
-
-                    // the searched user already inserted or not in chat list
-                    const alreadyExist = chatUserList.innerHTML.match(participant);
-                    if (!alreadyExist) {
-                        chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
-                    }
-
-                    
-                }
+                document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+                throw new Error('Server Error');
             }
-
-            // in chat list current conversation user background color change as selected
-            const str = participant;
-            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
-            const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
-
-            for (let i = 0; i < toRemoveClass.length; i++) {
-                toRemoveClass[i].classList.remove("selected");
-            }
-            if (incre > 0) {
-                document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
-            }
-            incre++;
-            
         })
         .catch (function(reason) {
             console.log(reason);
@@ -571,7 +589,7 @@ function sendMessage(event) {
                                         <div class="msg-n-meta clearfix">
                                             <div class="msg-inner ${cssClass}">
                                                 ${fileChosen.files.length > 0 ?
-                                                    `<img style="height: 80px; width: 80px;" src="/images/utils-img/loading.gif" />` :
+                                                    `<img style="height: 80px; width: 80px;" src="/images/utils-img/loading.gif" title="Just wait..." />` :
                                                     `<p class="message">${validatedMessage}</p>`
                                                 }
                                             </div>
@@ -622,10 +640,35 @@ function sendMessage(event) {
                 method: "POST",
                 body: formData,
             })
-            .then((res) => res.json())
+            .then((res) => {
+                window.statusCode = res.status;
+                return res.json();
+            })
             .then((data) => {
-                const theMessage = messageHtmlInnerBody(data.attachmentName, "", recipientId);
-                insertAfterResponse.innerHTML = theMessage;
+                if (!(data.error === "server error")) {
+
+                    if (window.statusCode !== 406) {
+                        const theMessage = messageHtmlInnerBody(data.attachmentName, "", recipientId);
+                        insertAfterResponse.innerHTML = theMessage;
+                    } else {
+                        // remove message sending loading
+                        insertAfterResponse.remove();
+
+                        // Floating message show if file upload any requirement not fill
+                        const element = document.querySelector(".floating-alert-notification");
+                        element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
+                        element.classList.add("show");
+                        setTimeout(() => {
+                            element.classList.remove("show");
+                        }, 3000);
+                    }
+                    
+                    
+
+                } else {
+                    document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+                    throw new Error('Server Error');
+                }
             })
             .catch (function(reason) {
                 console.log(reason);
@@ -644,6 +687,12 @@ function sendMessage(event) {
             })
             .then((res) => res.json())
             .then((data) => {
+                if (!(data.error === "server error")) {
+
+                } else {
+                    document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+                    throw new Error('Server Error');
+                }
                 
             })
             .catch (function(reason) {
@@ -734,7 +783,6 @@ function socketEvent() {
             //  HTML tag conflation resolve
             const rawMessage = lastMessage;
             let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
-            document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = validatedMessage;
             document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `${data.attachmentName ? "Attachment" : validatedMessage}`;
             document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
         }
@@ -904,6 +952,12 @@ function typingMessage() {
     })
     .then((res) => res.json())
     .then((data) => {
+        if (!(data.error === "server error")) {
+
+        } else {
+            document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+            throw new Error('Server Error');
+        }
         
     })
     .catch (function(reason) {
@@ -922,10 +976,18 @@ function logOut() {
     })
     .then((res) => res.json())
     .then((data) => {
-        if(data.logout) {
-            location.replace("/account");
+
+        if (!(data.error === "server error")) {
+
+            if(data.logout) {
+                location.replace("/account");
+            } else {
+                location.reload();
+            }
+
         } else {
-            location.reload();
+            document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+            throw new Error('Server Error');
         }
     })
     .catch (function(reason) {

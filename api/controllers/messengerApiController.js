@@ -221,7 +221,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 
 
 exports.sendMessage_ApiController = async (req, res, next) => {
-        let {message, recipientId} = req.body;
+    let {message, recipientId} = req.body;
     try {
 
         let attachmentName = "";
@@ -347,6 +347,6 @@ exports.messengerPrivateImages_ApiController = async (req, res, next) => {
         return res.sendFile(`${path.resolve('./')}/private/messenger/not-exist.svg`);
 
     } catch (err) {
-        console.log(err)
+        next(err);
     }
 }

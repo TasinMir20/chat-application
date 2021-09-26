@@ -896,6 +896,7 @@ body {
 }
 
 #img-expand .trigger {
+    overflow: hidden;
     position: absolute;
     top: 30px;
     z-index: 1002;
@@ -966,4 +967,82 @@ body {
     .sections .container .messenger-container.no-previous-people .chat-list-left-sidebar {
         width: 100%;
     }
+}
+
+
+
+
+
+
+
+
+
+/* Floating notification CSS  */
+ 
+@keyframes floatingMsgAnimate {
+
+    10% {
+        right: 20px;
+        top: 40px;
+    }
+    50%  {
+        right: 20px;
+        top: 40px;
+    }
+    70%  {
+        right: 20px;
+        top: 40px;
+        opacity: 1;
+    }
+    71% {
+        opacity: 0.4;
+    }
+    100%  {
+        top: 40px;
+        right: -400px
+    }
+    
+    
+}
+
+
+.input-file-cont .floating-alert-notification {
+    position: fixed;
+    top: -50px;
+    right: 20px;
+    width: 300px;
+    overflow: hidden;
+    display: none;
+    z-index: 1010;
+}
+
+
+.input-file-cont .floating-alert-notification.show {
+    display: block;
+    animation-name: floatingMsgAnimate;
+    animation-duration: 3s;
+}
+
+
+
+.input-file-cont  .floating-alert-notification .alert-msg {
+    border-radius: 5px;
+    padding: 10px 30px;
+    opacity: 0.83;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 15px;
+
+}
+
+.input-file-cont  .floating-alert-notification .danger-alert {
+    background-color: #f44336;
+    color: white;
+}
+
+
+.input-file-cont  .floating-alert-notification .success-alert {
+    background-color: #04AA6D;
+    color: white;
 }

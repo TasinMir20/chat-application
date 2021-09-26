@@ -126,7 +126,7 @@ function regApiRequest(event) {
 
                     // Floating message show if account create successful
                     const element = document.querySelector(".floating-alert-notification");
-                    element.innerHTML = '<p class="success-alert">Account created successfully</p>';
+                    element.innerHTML = '<p class="success-alert alert-msg">Account created successfully</p>';
                     element.classList.add("show");
                     setTimeout(() => {
                         element.classList.remove("show");
@@ -203,7 +203,7 @@ function regApiRequest(event) {
 
         // Showing floating alert message if any fields empty
         const element = document.querySelector(".floating-alert-notification");
-        element.innerHTML = '<p class="danger-alert">Please fill all the fields.</p>';
+        element.innerHTML = '<p class="danger-alert alert-msg">Please fill all the fields.</p>';
         element.classList.add("show");
 
         setTimeout(() => {
@@ -273,7 +273,7 @@ function loginApiRequest(event) {
 
                     // Floating message show if login success
                     const element = document.querySelector(".floating-alert-notification");
-                    element.innerHTML = '<p class="success-alert">You\'re successfully Logged in.</p>';
+                    element.innerHTML = '<p class="success-alert alert-msg">You\'re successfully Logged in.</p>';
                     element.classList.add("show");
                     setTimeout(() => {
                         element.classList.remove("show");
@@ -316,7 +316,7 @@ function loginApiRequest(event) {
 
         // Showing floating alert message if any fields empty
         const element = document.querySelector(".floating-alert-notification");
-        element.innerHTML = '<p class="danger-alert">Please fill all the fields.</p>';
+        element.innerHTML = '<p class="danger-alert alert-msg">Please fill all the fields.</p>';
         element.classList.add("show");
 
         setTimeout(() => {
@@ -377,7 +377,7 @@ function forgetPassEmail_ApiRequest(event) {
 
                     // Floating message show if recovery code sent
                     const element = document.querySelector(".floating-alert-notification");
-                    element.innerHTML = '<p class="success-alert">We have sent a recovery code to your email.</p>';
+                    element.innerHTML = '<p class="success-alert alert-msg">We have sent a recovery code to your email.</p>';
                     element.classList.add("show");
                     setTimeout(() => {
                         element.classList.remove("show");
@@ -561,7 +561,7 @@ function forgetPassResendCode_ApiRequest(event) {
 
                 // Floating message show if recovery code resent
                 const element = document.querySelector(".floating-alert-notification");
-                element.innerHTML = '<p class="success-alert">Code resent successfully</p>';
+                element.innerHTML = '<p class="success-alert alert-msg">Code resent successfully</p>';
                 element.classList.add("show");
                 setTimeout(() => {
                     element.classList.remove("show");
@@ -575,9 +575,9 @@ function forgetPassResendCode_ApiRequest(event) {
                 const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
 
                 if (resendCodeAfter.length > 2) {
-                    element.innerHTML = `<p class="danger-alert">Try again after ${resendCodeAfter}</p>`;
+                    element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
                 } else {
-                    element.innerHTML = `<p class="danger-alert">Try again later!</p>`;
+                    element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
                 }
 
                 element.classList.add("show");
@@ -647,7 +647,7 @@ function forgetPassPassword_ApiRequest() {
 
                     // Floating message show if password changed successful by forget
                     const element = document.querySelector(".floating-alert-notification");
-                    element.innerHTML = '<p class="success-alert">Password changed successfully</p>';
+                    element.innerHTML = '<p class="success-alert alert-msg">Password changed successfully</p>';
                     element.classList.add("show");
                     setTimeout(() => {
                         element.classList.remove("show");
