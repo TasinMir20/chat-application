@@ -300,17 +300,17 @@ setInterval(() => {
 
 
 
-let timeOut = null;
+let timeOut1 = null;
 function searchUsersToChat() {
     const searchKeyWord = document.querySelector("#search").value;
 
     if (searchKeyWord) {
 
-        if (timeOut != null) {
-            clearTimeout(timeOut);
+        if (timeOut1 != null) {
+            clearTimeout(timeOut1);
         }
 
-        timeOut = setTimeout(() => {
+        timeOut1 = setTimeout(() => {
             const apiUrl = "/api/user/messenger/search-users";
             fetch(apiUrl, {
                 headers: {
@@ -549,6 +549,17 @@ function fetchUserChats(id, isItSearch) {
 
 
 
+// Chat conversation->> Pagination When scrolled top end (behind the scene actually scrolled bottom of the element 'chatBox') then load previous messages
+function scrolledBottomDetect() {
+    const chatBox = document.querySelector(".chat-box");
+    if (chatBox.clientHeight +  Math.ceil(Math.abs(chatBox.scrollTop)) == chatBox.scrollHeight) {
+        console.log("Scrolled Bottom");
+    }
+}
+document.querySelector(".chat-box").addEventListener('scroll', scrolledBottomDetect)
+
+
+
 function sendMessage(event) {
     event.preventDefault();
     
@@ -769,7 +780,7 @@ function socketEvent() {
 
 
             // Scroll bottom chat box when append message in chat box
-            chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
+            // chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
         }
         
 
@@ -794,17 +805,18 @@ function socketEvent() {
 
 
     // socket.io Typing Listener at client
+    let timeOut2 = null;
     const typingEventName = mySelfId+"typing";
     socket.on(typingEventName, function(data) {
         const recipientId = document.querySelector("#msg-sent-btn").value;
         if (String(recipientId) === String(data.typer)) {
 
-            if (timeOut != null) {
-                clearTimeout(timeOut);
+            if (timeOut2 != null) {
+                clearTimeout(timeOut2);
             }
             document.querySelector(".messages-right-sidebar .act").innerText = "Typing...";
     
-            timeOut = setTimeout(function() {
+            timeOut2 = setTimeout(function() {
                 document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
             }, 2000);
         }
@@ -859,7 +871,7 @@ function socketEvent() {
    })
 
     // user disconnect listener
-    let interval = null;
+    let interval1 = null;
     socket.on("AnUserD", function(data) {
 
         const str = data.id;
@@ -883,8 +895,8 @@ function socketEvent() {
             // viewed conversation user disconnect event - inactive
             const recipientId = document.querySelector("#msg-sent-btn").value;
             if (String(recipientId) === String(data.id)) {
-                if (interval != null) {
-                    clearInterval(interval);
+                if (interval1 != null) {
+                    clearInterval(interval1);
                 }
 
 
@@ -898,7 +910,7 @@ function socketEvent() {
                 document.querySelector(".messages-right-sidebar .act").innerText = "a few seconds";
 
                 const whenInactive = Math.floor(new Date().getTime()/1000);
-                interval = setInterval(() => {
+                interval1 = setInterval(() => {
                     const isActive = document.querySelector(".chatbox-header .img-wrap").innerHTML.match("green");
 
                     if (!isActive) {
