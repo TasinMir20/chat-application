@@ -563,7 +563,7 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .no-conv-yet {

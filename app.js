@@ -19,8 +19,8 @@ const io = require('socket.io')(server);
 global.io = io;
 
 // socket io connect import
-const s = require('./utils/func/socketio');
-s();
+const socketConnect = require('./utils/func/socketio');
+socketConnect();
 
 
 dotenv.config(); // called dotenv
@@ -44,7 +44,7 @@ const middleware = [
     cookieParse
     
 ];
-
+console.clear()
 app.use(middleware);
 
 app.use("/", routes);

@@ -70,16 +70,16 @@ exports.messenger = async (req, res, next) => {
 
             involvedConversations = involvedConversations[0];
 
-            let lastChatUserId;
+            let lastChattingUserId;
             if (involvedConversations) {
                 if (String(involvedConversations.creatorObjId) === String(userData._id)) {
-                    lastChatUserId = involvedConversations.participantObjId;
+                    lastChattingUserId = involvedConversations.participantObjId;
                 } else {
-                    lastChatUserId = involvedConversations.creatorObjId;
+                    lastChattingUserId = involvedConversations.creatorObjId;
                 }
             }
             
-        res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChatUserId});
+        res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChattingUserId});
 
     } catch (err) {
         next(err);

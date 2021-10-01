@@ -1,6 +1,6 @@
 const User = require('../../models/User');
 
-async function s() {
+async function socketConnect() {
     
     io.on("connection", (socket) => {
         // connect Listener at server
@@ -32,4 +32,4 @@ async function s() {
 }
 
 
-module.exports = s;
+module.exports = socketConnect;

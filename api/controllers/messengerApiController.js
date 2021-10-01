@@ -141,7 +141,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
 
 exports.fetchUserChats_ApiController = async (req, res, next) => {
 
-    let { participant, isItSearch } = req.body;
+    let { participant, isItSearch, pagination } = req.body;
     
     try {
         const userData = req.userData;
@@ -156,10 +156,30 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
                 ]});
             
+            // chat conversations
             var conversations = "";
             if (ConversationFind) {
                 conversations = ConversationFind.conversations;
-                conversations.reverse();
+
+                let numberOfMsgsEachPagination = 30;
+                let start;
+                let end;
+                if (pagination) {
+                    start = conversations.length - (numberOfMsgsEachPagination*pagination);
+                    end = conversations.length - (numberOfMsgsEachPagination*(pagination-1));
+                } else {
+                    start = conversations.length - numberOfMsgsEachPagination;
+                    end = conversations.length;
+                }
+                
+                if (start < 0) {
+                    var allMessagesFetched = true;
+                    conversations = conversations.slice(0, end);
+                } else {
+                    conversations = conversations.slice(start, end);
+                }
+                
+                conversations.reverse(); 
                 
             } else {
                 console.log("Not found conversations");
@@ -206,8 +226,8 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                 var profilePic = participantData.othersData.profilePic;
             }
         }
-        
-        return res.json({conversations, fullName, profilePic, lastOnlineTime, newChatToAppendChatUserList});
+
+        return res.json({conversations, allMessagesFetched, fullName, profilePic, lastOnlineTime, newChatToAppendChatUserList});
 
     } catch (err) {
         next(err);

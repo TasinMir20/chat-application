@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="/css/user-logged-css/messenger-responsive.css">
 </head>
 
-<!-- fetchUserChats(lastChatUserId) this function called here to view the last conversation when load web page -->
-<body onload="fetchUserChats('<%= lastChatUserId %>');">
+<body>
     <section class="sections">
         <div class="container">
             <div class="messenger-container">
@@ -22,7 +21,6 @@
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt="">
                             </div>
-                            <input id="user-selft-id" type="text" value="<%= userData._id %>" style="display: none">
                             <p class="self-name"><%= `${userData.firstName} ${userData.lastName}`%></p>
                             <button id="logout"><i class="fas fa-sign-out-alt"></i>Logout</button>
                         </div>
@@ -83,6 +81,11 @@
         </div>
         <div id="img-expand"></div>
     </section>
+    <script>
+        const mySelfId = "<%=userData._id%>";
+        const lastChattingUserId = "<%=lastChattingUserId%>";
+        let recipientId = "";
+    </script>
     <script src="/scripts/module-resources/socket.io.min.js"></script>
     <script src="/scripts/user-logged-scripts/messenger.js"></script>
 </body>

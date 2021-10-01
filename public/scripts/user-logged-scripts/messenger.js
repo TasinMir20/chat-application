@@ -351,8 +351,7 @@ document.querySelector("#search").onkeyup = searchUsersToChat;
 
 
 let incre = 0;
-function fetchUserChats(id, isItSearch) {
-    const participant = id;
+function fetchUserChats(participant, isItSearch, pagination) {
 
     if (window.innerWidth < 770) {
         // START -- when screen less than 768px -> left side user chat list users hide and show chat conversions
@@ -362,10 +361,14 @@ function fetchUserChats(id, isItSearch) {
     }
 
     document.querySelector(".search-results").innerHTML = "";
-    document.querySelector("#msg-sent-btn").value = participant;
+    recipientId = participant; // updating message recipient id
 
     if (participant) {
-        const mySelfId = document.querySelector("#user-selft-id").value;
+
+        if (!pagination) {
+            const chatBox = document.querySelector(".chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
+        }
 
         const apiUrl = "/api/user/messenger/fetch-chats";
         fetch(apiUrl, {
@@ -374,7 +377,7 @@ function fetchUserChats(id, isItSearch) {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({participant, isItSearch})
+            body: JSON.stringify({participant, isItSearch, pagination})
         })
         .then((res) => res.json())
         .then((data) => {
@@ -480,19 +483,29 @@ function fetchUserChats(id, isItSearch) {
                         const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
                         // the message html structure
                         eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
-                                            <div class="author-img">
-                                                <img src="${messageAuthorPic}" alt="">
-                                            </div>
-                                            <div class="msg-n-meta clearfix">
-                                                <div class="msg-inner ${cssClass}">
-                                                    ${theMessage}
-                                                </div>
-                                                <span class="msg-time">${localDateAndTime}</span>
-                                            </div>
-                                        </div>`;
+                                                    <div class="author-img">
+                                                        <img src="${messageAuthorPic}" alt="">
+                                                    </div>
+                                                    <div class="msg-n-meta clearfix">
+                                                        <div class="msg-inner ${cssClass}">
+                                                            ${theMessage}
+                                                        </div>
+                                                        <span class="msg-time">${localDateAndTime}</span>
+                                                    </div>
+                                                </div>`;
                     }
 
-                    document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
+                    if (pagination > 1) {
+                        document.querySelector(".chat-box").insertAdjacentHTML("beforeend", eachMessageHTMLBody);
+                    } else {
+                        window.pagination = 1;
+                        document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
+                    }
+
+
+                    // all message fetching finished
+                    window.allMessagesFetched = data.allMessagesFetched;
+
                 } else {
                     document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
 
@@ -544,26 +557,37 @@ function fetchUserChats(id, isItSearch) {
 
 }
 
-// fetchUserChats(lastChatUserId); // this function also called onload event in HTML to view the last conversation when load web page
-// and also called every single chat List user
+window.addEventListener("load", fetchUserChats(lastChattingUserId)); // also called every single chat List user and called chat box scroll top event
+
 
 
 
 // Chat conversation->> Pagination When scrolled top end (behind the scene actually scrolled bottom of the element 'chatBox') then load previous messages
-function scrolledBottomDetect() {
-    const chatBox = document.querySelector(".chat-box");
-    if (chatBox.clientHeight +  Math.ceil(Math.abs(chatBox.scrollTop)) == chatBox.scrollHeight) {
-        console.log("Scrolled Bottom");
+let timeOut2 = null;
+function chatsPagination() {
+    if (!window.allMessagesFetched) {
+        const chatBox = document.querySelector(".chat-box");
+        if (chatBox.clientHeight +  (Math.ceil(Math.abs(chatBox.scrollTop)) + 3) >= chatBox.scrollHeight) {
+            console.log("Scrolled Bottom");
+            if (timeOut2 != null) {
+                clearTimeout(timeOut2);
+            }
+
+            timeOut2 = setTimeout(() => {
+                window.pagination++;
+                fetchUserChats(recipientId, false, window.pagination);
+            }, 500);
+        }
     }
+    
 }
-document.querySelector(".chat-box").addEventListener('scroll', scrolledBottomDetect)
+document.querySelector(".chat-box").addEventListener('scroll', chatsPagination)
 
 
 
 function sendMessage(event) {
     event.preventDefault();
     
-    const recipientId = document.querySelector("#msg-sent-btn").value;
     const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
     const messageInput = document.querySelector("#input-msg");
@@ -732,12 +756,10 @@ document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitE
 
 const socket = io();
 function socketEvent() {
-    const mySelfId = document.querySelector("#user-selft-id").value;
     
     // socket.io messages Listener at client
     const sEventNsme = mySelfId+"message";
     socket.on(sEventNsme, function(data) {
-        const recipientId = document.querySelector("#msg-sent-btn").value;
  
         // Message update real time in viewed conversion
         if (String(recipientId) === String(data.sender)) {
@@ -780,7 +802,7 @@ function socketEvent() {
 
 
             // Scroll bottom chat box when append message in chat box
-            // chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
+            chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
         }
         
 
@@ -805,18 +827,17 @@ function socketEvent() {
 
 
     // socket.io Typing Listener at client
-    let timeOut2 = null;
+    let timeOut3 = null;
     const typingEventName = mySelfId+"typing";
     socket.on(typingEventName, function(data) {
-        const recipientId = document.querySelector("#msg-sent-btn").value;
         if (String(recipientId) === String(data.typer)) {
 
-            if (timeOut2 != null) {
-                clearTimeout(timeOut2);
+            if (timeOut3 != null) {
+                clearTimeout(timeOut3);
             }
             document.querySelector(".messages-right-sidebar .act").innerText = "Typing...";
     
-            timeOut2 = setTimeout(function() {
+            timeOut3 = setTimeout(function() {
                 document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
             }, 2000);
         }
@@ -855,7 +876,6 @@ function socketEvent() {
 
 
                 // viewed conversation user connect event - active
-                const recipientId = document.querySelector("#msg-sent-btn").value;
                 if (String(recipientId) === String(data.id)) {
 
                     document.querySelector(".chatbox-header .img-wrap span").classList.add("hide");
@@ -868,7 +888,7 @@ function socketEvent() {
                 }
            }
        }
-   })
+   });
 
     // user disconnect listener
     let interval1 = null;
@@ -893,7 +913,6 @@ function socketEvent() {
 
 
             // viewed conversation user disconnect event - inactive
-            const recipientId = document.querySelector("#msg-sent-btn").value;
             if (String(recipientId) === String(data.id)) {
                 if (interval1 != null) {
                     clearInterval(interval1);
@@ -938,7 +957,7 @@ function socketEvent() {
                 }, 60000);
             }
         }
-    })
+    });
 
 }
 window.addEventListener("load", socketEvent);
@@ -951,7 +970,6 @@ window.addEventListener("load", socketEvent);
 
 // typing Message Event sent by API request
 function typingMessage() {
-    const recipientId = document.querySelector("#msg-sent-btn").value;
 
     const apiUrl = "/api/user/messenger/typing";
     fetch(apiUrl, {
