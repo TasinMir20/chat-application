@@ -56,6 +56,23 @@ exports.emailVerification = async (req, res, next) => {
     
 }
 
+
+exports.profile = async (req, res, next) => {
+
+    try {
+        const userData = req.userData;
+
+
+     
+        return res.render("pages/user-logged-pages/profile.ejs");
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+
 exports.messenger = async (req, res, next) => {
 
     try {

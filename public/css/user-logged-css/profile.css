@@ -1,0 +1,155 @@
+
+/* default values start */
+body,
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+    margin: 0;
+    padding: 0;
+}
+ul, 
+li,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+:focus {
+    outline: 0;
+}
+
+.sections {
+    width: 100%;
+}
+.container {
+    margin: 0 auto;
+}
+.clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+/* default values end */
+
+
+/* Font Family */
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('/fonts/Montserrat-Medium.woff2') format('woff2'),
+        url('/fonts/Montserrat-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('/fonts/Montserrat-Regular.woff2') format('woff2'),
+        url('/fonts/Montserrat-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-SemiBold';
+    src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2'),
+        url('/fonts/Montserrat-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('/fonts/Montserrat-Bold.woff2') format('woff2'),
+        url('/fonts/Montserrat-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-ExtraLight';
+    src: url('/fonts/Montserrat-ExtraLight.woff2') format('woff2'),
+        url('/fonts/Montserrat-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Lato */
+@font-face {
+    font-family: 'Lato-Bold';
+    src: url('/fonts/Lato-Bold.woff2') format('woff2'),
+        url('/fonts/Lato-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Light';
+    src: url('/fonts/Lato-Light.woff2') format('woff2'),
+        url('/fonts/Lato-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Regular';
+    src: url('/fonts/Lato-Regular.woff2') format('woff2'),
+        url('/fonts/Lato-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+/* Font Family end */
+
+body {
+    width: 100%;
+    height: 100%;
+    font-family: Lato-Regular;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+}
+
+.sections {
+    background-color: rgb(255, 255, 255);
+    height: 100%;
+}
+
+.sections .container {
+    max-width: 1536px;
+    height: 100%;
+    background-color: #ffffff;
+}

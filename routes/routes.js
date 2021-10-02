@@ -18,7 +18,7 @@ routers.post("/", (req, res) => res.redirect("/account"));
 // Login, Signup, and forget routes
 routers.use("/account", notLogin, loginSignupRoutes);
 
-// User after logged routes
+// User logged in routes
 routers.use("/user", isLogin, usersRoutes);
 
  
