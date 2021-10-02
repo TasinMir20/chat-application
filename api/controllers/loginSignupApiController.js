@@ -138,10 +138,11 @@ exports.signupApiController = async (req, res, next) => {
                     await User.updateOne({ _id: saveUserData._id }, { "othersData.codeSendTimes.email_verify_code": 1 });
 
                     // Login process
+                    const request = req;
                     const response = res;
                     const nxt = next;
                     const keepLogged = false;
-                    const loginSuccess = await doLogin(response, nxt, saveUserData, keepLogged);
+                    const loginSuccess = await doLogin(request, response, nxt, saveUserData, keepLogged);
                     if (loginSuccess) {
                         return res.json({ account_create: true });
                     }
@@ -267,9 +268,10 @@ exports.loginApiController = async (req, res, next) => {
             const matched = await bcrypt.compare(password, userExist.password);
 
             if (matched) {
+                const request = req;
                 const response = res;
                 const nxt = next;
-                const loginSuccess = await doLogin(response, nxt, userExist, keepLogged);
+                const loginSuccess = await doLogin(request, response, nxt, userExist, keepLogged);
 
                 return res.json({ loginSuccess });
 
@@ -579,9 +581,10 @@ exports.forgetPassPassword_ApiController = async (req, res, next) => {
                     res.clearCookie('recovery');
 
                     const keepLogged = false;
+                    const request = req;
                     const response = res;
                     const nxt = next;
-                    const loginSuccess = await doLogin(response, nxt, user, keepLogged);
+                    const loginSuccess = await doLogin(request, response, nxt, user, keepLogged);
 
                     if (loginSuccess) {
 

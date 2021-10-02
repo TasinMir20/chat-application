@@ -33,7 +33,7 @@ app.set("views", "views");
 
 
 // middleware imports
-const { cookieParse } = require('./middleware/cookieParse');
+const { cookieParse } = require('./middleware/parser');
 
 // Middleware Array
 const middleware = [

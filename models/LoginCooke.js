@@ -8,7 +8,9 @@ const loginCookieSchema = new Schema({
     login: Boolean,
     session: Boolean,
     createTime: Number,
-    expireTime: Number
+    expireTime: Number,
+    ip: String,
+    userAgent: Object
 });
 
 const LoginCooke = model("LoginCooke", loginCookieSchema);

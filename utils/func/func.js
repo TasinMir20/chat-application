@@ -53,7 +53,7 @@ async function mailSending(sentTo, subject, htmlMsg) {
 }
 
 // login process
-async function doLogin(res, next, userData, keepLogged) {
+async function doLogin(req, res, next, userData, keepLogged) {
 
     try {
 
@@ -77,7 +77,9 @@ async function doLogin(res, next, userData, keepLogged) {
             login: true,
             session: !keepLogged,
             createTime: currentEpochTime,
-            expireTime: howLongAge
+            expireTime: howLongAge,
+            ip: req.ip,
+            userAgent: req.userAgent
         });
 
         const saveLoginCookieData = await loginCookieInsertStructure.save();

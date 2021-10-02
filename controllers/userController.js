@@ -96,7 +96,7 @@ exports.messenger = async (req, res, next) => {
                 }
             }
             
-        res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChattingUserId});
+        return res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChattingUserId});
 
     } catch (err) {
         next(err);
