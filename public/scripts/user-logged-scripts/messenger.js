@@ -368,6 +368,11 @@ function fetchUserChats(participant, isItSearch, pagination) {
         if (!pagination) {
             const chatBox = document.querySelector(".chat-box");
             chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
+        } else {
+            // pagination loading show
+            const msgPaginationLoading = document.querySelector(".chatbox-header .msg-pagination-loading");
+            msgPaginationLoading.innerHTML = `<div class="loader"></div>`;
+            msgPaginationLoading.classList.add("show");
         }
 
         const apiUrl = "/api/user/messenger/fetch-chats";
@@ -497,6 +502,12 @@ function fetchUserChats(participant, isItSearch, pagination) {
 
                     if (pagination > 1) {
                         document.querySelector(".chat-box").insertAdjacentHTML("beforeend", eachMessageHTMLBody);
+
+                        // pagination loading remove/hide
+                        const msgPaginationLoading = document.querySelector(".chatbox-header .msg-pagination-loading");
+                        msgPaginationLoading.innerHTML = "";
+                        msgPaginationLoading.classList.remove("show");
+
                     } else {
                         window.pagination = 1;
                         document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
@@ -835,10 +846,13 @@ function socketEvent() {
             if (timeOut3 != null) {
                 clearTimeout(timeOut3);
             }
-            document.querySelector(".messages-right-sidebar .act").innerText = "Typing...";
+            const act = document.querySelector(".messages-right-sidebar .act");
+            act.innerText = "Typing";
+            act.classList.add("typing");
     
             timeOut3 = setTimeout(function() {
-                document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
+                act.innerText = "Active now";
+                act.classList.remove("typing");
             }, 2000);
         }
     });

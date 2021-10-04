@@ -179,7 +179,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     conversations = conversations.slice(start, end);
                 }
                 
-                conversations.reverse(); 
+                conversations.reverse();
                 
             } else {
                 console.log("Not found conversations");
