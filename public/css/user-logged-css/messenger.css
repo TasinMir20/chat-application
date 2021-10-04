@@ -176,12 +176,13 @@ body {
 .sections .container .messenger-container .chat-list-left-sidebar {
     background-color: #2c3e50;
     width: 30%;
+    position: relative;
 }
 
 /* self profile */
 .sections .container .messenger-container .chat-list-left-sidebar .self-profile {
     width: 100%;
-    padding: 20px 0 20px 30px;
+    padding: 10px 0 10px 30px;
     overflow: hidden;
     font-family: Montserrat-SemiBold;
 }
@@ -426,10 +427,37 @@ body {
     right: 20px;
 }
 
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link {
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #2c3e50;
+    box-shadow: -14px -2px 22px -11px rgb(0 0 0 / 62%);
+}
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a {
+    width: 50%;
+    display: block;
+    padding: 10px 0;
+    border: 1px solid #4b4b6a;
+    color: #f0f0f0;
+    text-align: center
+}
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a.settings-lnk {
+    border-left: none;
+}
 
-
-
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a:hover {
+    background-color: #394c5e;
+}
 
 
 
@@ -454,6 +482,7 @@ body {
     background-color: #f5f5f5;
     align-items: center;
     position: relative;
+    box-shadow: 0 0.125rem 0.625rem rgb(90 97 105 / 12%);
 
 }
 

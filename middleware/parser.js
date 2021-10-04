@@ -4,13 +4,13 @@ exports.userAgentParse = (req, res, next) => {
     const userAgent = req.get('User-Agent');
     let parsedUserAgent = uaParser(userAgent);
 
-    const device = JSON.stringify(parsedUserAgent.device)
-    if (device.length === 2) {
+    const device = JSON.stringify(parsedUserAgent.device) === JSON.stringify({}); // is empty object?
+    if (device) {
         parsedUserAgent.device = { vendor: "", model: "", type: "" }
     }
 
-    const cpu = JSON.stringify(parsedUserAgent.cpu)
-    if (cpu.length === 2) {
+    const cpu = JSON.stringify(parsedUserAgent.cpu) === JSON.stringify({}); // is empty object?
+    if (cpu) {
         parsedUserAgent.cpu = { architecture: "" }
     }
 
