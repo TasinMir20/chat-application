@@ -100,10 +100,12 @@ exports.settingsGetController = async (req, res, next) => {
 
     try {
         const userData = req.userData;
+        // Unneccery or Sensitive Data Empty
+        userData.password = "";
+        userData.othersData.codeSendTimes = "";
 
-        res.json({a: "Settings"})
+        res.render("pages/user-logged-pages/settings.ejs", { userData });
 
-        
 
     } catch (err) {
         next(err);

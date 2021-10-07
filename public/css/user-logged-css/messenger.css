@@ -1130,3 +1130,139 @@ body {
     background-color: #04AA6D;
     color: white;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Responsive CSS Style */
+
+@media all and (max-width: 1300px) {
+    .sections .container {
+        /* width: 1100px; */
+    }
+}
+
+@media all and (max-width: 1150px) {
+    .sections .container {
+        /* width: 95%; */
+    }
+}
+
+@media all and (max-width: 900px) and (min-width: 768px) {
+    /* chat list right sidebar */
+    .sections .container .messenger-container .chat-list-left-sidebar {
+        width: 33%;
+    }
+
+    /* self profile */
+    .sections .container .messenger-container .chat-list-left-sidebar .self-profile {
+        padding: 16px 0 16px 20px;
+    }
+
+
+    .sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .img-wrap {
+        width: 52px;
+        height: 52px;
+        margin: 5px 0;
+    }
+
+    .sections .container .messenger-container .chat-list-left-sidebar .search-users input {
+        font-size: 13px;
+    }
+
+    .sections .container .messenger-container .chat-list-left-sidebar .self-profile .wrap .self-name {
+        padding-left: 12px;
+    }
+
+
+    .sections .container .messenger-container .chat-list-left-sidebar .search-users i {
+        font-size: 16px;
+    }
+
+
+
+
+    .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user {
+        padding: 10px 8px;
+    }
+
+    .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap {
+        margin-right: 10px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap i {
+        top: 5px;
+        left: 14px;
+        font-size: 8px;
+    }
+    .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user .img-wrap span {
+        top: 4px;
+        left: 6px;
+    }
+
+
+    
+
+
+    /* Message right sidebar */
+    .sections .container .messenger-container .messages-right-sidebar {
+        width: 67%;
+    }
+
+
+
+    .sections .container .messenger-container .messages-right-sidebar .chat-box {
+        padding: 5px 6px 10px 6px;
+    }
+
+}
+
+/* Message right sidebar conversation img */
+@media all and (max-width: 768px) {
+    .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
+        width: 100%;
+    }
+}
+
+
+@media all and (max-width: 768px) {
+
+    .sections .container .messenger-container .chat-list-left-sidebar {
+        width: 0;
+        /* display: none; */
+    }
+
+    .sections .container .messenger-container .chat-list-left-sidebar.show {
+        width: 100%;
+        /* display: block; */
+    }
+
+    .sections .container .messenger-container .messages-right-sidebar.hide {
+        width: 0;
+        /* display: none; */
+    }
+
+    .sections .container .messenger-container .messages-right-sidebar {
+        width: 100%;
+    }
+
+    .sections .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow {
+        display: block;
+    }
+    .sections .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow i {
+        padding: 24px 20px 24px 5px;
+    }
+
+}
+
