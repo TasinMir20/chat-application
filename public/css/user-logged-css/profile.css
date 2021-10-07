@@ -145,11 +145,10 @@ body {
 
 .sections {
     background-color: rgb(255, 255, 255);
-    height: 100%;
+    width: 100%;
 }
 
 .sections .container {
     max-width: 1536px;
-    height: 100%;
     background-color: #ffffff;
 }

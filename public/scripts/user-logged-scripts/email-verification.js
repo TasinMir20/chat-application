@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 /* Email verify API request func Start */
-function  emailVerify_ApiRequest(event) {
+function emailVerify_ApiRequest(event) {
     event.preventDefault();
 
     const userEnteredCode = document.querySelector("#email-verify-code").value;

@@ -113,7 +113,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
             if (findUserToConversation[0]) {
 
                 for (var i = 0; i < findUserToConversation.length; i++) {
-                    foundUser += `<div class="search-single-user" onclick="fetchUserChats('${findUserToConversation[i]._id}', true);">
+                    foundUser += `<div class="search-single-user" onclick="fetchUserChats_ApiRequest('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
                                         <img src="/images/users/profile-photo/${findUserToConversation[i].othersData.profilePic}" alt="">
                                     </div>
@@ -210,7 +210,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                     let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
 
                     var newChatToAppendChatUserList = 
-                        `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${participantData._id}')">
+                        `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/${participantData.othersData.profilePic}" alt="">
                             </div>
@@ -304,9 +304,9 @@ exports.sendMessage_ApiController = async (req, res, next) => {
             }
 
 
-            const sEventNsme = recipientId+"message";
+            const socketMsgEventName = recipientId+"message";
             // socket.io messages Event at server
-            global.io.emit(sEventNsme, messageBody);
+            global.io.emit(socketMsgEventName, messageBody);
             
             return res.json({send: sent, attachmentName});
 

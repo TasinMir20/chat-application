@@ -1,0 +1,34 @@
+<section class="sections top-bar">
+    <div class="top-bar-container">
+        <div class="logo-cont">
+            <div  class="logo-wrap">
+                <a href="/"><img src="/images/logo.png" alt="Logo"></a>
+            </div>
+        </div>
+        <div class="top-info">
+            <a href="/<%=userData.username%>" class="user" title="See your profile">
+                <div class="user-pic"><img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt=""></div>
+                <div class="user-name"><span><%= userData.firstName %></span></div>
+            </a>
+            <div class="others-pages">
+                <a href="/user/messenger" class="actions" title="Messenger"><i class="fab fa-facebook-messenger"></i></a>
+                <a href="/user/settings" class="actions" title="Settings"><i class="fas fa-cog"></i></i></a>
+                <div class="actions dropdown" title="Account">
+                    <i class="fas fa-caret-down"></i>
+                    <div class="dropdown-elements">
+                        <div class="inner">
+                            <a href="/<%=userData.username%>" class="user">
+                                <div class="user-pic"><img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt=""></div>
+                                <div class="user-name">
+                                    <span class="name"><%=`${userData.firstName} ${userData.lastName}`%></span>
+                                    <span class="title">See your profile</span>
+                                </div>
+                            </a>
+                            <hr class="separate-line" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

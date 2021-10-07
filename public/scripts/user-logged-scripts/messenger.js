@@ -156,9 +156,10 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 
 
 
-/************************************************* API Function start form here to END ************************************/
+/**************************** API request Function start form here *****************************/
+///////////////////////////////////////////////////////////////////////
 
-function chatUserList() {
+function chatUserList_ApiRequest() {
     const apiUrl = "/api/user/messenger/chat-user-list";
 
     fetch(apiUrl, {
@@ -258,7 +259,7 @@ function chatUserList() {
 
 
                     chatUserListHTML += `
-                            <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats('${chatListUsers[i]._id}');">
+                            <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${chatListUsers[i]._id}');">
                                 <div class="img-wrap">
                                     <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
                                     <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
@@ -290,18 +291,18 @@ function chatUserList() {
         console.log(reason);
     });
 }
-window.addEventListener("load", chatUserList);
+window.addEventListener("load", chatUserList_ApiRequest);
 
-// chatUserList() function in Interval to refresh user online offline time
+// chatUserList_ApiRequest() function in Interval to refresh user online offline time
 setInterval(() => {
-    chatUserList();
+    chatUserList_ApiRequest();
 }, 60000);
 
 
 
 
 let timeOut1 = null;
-function searchUsersToChat() {
+function searchUsersToChat_ApiRequest() {
     const searchKeyWord = document.querySelector("#search").value;
 
     if (searchKeyWord) {
@@ -346,12 +347,12 @@ function searchUsersToChat() {
     }
 
 }
-document.querySelector("#search").onkeyup = searchUsersToChat;
+document.querySelector("#search").onkeyup = searchUsersToChat_ApiRequest;
 
 
 
 let incre = 0;
-function fetchUserChats(participant, isItSearch, pagination) {
+function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 
     if (window.innerWidth < 770) {
         // START -- when screen less than 768px -> left side user chat list users hide and show chat conversions
@@ -568,7 +569,7 @@ function fetchUserChats(participant, isItSearch, pagination) {
 
 }
 
-window.addEventListener("load", fetchUserChats(lastChattingUserId)); // also called every single chat List user and called chat box scroll top event
+window.addEventListener("load", fetchUserChats_ApiRequest(lastChattingUserId)); // also called every single chat List user and called chat box scroll top event
 
 
 
@@ -586,17 +587,17 @@ function chatsPagination() {
 
             timeOut2 = setTimeout(() => {
                 window.pagination++;
-                fetchUserChats(recipientId, false, window.pagination);
+                fetchUserChats_ApiRequest(recipientId, false, window.pagination);
             }, 500);
         }
     }
     
 }
-document.querySelector(".chat-box").addEventListener('scroll', chatsPagination)
+document.querySelector(".chat-box").addEventListener('scroll', chatsPagination);
 
 
 
-function sendMessage(event) {
+function sendMessage_ApiRequest(event) {
     event.preventDefault();
     
     const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
@@ -749,12 +750,12 @@ function sendMessage(event) {
     }
 
 }
-document.querySelector("#msg-sent-btn").addEventListener("click", sendMessage);
+document.querySelector("#msg-sent-btn").addEventListener("click", sendMessage_ApiRequest);
 
 
 function messageSendByHitEnter(event){
     if (event.keyCode == 13 && !event.ctrlKey) {
-        sendMessage(event);
+        sendMessage_ApiRequest(event);
     }
 }
 document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitEnter);
@@ -769,8 +770,8 @@ const socket = io();
 function socketEvent() {
     
     // socket.io messages Listener at client
-    const sEventNsme = mySelfId+"message";
-    socket.on(sEventNsme, function(data) {
+    const socketMsgEventName = mySelfId+"message";
+    socket.on(socketMsgEventName, function(data) {
  
         // Message update real time in viewed conversion
         if (String(recipientId) === String(data.sender)) {
@@ -983,7 +984,7 @@ window.addEventListener("load", socketEvent);
 
 
 // typing Message Event sent by API request
-function typingMessage() {
+function typingMessage_ApiRequest() {
 
     const apiUrl = "/api/user/messenger/typing";
     fetch(apiUrl, {
@@ -1008,12 +1009,12 @@ function typingMessage() {
         console.log(reason);
      });
 }
-document.querySelector("#input-msg").onkeyup = typingMessage;
+document.querySelector("#input-msg").onkeyup = typingMessage_ApiRequest;
 
 
 
 
-function logOut() {
+function logOut_ApiRequest() {
     const apiUrl = "/api/user/logout";
     fetch(apiUrl, {
         method: "POST"
@@ -1038,4 +1039,4 @@ function logOut() {
         console.log(reason);
      });
 }
-document.querySelector("#logout").onclick = logOut;
+document.querySelector("#logout").onclick = logOut_ApiRequest;

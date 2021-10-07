@@ -27,6 +27,9 @@ routers.use("/user", isLogin, usersRoutes);
 const routersApi = require('../api/routes/routes');
 routers.use("/api", routersApi);
 
+// profile dynamic route
+const { profileGetController } = require('../controllers/profileController');
+routers.get("/:username", isLogin, profileGetController); // users Profiles
 
 
 // error handler routes - Start

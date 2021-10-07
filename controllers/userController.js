@@ -7,7 +7,7 @@ const User = require("../models/User");
 
 const {codeSaveDBandMailSend} = require("../utils/func/func")
 
-exports.mainPathController = async (req, res, next) => {
+exports.mainPathGetController = async (req, res, next) => {
 
     try {
 
@@ -23,7 +23,7 @@ exports.mainPathController = async (req, res, next) => {
     }
 }
 
-exports.dashboardController = async (req, res, next) => {
+exports.dashboardGetController = async (req, res, next) => {
 
     try {
         
@@ -34,7 +34,7 @@ exports.dashboardController = async (req, res, next) => {
 }
 
 
-exports.emailVerification = async (req, res, next) => {
+exports.emailVerificationGetController = async (req, res, next) => {
 
     try {
         const user = req.userData;
@@ -57,26 +57,16 @@ exports.emailVerification = async (req, res, next) => {
 }
 
 
-exports.profile = async (req, res, next) => {
+
+exports.messengerGetController = async (req, res, next) => {
 
     try {
         const userData = req.userData;
 
+        // Unneccery or Sensitive Data Empty
+        userData.password = "";
+        userData.othersData.codeSendTimes = "";
 
-     
-        return res.render("pages/user-logged-pages/profile.ejs");
-
-    } catch (err) {
-        next(err);
-    }
-}
-
-
-
-exports.messenger = async (req, res, next) => {
-
-    try {
-        const userData = req.userData;
 
         // Last chatting user ID getting process and provide in ejs
         let involvedConversations = await Conversation.find({ 
@@ -97,6 +87,23 @@ exports.messenger = async (req, res, next) => {
             }
             
         return res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChattingUserId});
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+
+
+exports.settingsGetController = async (req, res, next) => {
+
+    try {
+        const userData = req.userData;
+
+        res.json({a: "Settings"})
+
+        
 
     } catch (err) {
         next(err);

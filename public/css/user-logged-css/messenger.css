@@ -458,6 +458,9 @@ body {
 .sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a:hover {
     background-color: #394c5e;
 }
+.sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a i {
+    margin-right: 3px;
+}
 
 
 
@@ -706,6 +709,7 @@ body {
     padding: 7px 15px;
     border-radius: 20px;
     text-align: left;
+    box-shadow: 0 0 10px rgb(0 0 0 / 8%), 0rem 16px 16px -16px rgb(0 0 0 / 10%);
 }
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
     width: 50%;
