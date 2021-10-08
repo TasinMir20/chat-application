@@ -536,8 +536,6 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
                         if (!alreadyExist) {
                             chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
                         }
-
-                        
                     }
                 }
 
@@ -580,7 +578,6 @@ function chatsPagination() {
     if (!window.allMessagesFetched) {
         const chatBox = document.querySelector(".chat-box");
         if (chatBox.clientHeight +  (Math.ceil(Math.abs(chatBox.scrollTop)) + 3) >= chatBox.scrollHeight) {
-            console.log("Scrolled Bottom");
             if (timeOut2 != null) {
                 clearTimeout(timeOut2);
             }
@@ -775,6 +772,15 @@ function socketEvent() {
  
         // Message update real time in viewed conversion
         if (String(recipientId) === String(data.sender)) {
+
+            // Typing Animation element remove before insert an new message
+            const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
+            const typingAnimationIsInserted = document.querySelector(".chat-box").contains(getTypingAnimation);
+            if (typingAnimationIsInserted) {
+                getTypingAnimation.remove();
+            }
+
+
             const oppositeAuthorPic = document.querySelector(".messages-right-sidebar .chatbox-header .img-wrap .pic").src;
 
             // Time convert to client local (Whole Date and time)
@@ -850,10 +856,35 @@ function socketEvent() {
             const act = document.querySelector(".messages-right-sidebar .act");
             act.innerText = "Typing";
             act.classList.add("typing");
+
+            // Typing animation progress
+            const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
+            const typingAnimationIsInserted = document.querySelector(".chat-box").contains(getTypingAnimation);
+
+            if (!typingAnimationIsInserted) {
+                // Insert Typing Animation element
+                const typingAnimationElement = `<div id="typing-animation">
+                                                    <div class="chat-bubble">
+                                                        <div class="typing">
+                                                            <div class="dot"></div>
+                                                            <div class="dot"></div>
+                                                            <div class="dot"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
+                const chatBox = document.querySelector(".chat-box");
+                chatBox.insertAdjacentHTML("afterbegin", typingAnimationElement);
+            }
     
             timeOut3 = setTimeout(function() {
                 act.innerText = "Active now";
                 act.classList.remove("typing");
+
+                // Typing Animation element remove 2 seconds delay
+                if (typingAnimationIsInserted) {
+                    getTypingAnimation.remove();
+                }
+                
             }, 2000);
         }
     });
