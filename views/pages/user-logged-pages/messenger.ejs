@@ -41,17 +41,17 @@
                     </div>
                 </div>
                 <div class="messages-right-sidebar sidebar w0">
-                    <div class="chatbox-header">
+                    <div class="chatbox-header" title="Double click to full screen">
                         <div class="left-arrow">
                             <i class="fas fa-arrow-left"></i>
                         </div>
-                        <div class="img-wrap">
+                        <div class="img-wrap" title="Click to view profile">
                             <img class="pic" src="" alt="">
                             <i class="fas fa-circle"></i>
                             <span class="hide"></span>
                         </div>
                         <div class="meta">
-                            <p class="name"></p>
+                            <p class="name" title="Click to view profile"></p>
                             <p class="act"></p>
                         </div>
                         <div class="msg-pagination-loading"></div>
@@ -90,6 +90,7 @@
         const mySelfId = "<%=userData._id%>";
         const lastChattingUserId = "<%=lastChattingUserId%>";
         let recipientId = "";
+        let relevantUsername = "";
     </script>
     <script src="/scripts/module-resources/socket.io.min.js"></script>
     <script src="/scripts/user-logged-scripts/messenger.js"></script>

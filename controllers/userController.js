@@ -67,25 +67,33 @@ exports.messengerGetController = async (req, res, next) => {
         userData.password = "";
         userData.othersData.codeSendTimes = "";
 
+        const idFormQueryString = req.query.message;
+        const isValidObjId = mongoose.Types.ObjectId.isValid(idFormQueryString);
+        const ok = isValidObjId ? await User.find({_id: idFormQueryString}) : null;
 
-        // Last chatting user ID getting process and provide in ejs
-        let involvedConversations = await Conversation.find({ 
-            $or: [
-                { creatorObjId: userData._id },
-                { participantObjId: userData._id }
-            ]}).limit(1).sort({updatedAt: -1});
+        let lastChattingUserId;
+        if (ok) {
+            // if redirect from user profile clicked by message button
+            lastChattingUserId = idFormQueryString;
+        } else {
+            // Last chatting user ID getting process and provide in ejs
+            let involvedConversations = await Conversation.find({ 
+                $or: [
+                    { creatorObjId: userData._id },
+                    { participantObjId: userData._id }
+                ]}).limit(1).sort({updatedAt: -1});
 
-            involvedConversations = involvedConversations[0];
+                involvedConversations = involvedConversations[0];
 
-            let lastChattingUserId;
-            if (involvedConversations) {
-                if (String(involvedConversations.creatorObjId) === String(userData._id)) {
-                    lastChattingUserId = involvedConversations.participantObjId;
-                } else {
-                    lastChattingUserId = involvedConversations.creatorObjId;
+                if (involvedConversations) {
+                    if (String(involvedConversations.creatorObjId) === String(userData._id)) {
+                        lastChattingUserId = involvedConversations.participantObjId;
+                    } else {
+                        lastChattingUserId = involvedConversations.creatorObjId;
+                    }
                 }
-            }
-            
+        }
+
         return res.render("pages/user-logged-pages/messenger.ejs", {userData, lastChattingUserId});
 
     } catch (err) {

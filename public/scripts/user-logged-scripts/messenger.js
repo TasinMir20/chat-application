@@ -12,6 +12,23 @@ function selfOffline() {
 body.onoffline = selfOffline;
 
 
+
+// redirect recipient Profile when click recipient on recipients of the chat header
+function redirectUserProfile() {
+    location.assign(`/${relevantUsername}`);
+}
+document.querySelector(".chatbox-header .img-wrap").onclick = redirectUserProfile;
+document.querySelector(".chatbox-header .name").onclick = redirectUserProfile;
+
+// remove query string from url when redirect from user profile
+setTimeout(() => {
+    if (window.location.search) {
+        history.pushState({}, null, window.location.href.split('?')[0]);
+    }
+}, 1000)
+
+
+
 // Whole messenger full screen and Exit full screen
 function messengerFullScreenN_Exit() {
     if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
@@ -395,6 +412,7 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
         .then((res) => res.json())
         .then((data) => {
             if (!(data.error === "server error")) {
+                relevantUsername = data.username; // updating message recipient username
 
                 // when no previous user in the chat list then search someone and click on it- show chat box
                 document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");

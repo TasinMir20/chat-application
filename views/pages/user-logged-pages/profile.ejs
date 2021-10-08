@@ -11,9 +11,43 @@
 </head>
 <body>
     <%- include("../../partials/top-bar.ejs") %>
-    <h1>Profile Page</h1>
+    <%
+        const isOwnProfile = String(userData._id) == String(requestedProfileData._id);
 
-    
+        const socialLinks = requestedProfileData.othersData.socialLinks;
+
+        const linkedin = socialLinks.linkedin;
+        const facebook = socialLinks.facebook;
+        const instagram = socialLinks.instagram;
+        const twitter = socialLinks.twitter;
+        const github = socialLinks.github;
+        const dribbble = socialLinks.dribbble;
+    %>
+    <section class="sections">
+        <div class="container">
+            <div class="profile">
+                <div class="profile-photo">
+                    <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+                </div>
+                <div class="profile-name">
+                    <p class="name"><%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></p>
+                </div>
+                <div class="social-links">
+                    <!-- Profile Social Link -->
+                    <%- linkedin ? `<a href="${linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : "" %>
+                    <%- facebook ? `<a href="${facebook}" target="_blank"><i class="fab fa-facebook"></i></a>` : "" %>
+                    <%- instagram ? `<a href="${facebook}" target="_blank"><i class="fab fa-instagram"></i></a>` : "" %>
+                    <%- twitter ? `<a href="${twitter}" target="_blank"><i class="fab fa-twitter"></i></a>` : "" %>
+                    <%- github ? `<a href="${github}" target="_blank"><i class="fab fa-github"></i></a>` : "" %>
+                    <%- dribbble ? `<a href="${dribbble}" target="_blank"><i class="fab fa-dribbble"></i></a>` : "" %>
+                </div>
+                <!-- Profile message button -->
+                <%- !isOwnProfile ? `<div class="profle-message-div"><a href="/user/messenger/?message=${requestedProfileData._id}">Message</a></div>` : "" %>
+                
+            </div>
+        </div>
+    </section>
+
     <script src="/scripts/user-logged-scripts/partials-scripts/top-bar.js"></script>
     <script src="/scripts/user-logged-scripts/profile.js"></script>
 </body>

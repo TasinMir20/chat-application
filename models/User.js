@@ -34,6 +34,32 @@ const userSchema = new Schema({
         userCreateTime: Number,
         profilePic: String,
         lastOnlineTime: Number,
+        socialLinks: {
+            linkedin: {
+                type: String,
+                default: ""
+            },
+            facebook: {
+                type: String,
+                default: ""
+            },
+            instagram: {
+                type: String,
+                default: ""
+            },
+            twitter: {
+                type: String,
+                default: ""
+            },
+            github: {
+                type: String,
+                default: ""
+            },
+            dribbble: {
+                type: String,
+                default: ""
+            },
+        },
         emailVerified: Boolean,
         codeSendTimes: {
             email_verify_code: Number,

@@ -506,6 +506,7 @@ body {
     height: 46px;
     margin: 11px 0 11px 15px;
     position: relative;
+    cursor: pointer;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap img {
@@ -565,6 +566,7 @@ body {
     color: #32465A;
     font-family: Montserrat-Bold;
     padding-bottom: 3px;
+    cursor: pointer;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .act {
@@ -744,6 +746,7 @@ body {
     padding: 0;
     border-radius: 0;
     background-color: transparent;
+    box-shadow: none;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message {

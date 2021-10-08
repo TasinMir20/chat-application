@@ -222,12 +222,14 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                         </div>`;
                 }
                 var fullName = `${participantData.firstName} ${participantData.lastName}`;
-                var lastOnlineTime = participantData.othersData.lastOnlineTime;
+                var username = participantData.username;
                 var profilePic = participantData.othersData.profilePic;
+                var lastOnlineTime = participantData.othersData.lastOnlineTime;
+                
             }
         }
 
-        return res.json({conversations, allMessagesFetched, fullName, profilePic, lastOnlineTime, newChatToAppendChatUserList});
+        return res.json({conversations, allMessagesFetched, fullName, username, profilePic, lastOnlineTime, newChatToAppendChatUserList});
 
     } catch (err) {
         next(err);
