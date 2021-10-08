@@ -649,6 +649,34 @@ body {
     /* display: none; */
 }
 
+
+/* START fetch message loading */
+.sections .container .messenger-container .messages-right-sidebar .chat-box .fetch-message-loading {
+    color: #333;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chat-box .fetch-message-loading p::after {
+    content: '...';
+    width: 0;
+    position: absolute;
+    overflow: hidden;
+    animation: loading-dots-animation 1s infinite;
+}
+
+@keyframes loading-dots-animation {
+    0%   { width:0.0em; }
+    50%  { width:1.2em; }
+    100% { width:0.0em; }
+}
+/* END fetch message loading */
+
+
+
 .sections .container .messenger-container .messages-right-sidebar .chat-box .no-conv-yet {
     color:black;
     margin: 37% auto;
@@ -656,7 +684,7 @@ body {
 
 
 
-/* ************************** */
+/*************************** */
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box {
     width: 100%;
     margin-bottom: 10px;

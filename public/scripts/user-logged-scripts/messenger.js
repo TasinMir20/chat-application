@@ -368,6 +368,13 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 
         if (!pagination) {
             const chatBox = document.querySelector(".chat-box");
+
+            // Loading fetch message
+            chatBox.innerHTML = `<div class="fetch-message-loading">
+                                    <p>Loading</p>
+                                </div>`;
+
+            // Scroll bottom page on loading fetch messages
             chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
         } else {
             // pagination loading show
