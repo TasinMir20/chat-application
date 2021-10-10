@@ -25,7 +25,7 @@ setTimeout(() => {
     if (window.location.search) {
         history.pushState({}, null, window.location.href.split('?')[0]);
     }
-}, 1000)
+}, 0)
 
 
 
@@ -597,7 +597,7 @@ window.addEventListener("load", fetchUserChats_ApiRequest(lastChattingUserId)); 
 
 
 
-// Chat conversation->> Pagination When scrolled top end (behind the scene actually scrolled bottom of the element 'chatBox') then load previous messages
+/****** Chat conversation->> Pagination When scrolled top end (behind the scene actually scrolled bottom of the element 'chatBox') then load previous messages ******/
 let timeOut2 = null;
 function chatsPagination() {
     if (!window.allMessagesFetched) {
@@ -682,14 +682,20 @@ function sendMessage_ApiRequest(event) {
         chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
 
 
-        // self last message and last message send time update in chat list
+        // self last message and last message send time update in chat user list
         const str = recipientId;
         const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
-        const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
-        //  HTML tag conflation resolve
-        let validatedMessage1 = lastMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
-        document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${fileChosen.files.length > 0 ? "Attachment" : validatedMessage1}`;
-        document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
+
+        const chatUserElement = document.querySelector(`.chat-list .${getUniqueCssClass}`);
+        const isExistUserElement = document.querySelector(".chat-list").contains(chatUserElement);
+        if (isExistUserElement) {
+            const lastMessage = message.length > 30 ? `${message.slice(0, 30)}...` : message;
+            //  HTML tag conflation resolve
+            let validatedMessage1 = lastMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
+            document.querySelector(`.${getUniqueCssClass} .meta .last-message`).innerHTML = `You: ${fileChosen.files.length > 0 ? "Attachment" : validatedMessage1}`;
+            document.querySelector(`.${getUniqueCssClass} .meta .last-msg-time`).innerText = "Just now";
+
+        }
 
         //////////////////////////////////////////
         //////////////////////////////////////////
@@ -791,12 +797,13 @@ document.querySelector("#input-msg").addEventListener("keyup", messageSendByHitE
 const socket = io();
 function socketEvent() {
     
-    // socket.io messages Listener at client
+    /****** socket.io messages Listener at client ******/
     const socketMsgEventName = mySelfId+"message";
     socket.on(socketMsgEventName, function(data) {
+        const sender = data.sender;
  
         // Message update real time in viewed conversion
-        if (String(recipientId) === String(data.sender)) {
+        if (String(recipientId) === String(sender)) {
 
             // Typing Animation element remove before insert an new message
             const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
@@ -846,14 +853,24 @@ function socketEvent() {
 
             // Scroll bottom chat box when append message in chat box
             chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
+
+        } else {
+            // Real time show the new message user in chat user list
+            const str = sender;
+            const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+            const chatUserElement = document.querySelector(`.chat-list .${getUniqueCssClass}`);
+            const isExistUserElement = document.querySelector(".chat-list").contains(chatUserElement);
+            if (!isExistUserElement) {
+                chatUserList_ApiRequest();
+            }
         }
         
 
         // last message and last message send time update in chat list
         const chatUserList = document.querySelector(".chat-list");
-        const exist = chatUserList.innerHTML.match(data.sender);
+        const exist = chatUserList.innerHTML.match(sender);
         if (exist) {
-            const str = data.sender;
+            const str = sender;
             const getUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
             const lastMessage = data.message.length > 30 ? `${data.message.slice(0, 30)}...` : data.message;
             //  HTML tag conflation resolve
@@ -869,7 +886,7 @@ function socketEvent() {
 
 
 
-    // socket.io Typing Listener at client
+    /****** socket.io Typing Listener at client ******/
     let timeOut3 = null;
     const typingEventName = mySelfId+"typing";
     socket.on(typingEventName, function(data) {
@@ -882,7 +899,9 @@ function socketEvent() {
             act.innerText = "Typing";
             act.classList.add("typing");
 
-            // Typing animation progress
+            /************* Typing animation progress **************/
+
+            // check Typing Animation element already exists/Inserted or not
             const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
             const typingAnimationIsInserted = document.querySelector(".chat-box").contains(getTypingAnimation);
 
@@ -901,11 +920,15 @@ function socketEvent() {
                 chatBox.insertAdjacentHTML("afterbegin", typingAnimationElement);
             }
     
+            /* Typing element remove 2 seconds delay if constant not typing */
             timeOut3 = setTimeout(function() {
                 act.innerText = "Active now";
                 act.classList.remove("typing");
 
-                // Typing Animation element remove 2 seconds delay
+                // check Typing Animation element already exists/Inserted or not
+                const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
+                const typingAnimationIsInserted = document.querySelector(".chat-box").contains(getTypingAnimation);
+
                 if (typingAnimationIsInserted) {
                     getTypingAnimation.remove();
                 }
@@ -925,7 +948,7 @@ function socketEvent() {
    // self connect event sent
    socket.emit("AnUserConnected", {id: mySelfId});
 
-   // user connect listener
+   /****** user connect listener ******/
    socket.on("anUser", function(data) {
 
        // chat list user active inactive
@@ -961,7 +984,7 @@ function socketEvent() {
        }
    });
 
-    // user disconnect listener
+    /****** user disconnect listener ******/
     let interval1 = null;
     socket.on("AnUserD", function(data) {
 
@@ -1039,7 +1062,7 @@ window.addEventListener("load", socketEvent);
 
 
 
-// typing Message Event sent by API request
+/****** typing Message Event sent by API request ******/
 function typingMessage_ApiRequest() {
 
     const apiUrl = "/api/user/messenger/typing";

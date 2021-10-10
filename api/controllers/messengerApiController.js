@@ -91,6 +91,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
     const {searchKeyWord} = req.body;
 
     try {
+        const userData = req.userData;
 
         if (searchKeyWord) {
 
@@ -100,12 +101,18 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
             const KeyWordRegExp = new RegExp("^" + es(searchKeyWord), "i");
             // search in Database
             const findUserToConversation = await User.find({
-                $or: [
-                    { firstName: KeyWordRegExp },
-                    { lastName: KeyWordRegExp },
-                    { username: KeyWordRegExp },
-                    { email: KeyWordRegExp },
-                ]});
+                $and: [
+                    {
+                        $or: [
+                            { firstName: KeyWordRegExp }, 
+                            { lastName: KeyWordRegExp }, 
+                            { username: KeyWordRegExp }, 
+                            { email: KeyWordRegExp }
+                        ]
+                    },
+                    { $nor: [{ _id: userData._id }] } /* User self Id/account will not appear in the search results */
+                ],
+            });
 
             
 
