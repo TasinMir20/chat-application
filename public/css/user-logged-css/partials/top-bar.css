@@ -99,6 +99,7 @@
     box-shadow: 0 12px 28px 0 rgb(0 0 0 / 20%),0 2px 4px 0 rgb(0 0 0 / 10%),inset 0 0 0 1px rgb(255 255 255 / 50%);
     border-radius: 10px;
     display: none;
+    z-index: 1002;
 }
 .top-bar .top-bar-container .others-pages .dropdown .dropdown-elements.show {
     display: block;

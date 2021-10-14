@@ -1,22 +1,17 @@
 const uploader = require("../../utils/func/uploader");
 const path = require("path");
 
-function messengerFileUpload(req, res, next) {
-    const MaximumFileSize = 50000000;
+function profilePhotoUpload(req, res, next) {
+    const MaximumFileSize = 1000000;
     const maxNumberOfFiles = 1;
 
     const allowFileTypes = [
-        "image/jpeg", "image/jpg", "image/png", "image/gif", "image/tiff", "image/x-icon", "image/webp", "image/svg+xml", 
-        "audio/mpeg", "audio/wav", "audio/ogg", "audio/x-m4a", 
-        "video/mp4", "video/x-matroska", "video/quicktime", "video/webm", "video/3gpp", "video/vnd.dlna.mpeg-tts", "video/avi", "video/x-ms-wmv",
-        "application/pdf", 
-        "application/postscript", "application/x-zip-compressed", "application/zip", "application/octet-stream", 
-        "text/plain"
+        "image/jpeg", "image/jpg", "image/png", "image/gif", "image/tiff", "image/x-icon", "image/webp", "image/svg+xml"
     ];
 
-    const uniqueFileName = String(`m${req.userData._id}-${Date.now()}`);
+    const uniqueFileName = String(`avatar${req.userData._id}-${Date.now()}`);
 
-    const upload_path = `${path.resolve('./')}/private/messenger/files`;
+    const upload_path = `${path.resolve('./')}/public/images/users/profile-photo`;
 
     const upload = uploader(upload_path, allowFileTypes, MaximumFileSize, maxNumberOfFiles, "This format not allowed!", uniqueFileName);
     // call the middleware function
@@ -29,11 +24,11 @@ function messengerFileUpload(req, res, next) {
             } else if (err.message === "More files were selected than allowed!") {
                 issue = `Maximum ${maxNumberOfFiles} file allowed to upload!`;
             }
-            res.status(406).json({issue});
+            return res.status(406).json({issue});
         } else {
             next();
         }
     });
 }
 
-module.exports = messengerFileUpload;
+module.exports = profilePhotoUpload;

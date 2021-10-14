@@ -729,7 +729,7 @@ function sendMessage_ApiRequest(event) {
                         // remove message sending loading
                         insertAfterResponse.remove();
 
-                        // Floating message show if file upload any requirement not fill
+                        // Floating message show if file upload any requirement not be fill
                         const element = document.querySelector(".floating-alert-notification");
                         element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
                         element.classList.add("show");

@@ -1,8 +1,13 @@
 const profileApi = require("express").Router();
 
-const { profileRoot } = require("../controllers/profileApiController");
+const { profilePhotoUpload_ApiController } = require("../controllers/profileApiController");
 
-profileApi.post("/a", profileRoot);
+// Middleware import
+const profilePhotoUpload = require("../../middleware/upload-middleware/profilePhotoUpload");
+
+
+profileApi.post("/profile-photo-upload", profilePhotoUpload, profilePhotoUpload_ApiController);
+
 
 
 

@@ -27,7 +27,11 @@
         <div class="container">
             <div class="profile">
                 <div class="profile-photo">
-                    <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+                    <div class="photo">
+                        <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+                    </div>
+                    <%- isOwnProfile ? `<div class="edit-icon"><i class="fas fa-edit"></i></div>` : "" %>
+                    <div class="profile-photo-set-elements"></div>
                 </div>
                 <div class="profile-name">
                     <p class="name"><%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></p>
@@ -45,6 +49,7 @@
                 <%- !isOwnProfile ? `<div class="profle-message-div"><a href="/user/messenger/?message=${requestedProfileData._id}">Message</a></div>` : "" %>
                 
             </div>
+            <div class="floating-alert-notification"></div>
         </div>
     </section>
 

@@ -3,10 +3,10 @@ const multer = require("multer");
 const path = require("path");
 const createError = require("http-errors");
 
-function uploader(subfolder_path, allowed_file_types, max_file_size, max_number_of_files, error_msg, fileNm) {
+function uploader(upload_folder_path, allowed_file_types, max_file_size, max_number_of_files, error_msg, fileNm) {
     
     // File upload folder
-    const UPLOADS_FOLDER = `${path.resolve('./')}/private/${subfolder_path}`;
+    const UPLOADS_FOLDER = upload_folder_path;
 
     // define the storage
     const storage = multer.diskStorage({
