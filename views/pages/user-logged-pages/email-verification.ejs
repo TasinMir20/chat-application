@@ -6,14 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email verification</title>
+    <link rel="stylesheet" href="/font-icon/fontawesome-free-5.15.4-web/css/all.min.css"/>
+    <link rel="stylesheet" href="/css/user-logged-css/partials/top-bar.css">
     <link rel="stylesheet" href="/css/user-logged-css/email-verification.css">
     <!-- Google Font family import -->
     <style>@import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@700&display=swap');</style>
 <body>
+<%- include("../../partials/top-bar.ejs") %>
     <section class="section">
         <div class="container">
-            <h1>Please confirm your email address</h1>
             <form action="" method="post">
+                <h1>Please confirm your email address</h1>
                 <div class="input-cont">
                     <input type="number" class="code-input" id="email-verify-code" type="text" placeholder="Enter verification code">
                     <div class="code_msg"></div>
@@ -31,6 +34,7 @@
         <div class="floating-alert-notification"></div>
         <div id="load-animation"></div>
     </section>
+    <script src="/scripts/user-logged-scripts/partials-scripts/top-bar.js"></script>
     <script src="/scripts/user-logged-scripts/email-verification.js"></script>
 </body>
 </html>

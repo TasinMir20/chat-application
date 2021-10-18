@@ -648,7 +648,7 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box::-webkit-scrollbar {
-    /* display: none; */
+    display: none;
 }
 
 
@@ -739,7 +739,7 @@ body {
     padding: 7px 15px;
     border-radius: 20px;
     text-align: left;
-    box-shadow: 0 0 10px rgb(0 0 0 / 8%), 0rem 16px 16px -16px rgb(0 0 0 / 10%);
+    box-shadow: 0px 2px 4px -2px rgb(111 111 111 / 63%);
 }
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
     width: 50%;

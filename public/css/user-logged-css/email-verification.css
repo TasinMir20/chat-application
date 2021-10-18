@@ -1,61 +1,138 @@
-/* defult valus start */
 
-* {
-    box-sizing: border-box;
-}
+/* default values start */
 body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
     margin: 0;
     padding: 0;
 }
-a {
-    text-decoration: none;
-    color: #333333;
-}
-img {
-    width: 100%;
-    height: auto;
-}
-ul,
-li {
+ul, 
+li,
+ol {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
 :focus {
     outline: 0;
 }
-.section {
+
+.sections {
     width: 100%;
-    padding: 90px 0;
 }
 .container {
-    width: 1170px;
     margin: 0 auto;
-    padding: 20px 0;
-}
-
-@media all and (max-width: 1174px) {
-    .container {
-        width: 90%;
-    }
 }
 .clearfix::after {
-    display: bl "";
+    display: block;
+    content: "";
     clear: both;
 }
+/* default values end */
 
-/* defult valus end */
+/* Font Family */
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('/fonts/Montserrat-Medium.woff2') format('woff2'),
+        url('/fonts/Montserrat-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('/fonts/Montserrat-Regular.woff2') format('woff2'),
+        url('/fonts/Montserrat-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-SemiBold';
+    src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2'),
+        url('/fonts/Montserrat-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('/fonts/Montserrat-Bold.woff2') format('woff2'),
+        url('/fonts/Montserrat-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Montserrat-ExtraLight';
+    src: url('/fonts/Montserrat-ExtraLight.woff2') format('woff2'),
+        url('/fonts/Montserrat-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Lato */
+@font-face {
+    font-family: 'Lato-Bold';
+    src: url('/fonts/Lato-Bold.woff2') format('woff2'),
+        url('/fonts/Lato-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Light';
+    src: url('/fonts/Lato-Light.woff2') format('woff2'),
+        url('/fonts/Lato-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lato-Regular';
+    src: url('/fonts/Lato-Regular.woff2') format('woff2'),
+        url('/fonts/Lato-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+/* Font Family end */
 
 /*  Start Deful valus for this Designe */
 body {
-    font-family: 'Kaisei Opti', serif;
+    font-family: 'Lato-Regular';
     font-size: 16px;
     line-height: 1.5;
     color: #666666;
@@ -64,7 +141,6 @@ body {
 
 .section {
     width: 100%;
-    height: 100vh;
 }
 
 .section .container form  {
@@ -74,6 +150,9 @@ body {
 }
 .section .container  h1 {
     text-align: center;
+}
+.section .container form h1 {
+    margin-bottom: 70px;
 }
 
 .section .container form .input-cont .code-input {
@@ -260,6 +339,9 @@ small {
 
 
 @media all and (max-width: 550px) {
+    .section .container {
+        width: 95%;
+    }
     .section .container form  {
         width: 100%;
     }

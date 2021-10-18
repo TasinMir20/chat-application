@@ -36,6 +36,13 @@ form input[type="checkbox"] {
 }
 
 
+.register-form .reg-form #reg_email {
+    text-transform: lowercase;
+}
+.register-form .reg-form #reg_email::placeholder {
+    text-transform: capitalize;
+}
+
 
 
 

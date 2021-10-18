@@ -15,6 +15,13 @@ function worstPasswordCheck(item) {
     return false;
 }
 
+function emailValidation(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const allowChars = /^[0-9a-zA-Z_@.]+$/;
+    const valid = re.test(email) && allowChars.test(email);
+
+    return valid ? true : false;
+}
 
 function generate_cookie_token(length){
 
@@ -187,7 +194,7 @@ async function codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName) 
 
 
             let mail = {};
-            // mail = await mailSending(sentTo, subject, themMailMsg);
+            mail = await mailSending(sentTo, subject, themMailMsg);
             mail.saveCodeData = saveCode;
             mail.accepted = true;
 
@@ -261,4 +268,4 @@ async function auth(req, res) {
 
 
 
-module.exports = { worstPasswordCheck, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth }
+module.exports = { worstPasswordCheck, emailValidation, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth }

@@ -4,7 +4,7 @@ const User = require("../../models/User");
 const VerifyCode = require("../../models/VerifyCode");
 
 
-const {worstPasswordCheck, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend} = require("../../utils/func/func")
+const {worstPasswordCheck, emailValidation, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend} = require("../../utils/func/func")
 
 
 
@@ -44,21 +44,26 @@ exports.signupApiController = async (req, res, next) => {
 
         /* username generating */
         if (regEmail) {
+            const forbiddenUsernames = ["account", "accounts", "user", "users", "api"];
             const targetOfSlice = regEmail.indexOf("@");
             var username = regEmail.slice(0, targetOfSlice);
             let usernameExist = await User.findOne({ username });
+            let IsForbiddenUsernames = forbiddenUsernames.includes(username);
 
-            if (usernameExist) {
+            if (usernameExist || IsForbiddenUsernames) {
 
                 for (let i = 1; i < 1000;) {
                     // get specific random number
                     const min = 1
                     const max = 999;
                     const rndInt = Math.floor(Math.random() * (max - min + 1) + min);
+
                     var u = username + rndInt;
                     usernameExist = await User.findOne({ username: u });
-                    console.log("Looping at 'signupApiController' to generate username");
-                    if (!usernameExist) {
+                    IsForbiddenUsernames = forbiddenUsernames.includes(u);
+                    console.trace("Looping at 'signupApiController' to generate username");
+
+                    if (!usernameExist && !IsForbiddenUsernames) {
                         i +=1001;
                     }
                 }
@@ -70,9 +75,7 @@ exports.signupApiController = async (req, res, next) => {
         if (regEmail) {
 
             var emlLng = regEmail.length < 40;
-
-            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var validEmail = re.test(regEmail);
+            var validEmail = emailValidation(regEmail);;
             var emailExist = await User.findOne({ email: regEmail });
             var emailOk = emlF && emlLng && validEmail && !emailExist ? true : false;
         }
@@ -248,8 +251,7 @@ exports.loginApiController = async (req, res, next) => {
         if (emlUserFilled) {
 
             /* Email validation */
-            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var emailOk = re.test(emailOrUsername) ? true : false;
+            var emailOk = emailValidation(emailOrUsername);
 
             /* username validation */
             const isUsrNmNotNumr = (String(Number(emailOrUsername)) === "NaN");
@@ -324,8 +326,7 @@ exports.forgetPassEmail_ApiController = async (req, res, next) => {
         if (userOrEmailFilled) {
 
             /* Email validation */
-            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var emailOk = re.test(userOrEmail) ? true : false;
+            var emailOk = emailValidation(userOrEmail);
 
             /* username validation */
             const isUsrNmNotNumr = (String(Number(userOrEmail)) === "NaN");
@@ -590,7 +591,7 @@ exports.forgetPassPassword_ApiController = async (req, res, next) => {
 
                         // Password changed notification to user >> Start
                         const sentTo = user.email;
-                        const subject = "Account update!";
+                        const subject = "Account update! | Password has been changed!";
                         const themMailMsg = `<div style="width: 100%; font-size: 15px; line-height: 21px; color: rgb(20, 24, 35); font-family: arial, sans-serif;">
                                                 <div style="margin-top: 16px; margin-bottom: 20px;">Hi ${user.username},</div>
                                                 <p style="color: rgb(109, 109, 108);">Successfully your account's password has been changed!</p>

@@ -34,6 +34,10 @@ const userSchema = new Schema({
         userCreateTime: Number,
         profilePic: String,
         lastOnlineTime: Number,
+        nameLastChange: {
+            type: Number,
+            default: 0
+        },
         socialLinks: {
             linkedin: {
                 type: String,

@@ -67,6 +67,7 @@ function profilePhotoUploading_ApiRequest() {
 
                     // update profile photo img tag src url
                     document.querySelector(".top-bar .top-info .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
+                    document.querySelector(".top-bar .dropdown .dropdown-elements .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
                     document.querySelector(".profile .profile-photo .photo img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
 
                     // Floating message show if profile photo upload successful
@@ -139,9 +140,6 @@ const isSelfProfile = document.querySelector(".profile .profile-photo .edit-icon
 if (isSelfProfile) {
     document.querySelector(".profile .profile-photo .edit-icon i").onclick = editProfilePhoto;
 }
-
-
-
 
 
 

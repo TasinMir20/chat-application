@@ -14,7 +14,6 @@ exports.userAgentParse = (req, res, next) => {
         parsedUserAgent.cpu = { architecture: "" }
     }
 
-    console.log(parsedUserAgent)
     req.userAgent = parsedUserAgent;
 
     next();

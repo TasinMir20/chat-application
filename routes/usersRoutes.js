@@ -10,6 +10,7 @@ usersRoutes.get("/dashboard", dashboardGetController);
 usersRoutes.get("/email-verification", emailVerificationGetController);
 usersRoutes.get("/messenger", messengerGetController);
 usersRoutes.get("/settings", settingsGetController);
+usersRoutes.get("/settings/:uri", settingsGetController);
 
 
 

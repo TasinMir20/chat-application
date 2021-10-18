@@ -1,8 +1,10 @@
 const settingsApi = require("express").Router();
 
-const { settingsRoot } = require("../controllers/settingsApiController");
+const { settingsRoot_ApiController, generalInfoUpdate_ApiController, security_ApiController } = require("../controllers/settingsApiController");
 
-settingsApi.post("/a", settingsRoot);
+settingsApi.post("/", settingsRoot_ApiController);
+settingsApi.post("/general-information-edit", generalInfoUpdate_ApiController);
+settingsApi.post("/security", security_ApiController);
 
 
 

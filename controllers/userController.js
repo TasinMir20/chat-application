@@ -37,18 +37,18 @@ exports.dashboardGetController = async (req, res, next) => {
 exports.emailVerificationGetController = async (req, res, next) => {
 
     try {
-        const user = req.userData;
-        const emailVerifyCodeData = await VerifyCode.findOne({ $and: [{ userObjId: user._id }, { codeName: "Email_verification_code" }] });
+        const userData = req.userData;
+        const emailVerifyCodeData = await VerifyCode.findOne({ $and: [{ userObjId: userData._id }, { codeName: "Email_verification_code" }] });
 
         // If No exist email verification code on Database so saving the verification code to Database and mail sending
         if (!emailVerifyCodeData) {
             const subject = "Email address verification";
             const plainTextMsg = "Enter the following email verify code:";
             const codeName = "Email_verification_code";
-            await codeSaveDBandMailSend(user, subject, plainTextMsg, codeName);
+            await codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName);
         }
 
-        return res.render("pages/user-logged-pages/email-verification.ejs");
+        return res.render("pages/user-logged-pages/email-verification.ejs", {userData});
     } catch (err) {
         next(err);
     }
@@ -108,12 +108,18 @@ exports.settingsGetController = async (req, res, next) => {
 
     try {
         const userData = req.userData;
+
+        const uri = req.params.uri;
+
         // Unneccery or Sensitive Data Empty
         userData.password = "";
         userData.othersData.codeSendTimes = "";
 
-        res.render("pages/user-logged-pages/settings.ejs", { userData });
-
+        if (uri === undefined || uri === "general-information" || uri === "security") {
+            res.render("pages/user-logged-pages/settings.ejs", { userData, uri });
+        } else {
+            next();
+        }
 
     } catch (err) {
         next(err);
