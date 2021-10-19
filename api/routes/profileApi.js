@@ -5,12 +5,6 @@ const { profilePhotoUpload_ApiController } = require("../controllers/profileApiC
 // Middleware import
 const profilePhotoUpload = require("../../middleware/upload-middleware/profilePhotoUpload");
 
-
 profileApi.post("/profile-photo-upload", profilePhotoUpload, profilePhotoUpload_ApiController);
-
-
-
-
-
 
 module.exports = profileApi;

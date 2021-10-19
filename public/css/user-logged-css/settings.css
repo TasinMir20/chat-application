@@ -1,550 +1,646 @@
-
 /* default values start */
 body,
-p, 
-h1, 
-h2, 
-h3, 
-h4, 
-h5, 
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
 h6 {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
-ul, 
+ul,
 li,
 ol {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
 }
 
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 img {
-    width: 100%;
-    height: auto;
-    display: block;
+	width: 100%;
+	height: auto;
+	display: block;
 }
 
 :focus {
-    outline: 0;
+	outline: 0;
 }
 
 .sections {
-    width: 100%;
+	width: 100%;
 }
 .container {
-    margin: 0 auto;
+	margin: 0 auto;
 }
 .clearfix::after {
-    display: block;
-    content: "";
-    clear: both;
+	display: block;
+	content: "";
+	clear: both;
 }
 /* default values end */
-
 
 /* Font Family */
 
 @font-face {
-    font-family: 'Montserrat-Medium';
-    src: url('/fonts/Montserrat-Medium.woff2') format('woff2'),
-        url('/fonts/Montserrat-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Montserrat-Medium";
+	src: url("/fonts/Montserrat-Medium.woff2") format("woff2"),
+		url("/fonts/Montserrat-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Montserrat-Regular';
-    src: url('/fonts/Montserrat-Regular.woff2') format('woff2'),
-        url('/fonts/Montserrat-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Montserrat-Regular";
+	src: url("/fonts/Montserrat-Regular.woff2") format("woff2"),
+		url("/fonts/Montserrat-Regular.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Montserrat-SemiBold';
-    src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2'),
-        url('/fonts/Montserrat-SemiBold.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Montserrat-SemiBold";
+	src: url("/fonts/Montserrat-SemiBold.woff2") format("woff2"),
+		url("/fonts/Montserrat-SemiBold.woff") format("woff");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Montserrat-Bold';
-    src: url('/fonts/Montserrat-Bold.woff2') format('woff2'),
-        url('/fonts/Montserrat-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Montserrat-Bold";
+	src: url("/fonts/Montserrat-Bold.woff2") format("woff2"),
+		url("/fonts/Montserrat-Bold.woff") format("woff");
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Montserrat-ExtraLight';
-    src: url('/fonts/Montserrat-ExtraLight.woff2') format('woff2'),
-        url('/fonts/Montserrat-ExtraLight.woff') format('woff');
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Montserrat-ExtraLight";
+	src: url("/fonts/Montserrat-ExtraLight.woff2") format("woff2"),
+		url("/fonts/Montserrat-ExtraLight.woff") format("woff");
+	font-weight: 200;
+	font-style: normal;
+	font-display: swap;
 }
 
 /* Lato */
 @font-face {
-    font-family: 'Lato-Bold';
-    src: url('/fonts/Lato-Bold.woff2') format('woff2'),
-        url('/fonts/Lato-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Lato-Bold";
+	src: url("/fonts/Lato-Bold.woff2") format("woff2"),
+		url("/fonts/Lato-Bold.woff") format("woff");
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Lato-Light';
-    src: url('/fonts/Lato-Light.woff2') format('woff2'),
-        url('/fonts/Lato-Light.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Lato-Light";
+	src: url("/fonts/Lato-Light.woff2") format("woff2"),
+		url("/fonts/Lato-Light.woff") format("woff");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: 'Lato-Regular';
-    src: url('/fonts/Lato-Regular.woff2') format('woff2'),
-        url('/fonts/Lato-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Lato-Regular";
+	src: url("/fonts/Lato-Regular.woff2") format("woff2"),
+		url("/fonts/Lato-Regular.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
 }
-
 
 /* Error message styles */
-.small, small {
-    font-size: 80%;
-    font-weight: 400;
+.small,
+small {
+	font-size: 80%;
+	font-weight: 400;
 }
 
 small.error-message {
-    color: #e63030;
+	color: #e63030;
 }
-
-
-
-
-
 
 /* Font Family end */
 
 body {
-    width: 100%;
-    height: 100%;
-    font-family: Lato-Regular;
-    font-size: 16px;
-    font-weight: 400;
-    font-style: normal;
-    line-height: 1.5;
-    background-color: rgb(255, 255, 255);
-    color: #333;
+	width: 100%;
+	height: 100%;
+	font-family: Lato-Regular;
+	font-size: 16px;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 1.5;
+	background-color: rgb(255, 255, 255);
+	color: #333;
 }
 
 .sections {
-    background-color: rgb(255, 255, 255);
-    width: 100%;
+	background-color: rgb(255, 255, 255);
+	width: 100%;
 }
 
 .sections .container {
-    max-width: 700px;
-    margin: 0 auto;
-    background-color: #ffffff;
+	max-width: 700px;
+	margin: 0 auto;
+	background-color: #ffffff;
 }
 
 /* Settings root- START */
 .sections .container .settings-root {
-    margin-top: 20px;
-    padding: 7px;
-    background-color: rgb(249 249 249);
-    border-radius: 3px;
-    box-shadow: 0px 2px 4px -2px rgb(111 111 111 / 63%);
+	margin-top: 20px;
+	padding: 7px;
+	background-color: rgb(249 249 249);
+	border-radius: 3px;
+	box-shadow: 0px 2px 4px -2px rgb(111 111 111 / 63%);
 }
 
 .sections .container .settings-root a.feature-path {
-    color: #333;
-    text-transform: capitalize;
-    display: flex;
-    justify-content: flex-start;
-    padding: 10px 15px;
-    border-radius: 5px;
-
+	color: #333;
+	text-transform: capitalize;
+	display: flex;
+	justify-content: flex-start;
+	padding: 10px 15px;
+	border-radius: 5px;
 }
 .sections .container .settings-root a.feature-path:hover {
-    background-color: #f0f2f5;
+	background-color: #f0f2f5;
 }
 
 .sections .container .settings-root a.feature-path i {
-    font-size: 17px;
-    margin-right: 10px;
+	font-size: 17px;
+	margin-right: 10px;
 }
 
 .sections .container .settings-root a.feature-path p {
-    font-weight: 700;
+	font-weight: 700;
 }
 
 .sections .container .settings-root a.feature-path p span {
-    text-transform: lowercase;
+	text-transform: lowercase;
 }
 
 @media all and (max-width: 768px) {
-    .sections .container {
-        width: 95%;
-    }
+	.sections .container {
+		width: 95%;
+	}
 }
 
 /* Settings root- END */
 
-/* General Information- START */
+/* General Information Part- START */
 .sections .container .general-information-area {
-
 }
 
 .sections .container .general-information-area .user-property {
-    border-bottom: 1px solid #ebedf0;
-    padding: 10px;
+	border-bottom: 1px solid #ebedf0;
+	padding: 10px;
 }
 
 .sections .container .general-information-area .user-property .inner {
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	padding: 10px 20px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .sections .container .general-information-area .user-property .inner.hide {
-    display: none;
+	display: none;
 }
-
 
 .sections .container .general-information-area .user-property .inner:hover {
-    background-color: #f0f2f5;
+	background-color: #f0f2f5;
 }
-
 
 .sections .container .general-information-area .user-property .inner .edit-btn {
-    font-family: Lato-Regular;
-    background-color: #f0f2f5;
-    color: black;
-    border: 2px solid #e7e7e7;
-    padding: 6px 13px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
+	font-family: Lato-Regular;
+	background-color: #f0f2f5;
+	color: black;
+	border: 2px solid #e7e7e7;
+	padding: 6px 13px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	cursor: pointer;
+	border-radius: 5px;
 }
 
-.sections .container .general-information-area .user-property .inner:hover .edit-btn {
-    background-color: white;
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.inner:hover
+	.edit-btn {
+	background-color: white;
 }
 
 .sections .container .general-information-area .user-property .edit-area {
-    background-color: #f2f2f2;
-    padding: 10px 20px;
-    border-radius: 5px;
+	background-color: #f2f2f2;
+	padding: 10px 20px;
+	border-radius: 5px;
 }
 .sections .container .general-information-area .user-property .edit-area.hide {
-    display: none;
+	display: none;
 }
 
-.sections .container .general-information-area .user-property .edit-area .msg-for-nm-change {
-    padding-bottom: 5px;
-    font-size: 80%;
-    font-weight: 400;
-    color: #666666;
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.msg-for-nm-change {
+	padding-bottom: 5px;
+	font-size: 80%;
+	font-weight: 400;
+	color: #666666;
 }
-.sections .container .general-information-area .user-property .edit-area .msg-for-nm-change.hide {
-    display: none;
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.msg-for-nm-change.hide {
+	display: none;
 }
 
 .sections .container .general-information-area .user-property .edit-area .wrap {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0 15px 0;
+	display: flex;
+	justify-content: space-between;
+	padding: 0 0 15px 0;
 }
-.sections .container .general-information-area .user-property.email .edit-area .wrap {
-    flex-wrap: wrap;
+.sections
+	.container
+	.general-information-area
+	.user-property.email
+	.edit-area
+	.wrap {
+	flex-wrap: wrap;
 }
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont {
-    width: 100%;
-    margin: 5px 0;
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont {
+	width: 100%;
+	margin: 5px 0;
 }
-.sections .container .general-information-area .user-property.name .edit-area .wrap .input-cont {
-    width: 49%;
+.sections
+	.container
+	.general-information-area
+	.user-property.name
+	.edit-area
+	.wrap
+	.input-cont {
+	width: 49%;
 }
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont input {
-    display: block;
-    width: 100%;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-
-.sections .container .general-information-area .user-property.email .edit-area .wrap .auth-password-cont {
-    position: relative;
-}
-
-.sections .container .general-information-area .user-property.email .edit-area .wrap .auth-password-cont i.fas {
-    font-size: 18px;
-    margin: 0;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-}
-
-
-
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont #username, 
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont #email  {
-    text-transform: lowercase;
-}
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont #username::placeholder, 
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont #email::placeholder  {
-    text-transform: capitalize;
-}
-
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont input:focus {
-    color: #212529;
-    background-color: #fff;
-    border-color: #9afff2;
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem #ade8f4;
-}
-.sections .container .general-information-area .user-property .edit-area .wrap .input-cont input:disabled {
-    background-color: #e9ecef;
-    opacity: 1;
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	input {
+	display: block;
+	width: 100%;
+	padding: 0.375rem 0.75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border-radius: 0.25rem;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-
-.sections .container .general-information-area .user-property .edit-area .btn-cont {
-    display: flex;
-    justify-content: end;
+.sections
+	.container
+	.general-information-area
+	.user-property.email
+	.edit-area
+	.wrap
+	.auth-password-cont {
+	position: relative;
 }
 
-.sections .container .general-information-area .user-property .edit-area .btn-cont.hide {
-    display: none;
+.sections
+	.container
+	.general-information-area
+	.user-property.email
+	.edit-area
+	.wrap
+	.auth-password-cont
+	i.fas {
+	font-size: 18px;
+	margin: 0;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	cursor: pointer;
 }
 
-.sections .container .general-information-area .user-property .edit-area .btn-cont .update-btn {
-    display: inline-block;
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    color: #fff;
-    background-color: #198754;
-    border-color: #198754;
-
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	#username,
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	#email {
+	text-transform: lowercase;
+}
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	#username::placeholder,
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	#email::placeholder {
+	text-transform: capitalize;
 }
 
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	input:focus {
+	color: #212529;
+	background-color: #fff;
+	border-color: #9afff2;
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem #ade8f4;
+}
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.wrap
+	.input-cont
+	input:disabled {
+	background-color: #e9ecef;
+	opacity: 1;
+}
 
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.btn-cont {
+	display: flex;
+	justify-content: end;
+}
+
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.btn-cont.hide {
+	display: none;
+}
+
+.sections
+	.container
+	.general-information-area
+	.user-property
+	.edit-area
+	.btn-cont
+	.update-btn {
+	display: inline-block;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-color: transparent;
+	border: 1px solid transparent;
+	padding: 0.375rem 0.75rem;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+		border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	color: #fff;
+	background-color: #198754;
+	border-color: #198754;
+}
 
 @media all and (max-width: 768px) {
-    .sections .container .general-information-area .user-property {
-        padding-left: 0;
-        padding-right: 0;
-    }
+	.sections .container .general-information-area .user-property {
+		padding-left: 0;
+		padding-right: 0;
+	}
 
-    .sections .container .general-information-area .user-property .inner {
-        padding-left: 5px;
-        padding-right: 5px;
-    }
+	.sections .container .general-information-area .user-property .inner {
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 
-    .sections .container .general-information-area .user-property .edit-area {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
+	.sections .container .general-information-area .user-property .edit-area {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 
+	.sections
+		.container
+		.general-information-area
+		.user-property
+		.edit-area
+		.wrap {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.sections
+		.container
+		.general-information-area
+		.user-property.name
+		.edit-area
+		.wrap
+		.input-cont,
+	.sections
+		.container
+		.general-information-area
+		.user-property
+		.edit-area
+		.wrap
+		.input-cont {
+		width: 100%;
+	}
 
-    .sections .container .general-information-area .user-property .edit-area .wrap {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .sections .container .general-information-area .user-property.name .edit-area .wrap .input-cont,
-    .sections .container .general-information-area .user-property .edit-area .wrap .input-cont {
-        width: 100%;
-    }
-
-    .sections .container .general-information-area .user-property.email .edit-area .wrap .input-cont #auth-password::placeholder {
-        font-size: 80%;
-        font-weight: 400;
-    }
-    
+	.sections
+		.container
+		.general-information-area
+		.user-property.email
+		.edit-area
+		.wrap
+		.input-cont
+		#auth-password::placeholder {
+		font-size: 80%;
+		font-weight: 400;
+	}
 }
 
-/* General Information- END */
+/* General Information Part- END */
 
+/* Security Info Part- START */
 
+/* Security Info Part- END */
 
+/* Social Links Part- START */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* Social Links Part- END */
 
 /* Floating notification CSS  */
- 
+
 @keyframes floatingMsgAnimate {
-
-    10% {
-        right: 20px;
-        top: 40px;
-    }
-    50%  {
-        right: 20px;
-        top: 40px;
-    }
-    70%  {
-        right: 20px;
-        top: 40px;
-        opacity: 1;
-    }
-    71% {
-        opacity: 0.4;
-    }
-    100%  {
-        top: 40px;
-        right: -400px
-    }
-    
-    
+	10% {
+		right: 20px;
+		top: 40px;
+	}
+	50% {
+		right: 20px;
+		top: 40px;
+	}
+	70% {
+		right: 20px;
+		top: 40px;
+		opacity: 1;
+	}
+	71% {
+		opacity: 0.4;
+	}
+	100% {
+		top: 40px;
+		right: -400px;
+	}
 }
-
 
 .floating-alert-notification {
-    position: fixed;
-    top: -50px;
-    right: 20px;
-    width: 300px;
-    overflow: hidden;
-    display: none;
-    z-index: 1010;
+	position: fixed;
+	top: -50px;
+	right: 20px;
+	width: 300px;
+	overflow: hidden;
+	display: none;
+	z-index: 1010;
 }
 
-
 .floating-alert-notification.show {
-    display: block;
-    animation-name: floatingMsgAnimate;
-    animation-duration: 3s;
+	display: block;
+	animation-name: floatingMsgAnimate;
+	animation-duration: 3s;
 }
 
 .floating-alert-notification .alert-msg {
-    border-radius: 5px;
-    padding: 10px 30px;
-    opacity: 0.83;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.5;
-    margin-bottom: 15px;
+	border-radius: 5px;
+	padding: 10px 30px;
+	opacity: 0.83;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.5;
+	margin-bottom: 15px;
 }
 
 .floating-alert-notification .danger-alert {
-    background-color: #f44336;
-    color: white;
+	background-color: #f44336;
+	color: white;
 }
-
 
 .floating-alert-notification .success-alert {
-    background-color: #04AA6D;
-    color: white;
+	background-color: #04aa6d;
+	color: white;
 }
-
-
 
 /* Loading animation of the actins >> Start */
 #load-animation .load-bg {
-    background-color: #0000007a;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
+	background-color: #0000007a;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1000;
 }
 
 #load-animation .load-bg .wrap-loading {
-    width: 110px;
-    height: 110px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
+	width: 110px;
+	height: 110px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1001;
 }
 
 #load-animation .load-bg .wrap-loading .loading {
-    border: 10px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 10px solid #43aa8b;
-    width: 100%;
-    height: 100%;
-    animation: spin 1s linear infinite;
-  }
-  
-  
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+	border: 10px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 10px solid #43aa8b;
+	width: 100%;
+	height: 100%;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
 
 @media all and (max-width: 500px) {
-    #load-animation .load-bg .wrap-loading .loading {
-        border-width: 5px;
-        width: 70px;
-        height: 70px;
-    }
-    
+	#load-animation .load-bg .wrap-loading .loading {
+		border-width: 5px;
+		width: 70px;
+		height: 70px;
+	}
 }
 /* Loading animation of the actins >> End */
-
-

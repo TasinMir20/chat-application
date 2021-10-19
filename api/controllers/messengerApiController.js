@@ -1,223 +1,190 @@
-const path = require('path');
+const path = require("path");
 const fs = require("fs");
-const mongoose = require('mongoose'); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
+const mongoose = require("mongoose"); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
 
 const User = require("../../models/User");
 const Conversation = require("../../models/Conversation");
 
-
-
-
 exports.chatUserList_ApiController = async (req, res, next) => {
+	try {
+		const userData = req.userData;
 
-    try {
-        const userData = req.userData;
+		// find involved Conversations
+		const involvedConversations = await Conversation.find({
+			$or: [{ creatorObjId: userData._id }, { participantObjId: userData._id }],
+		}).sort({ updatedAt: -1 });
 
-        // find involved Conversations
-        const involvedConversations = await Conversation.find({
-            $or: [
-                { creatorObjId: userData._id },
-                { participantObjId: userData._id }
-            ]}).sort({updatedAt: -1});
+		// user find who involved to me with chatting
+		let chatListUsers = [];
+		if (involvedConversations[0]) {
+			for (let i = 0; i < involvedConversations.length; i++) {
+				let chatListUserSingle = "";
+				let id = "";
+				if (String(involvedConversations[i].creatorObjId) === String(userData._id)) {
+					id = involvedConversations[i].participantObjId;
+					chatListUserSingle = await User.findOne({ _id: id });
+				} else {
+					id = involvedConversations[i].creatorObjId;
+					chatListUserSingle = await User.findOne({ _id: id });
+				}
 
-            // user find who involved to me with chatting
-            let chatListUsers = [];
-            if (involvedConversations[0]) {
-                
-                for (let i = 0; i < involvedConversations.length; i++) {
+				// if user does not exist
+				if (!chatListUserSingle) {
+					chatListUserSingle = {
+						_id: id,
+						firstName: "User not",
+						lastName: "Exist",
+						othersData: {
+							profilePic: "not-exist_profile_pic.jpg",
+							lastOnlineTime: 0,
+						},
+					};
+				}
 
-                    let chatListUserSingle = "";
-                    let id = "";
-                    if (String(involvedConversations[i].creatorObjId) === String(userData._id)) {
-                        id = involvedConversations[i].participantObjId;
-                        chatListUserSingle = await User.findOne({_id: id});
-                    } else {
-                        id = involvedConversations[i].creatorObjId;
-                        chatListUserSingle = await User.findOne({_id: id});
-                    }
+				let userLimitedData;
+				if (chatListUserSingle) {
+					const totalMessagesLen = involvedConversations[i].conversations.length;
+					const sender = involvedConversations[i].conversations[totalMessagesLen - 1].sender;
+					const lastMessageFull = involvedConversations[i].conversations[totalMessagesLen - 1].message;
+					const messageImgName = involvedConversations[i].conversations[totalMessagesLen - 1].attachmentName;
+					const lastMsg = messageImgName ? "Attachment" : lastMessageFull;
+					let lastMessage = lastMsg.length > 30 ? `${lastMsg.slice(0, 30)}...` : lastMsg;
+					lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
 
-                    // if user does not exist
-                    if (!chatListUserSingle) {
-                        chatListUserSingle = { 
-                            _id: id,
-                            firstName: 'User not',
-                            lastName: 'Exist',
-                            othersData: {
-                                profilePic: 'not-exist_profile_pic.jpg',
-                                lastOnlineTime: 0,
-                            }
-                        }
-                    }
+					userLimitedData = {
+						_id: chatListUserSingle._id,
+						firstName: chatListUserSingle.firstName,
+						lastName: chatListUserSingle.lastName,
+						profilePic: chatListUserSingle.othersData.profilePic,
+						lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime,
+						lastMessage,
+						lastMessageTime: involvedConversations[i].conversations[totalMessagesLen - 1].msgSendTime,
+					};
+				}
 
+				chatListUsers[i] = userLimitedData;
+			}
+		} else {
+			console.log("List not found");
+		}
 
-                    let userLimitedData;
-                    if (chatListUserSingle) {
-                        const totalMessagesLen = involvedConversations[i].conversations.length;
-                        const sender = involvedConversations[i].conversations[totalMessagesLen - 1].sender;
-                        const lastMessageFull = involvedConversations[i].conversations[totalMessagesLen - 1].message;
-                        const messageImgName = involvedConversations[i].conversations[totalMessagesLen - 1].attachmentName;
-                        const lastMsg = messageImgName ? "Attachment" : lastMessageFull;
-                        let lastMessage = lastMsg.length > 30 ? `${lastMsg.slice(0, 30)}...` : lastMsg;
-                        lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
-
-                        userLimitedData = {
-                            _id: chatListUserSingle._id,
-                            firstName: chatListUserSingle.firstName,
-                            lastName: chatListUserSingle.lastName,
-                            profilePic: chatListUserSingle.othersData.profilePic,
-                            lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime,
-                            lastMessage,
-                            lastMessageTime: involvedConversations[i].conversations[totalMessagesLen - 1].msgSendTime
-                        };
-                    }
-
-                    chatListUsers[i] = userLimitedData;
-
-                }
-            } else {
-                console.log("List not found");
-            }
-
-            return res.json({chatListUsers});
-
-    } catch (err) {
-        next(err);
-    }
-}
-
-
+		return res.json({ chatListUsers });
+	} catch (err) {
+		next(err);
+	}
+};
 
 exports.searchUsersToChat_ApiController = async (req, res, next) => {
-    const {searchKeyWord} = req.body;
+	const { searchKeyWord } = req.body;
 
-    try {
-        const userData = req.userData;
+	try {
+		const userData = req.userData;
 
-        if (searchKeyWord) {
+		if (searchKeyWord) {
+			function es(str) {
+				return str.replace(/[-\/\\^$*+?()|[\]{}]/g, "");
+			}
+			const KeyWordRegExp = new RegExp("^" + es(searchKeyWord), "i");
+			// search in Database
+			const findUserToConversation = await User.find({
+				$and: [
+					{
+						$or: [{ firstName: KeyWordRegExp }, { lastName: KeyWordRegExp }, { username: KeyWordRegExp }, { email: KeyWordRegExp }],
+					},
+					{ $nor: [{ _id: userData._id }] } /* User self Id/account will not appear in the search results */,
+				],
+			});
 
-            function es(str) {
-                return str.replace(/[-\/\\^$*+?()|[\]{}]/g, "");
-            };
-            const KeyWordRegExp = new RegExp("^" + es(searchKeyWord), "i");
-            // search in Database
-            const findUserToConversation = await User.find({
-                $and: [
-                    {
-                        $or: [
-                            { firstName: KeyWordRegExp }, 
-                            { lastName: KeyWordRegExp }, 
-                            { username: KeyWordRegExp }, 
-                            { email: KeyWordRegExp }
-                        ]
-                    },
-                    { $nor: [{ _id: userData._id }] } /* User self Id/account will not appear in the search results */
-                ],
-            });
-
-            
-
-            let foundUser = "";
-            if (findUserToConversation[0]) {
-
-                for (var i = 0; i < findUserToConversation.length; i++) {
-                    foundUser += `<div class="search-single-user" onclick="fetchUserChats_ApiRequest('${findUserToConversation[i]._id}', true);">
+			let foundUser = "";
+			if (findUserToConversation[0]) {
+				for (var i = 0; i < findUserToConversation.length; i++) {
+					foundUser += `<div class="search-single-user" onclick="fetchUserChats_ApiRequest('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
                                         <img src="/images/users/profile-photo/${findUserToConversation[i].othersData.profilePic}" alt="">
                                     </div>
                                     <p>${findUserToConversation[i].firstName} ${findUserToConversation[i].lastName}</p>
                                 </div>`;
-                }
-                return res.json({ foundUser });
-            }
-            
-            // not found user to chat
-            foundUser = `<div class="search-single-user">
+				}
+				return res.json({ foundUser });
+			}
+
+			// not found user to chat
+			foundUser = `<div class="search-single-user">
                             <p>Not found user</p>
                         </div>`;
-            return res.json({ foundUser });
-        }
+			return res.json({ foundUser });
+		}
 
-        return res.json({});
-        
-    } catch (err) {
-        next(err);
-    }
-}
-
-
+		return res.json({});
+	} catch (err) {
+		next(err);
+	}
+};
 
 exports.fetchUserChats_ApiController = async (req, res, next) => {
+	let { participant, isItSearch, pagination } = req.body;
 
-    let { participant, isItSearch, pagination } = req.body;
-    
-    try {
-        const userData = req.userData;
+	try {
+		const userData = req.userData;
 
-        const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
+		const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
 
-        if (isValidObjId) {
-            
-            const ConversationFind = await Conversation.findOne({ 
-                $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
-                    { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
-                ]});
-            
-            // chat conversations
-            var conversations = "";
-            if (ConversationFind) {
-                conversations = ConversationFind.conversations;
+		if (isValidObjId) {
+			const ConversationFind = await Conversation.findOne({
+				$or: [{ $and: [{ creatorObjId: userData._id }, { participantObjId: participant }] }, { $and: [{ creatorObjId: participant }, { participantObjId: userData._id }] }],
+			});
 
-                let numberOfMsgsEachPagination = 30;
-                let start;
-                let end;
-                if (pagination) {
-                    start = conversations.length - (numberOfMsgsEachPagination*pagination);
-                    end = conversations.length - (numberOfMsgsEachPagination*(pagination-1));
-                } else {
-                    start = conversations.length - numberOfMsgsEachPagination;
-                    end = conversations.length;
-                }
-                
-                if (start < 0) {
-                    var allMessagesFetched = true;
-                    conversations = conversations.slice(0, end);
-                } else {
-                    conversations = conversations.slice(start, end);
-                }
-                
-                conversations.reverse();
-                
-            } else {
-                console.log("Not found conversations");
-            }
+			// chat conversations
+			var conversations = "";
+			if (ConversationFind) {
+				conversations = ConversationFind.conversations;
 
-            // recipient data
-            let participantData = await User.findOne({_id: participant});
+				let numberOfMsgsEachPagination = 30;
+				let start;
+				let end;
+				if (pagination) {
+					start = conversations.length - numberOfMsgsEachPagination * pagination;
+					end = conversations.length - numberOfMsgsEachPagination * (pagination - 1);
+				} else {
+					start = conversations.length - numberOfMsgsEachPagination;
+					end = conversations.length;
+				}
 
-            // if user does not exist
-            if (!participantData) {
-                participantData = { 
-                    firstName: 'User not',
-                    lastName: 'Exist',
-                    othersData: {
-                        profilePic: 'not-exist_profile_pic.jpg',
-                        lastOnlineTime: 0,
-                    }
-                }
-            }
+				if (start < 0) {
+					var allMessagesFetched = true;
+					conversations = conversations.slice(0, end);
+				} else {
+					conversations = conversations.slice(start, end);
+				}
 
+				conversations.reverse();
+			} else {
+				console.log("Not found conversations");
+			}
 
-            if (participantData) {
-                
-                // after search new user append in chat list
-                if (isItSearch) {
-                    // generate unique css class from user obj ID
-                    let str = String(participantData._id);
-                    let setUniqueCssClass = "c"+(str.substr(str.length - 5, str.length));
+			// recipient data
+			let participantData = await User.findOne({ _id: participant });
 
-                    var newChatToAppendChatUserList = 
-                        `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${participantData._id}')">
+			// if user does not exist
+			if (!participantData) {
+				participantData = {
+					firstName: "User not",
+					lastName: "Exist",
+					othersData: {
+						profilePic: "not-exist_profile_pic.jpg",
+						lastOnlineTime: 0,
+					},
+				};
+			}
+
+			if (participantData) {
+				// after search new user append in chat list
+				if (isItSearch) {
+					// generate unique css class from user obj ID
+					let str = String(participantData._id);
+					let setUniqueCssClass = "c" + str.substr(str.length - 5, str.length);
+
+					var newChatToAppendChatUserList = `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${participantData._id}')">
                             <div class="img-wrap">
                                 <img src="/images/users/profile-photo/${participantData.othersData.profilePic}" alt="">
                             </div>
@@ -227,155 +194,124 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
                                 <span class="last-msg-time">.</span>
                             </div>
                         </div>`;
-                }
-                var fullName = `${participantData.firstName} ${participantData.lastName}`;
-                var username = participantData.username;
-                var profilePic = participantData.othersData.profilePic;
-                var lastOnlineTime = participantData.othersData.lastOnlineTime;
-                
-            }
-        }
+				}
+				var fullName = `${participantData.firstName} ${participantData.lastName}`;
+				var username = participantData.username;
+				var profilePic = participantData.othersData.profilePic;
+				var lastOnlineTime = participantData.othersData.lastOnlineTime;
+			}
+		}
 
-        return res.json({conversations, allMessagesFetched, fullName, username, profilePic, lastOnlineTime, newChatToAppendChatUserList});
-
-    } catch (err) {
-        next(err);
-    }
-}
-
-
-
-
-
-
+		return res.json({ conversations, allMessagesFetched, fullName, username, profilePic, lastOnlineTime, newChatToAppendChatUserList });
+	} catch (err) {
+		next(err);
+	}
+};
 
 exports.sendMessage_ApiController = async (req, res, next) => {
-    let {message, recipientId} = req.body;
-    try {
+	let { message, recipientId } = req.body;
+	try {
+		let attachmentName = "";
+		if (req.files) {
+			message = "";
+			attachmentName = String(req.files[0].filename);
+		}
 
-        let attachmentName = "";
-        if (req.files) {
-            message = "";
-            attachmentName = String(req.files[0].filename);
-        }
+		const userData = req.userData;
 
+		const isValidObjId = mongoose.Types.ObjectId.isValid(recipientId);
+		const participantExist = isValidObjId ? await User.findOne({ _id: recipientId }) : null;
 
-        const userData = req.userData;
+		const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+		if (participantExist) {
+			const ConversationFind = await Conversation.findOne({
+				$or: [{ $and: [{ creatorObjId: userData._id }, { participantObjId: recipientId }] }, { $and: [{ creatorObjId: recipientId }, { participantObjId: userData._id }] }],
+			});
 
-        const isValidObjId = mongoose.Types.ObjectId.isValid(recipientId);
-        const participantExist = isValidObjId ? await User.findOne({_id: recipientId}) : null;
+			const messageBody = {
+				message,
+				attachmentName,
+				sender: userData._id,
+				receiver: recipientId,
+				msgSendTime: currentEpochTime,
+			};
 
-        const currentEpochTime = Math.floor(new Date().getTime()/1000);
-        if (participantExist) {
-            const ConversationFind = await Conversation.findOne({ 
-                $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipientId } ] },
-                    { $and: [ { creatorObjId: recipientId }, { participantObjId: userData._id } ] }
-                ]});
-            
-            const messageBody = {
-                message,
-                attachmentName,
-                sender: userData._id,
-                receiver: recipientId,
-                msgSendTime: currentEpochTime
-            };
+			if (ConversationFind) {
+				// Conversation Updating
+				let ConversationUpdate = await Conversation.updateOne({ $or: [{ $and: [{ creatorObjId: userData._id }, { participantObjId: recipientId }] }, { $and: [{ creatorObjId: recipientId }, { participantObjId: userData._id }] }] }, { $push: { conversations: messageBody } });
 
-            if (ConversationFind) {
-                // Conversation Updating
-                let ConversationUpdate = await Conversation.updateOne({ $or: [
-                    { $and: [ { creatorObjId: userData._id }, { participantObjId: recipientId } ] },
-                    { $and: [ { creatorObjId: recipientId }, { participantObjId: userData._id } ] }
-                ]}, 
-                    { $push: { conversations: messageBody }
-                });
+				if (ConversationUpdate.nModified == 1) {
+					var sent = true;
+				}
+			} else {
+				// Conversation creating
+				const ConversationInsertStructure = new Conversation({
+					conversations: [messageBody],
+					creatorObjId: userData._id,
+					participantObjId: recipientId,
+					conversationCreateTime: currentEpochTime,
+				});
 
-                if (ConversationUpdate.nModified == 1) {
-                    var sent = true;
-                }
+				const saveConversation = await ConversationInsertStructure.save();
 
-            } else {
-                // Conversation creating
-                const ConversationInsertStructure = new Conversation({
-                    conversations: [
-                        messageBody
-                    ],
-                    creatorObjId: userData._id,
-                    participantObjId: recipientId,
-                    conversationCreateTime: currentEpochTime
-                });
+				if (saveConversation) {
+					sent = true;
+				}
+			}
 
-                const saveConversation = await ConversationInsertStructure.save();
+			const socketMsgEventName = recipientId + "message";
+			// socket.io messages Event at server
+			global.io.emit(socketMsgEventName, messageBody);
 
-                if (saveConversation) {
-                    sent = true;
-                }
-            }
-
-
-            const socketMsgEventName = recipientId+"message";
-            // socket.io messages Event at server
-            global.io.emit(socketMsgEventName, messageBody);
-            
-            return res.json({send: sent, attachmentName});
-
-        } else {
-            console.log("participant does not exist");
-        }
-
-    } catch (err) {
-        next(err);
-    }
-
-}
+			return res.json({ send: sent, attachmentName });
+		} else {
+			console.log("participant does not exist");
+		}
+	} catch (err) {
+		next(err);
+	}
+};
 
 exports.typingMessage_ApiController = (req, res, next) => {
+	const userData = req.userData;
 
-    const userData = req.userData;
-
-    try {
-        const {recipientId} = req.body;
-        const typingEventName = recipientId+"typing";
-        // socket.io Typing Event at server
-        global.io.emit(typingEventName, {typer: userData._id});
-        res.json({});
-    } catch (err) {
-        next(err);
-    }
-
-}
-
+	try {
+		const { recipientId } = req.body;
+		const typingEventName = recipientId + "typing";
+		// socket.io Typing Event at server
+		global.io.emit(typingEventName, { typer: userData._id });
+		res.json({});
+	} catch (err) {
+		next(err);
+	}
+};
 
 exports.messengerPrivateImages_ApiController = async (req, res, next) => {
-    try {
-        const participant = req.query.rsp
-        const userData = req.userData;
-        const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
-        if (isValidObjId) {
-            const ConversationFind = await Conversation.findOne({ 
-                $and: [
-                    {
-                        $or: [
-                            { $and: [ { creatorObjId: userData._id }, { participantObjId: participant } ] },
-                            { $and: [ { creatorObjId: participant }, { participantObjId: userData._id } ] }
-                        ]
-                    },
-                    {
-                        conversations: {$elemMatch: {attachmentName: req.params.attachment_name}}
-                    }
-                ]
-            });
+	try {
+		const participant = req.query.rsp;
+		const userData = req.userData;
+		const isValidObjId = mongoose.Types.ObjectId.isValid(participant);
+		if (isValidObjId) {
+			const ConversationFind = await Conversation.findOne({
+				$and: [
+					{
+						$or: [{ $and: [{ creatorObjId: userData._id }, { participantObjId: participant }] }, { $and: [{ creatorObjId: participant }, { participantObjId: userData._id }] }],
+					},
+					{
+						conversations: { $elemMatch: { attachmentName: req.params.attachment_name } },
+					},
+				],
+			});
 
-            if (ConversationFind) {
-                const requestedPath = `${path.resolve('./')}/private/messenger/files/${req.params.attachment_name}`;
-                if (fs.existsSync(requestedPath)) {
-                    return res.sendFile(requestedPath);
-                }
-            }
-        }
-        return res.sendFile(`${path.resolve('./')}/private/messenger/not-exist.svg`);
-
-    } catch (err) {
-        next(err);
-    }
-}
+			if (ConversationFind) {
+				const requestedPath = `${path.resolve("./")}/private/messenger/files/${req.params.attachment_name}`;
+				if (fs.existsSync(requestedPath)) {
+					return res.sendFile(requestedPath);
+				}
+			}
+		}
+		return res.sendFile(`${path.resolve("./")}/private/messenger/not-exist.svg`);
+	} catch (err) {
+		next(err);
+	}
+};

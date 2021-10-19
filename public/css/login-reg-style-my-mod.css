@@ -1,183 +1,161 @@
-.register-form, 
+.register-form,
 .forget-pass-form {
-    display: none;
+	display: none;
 }
 
 .hide {
-    display: none !important;
-    overflow: hidden;
+	display: none !important;
+	overflow: hidden;
 }
 
 .show {
-    display: block !important;
+	display: block !important;
 }
 
-
 form .form-control {
-    margin-bottom: 0;
-    margin-top: 14px;
+	margin-bottom: 0;
+	margin-top: 14px;
 }
 
 form .ck-bx {
-    display: block;
-    margin-top: 14px;
+	display: block;
+	margin-top: 14px;
 }
 
 form .ck-bx #chk1 {
-    position: static;
+	position: static;
 }
 
 form label {
-    user-select: none;
-    cursor: pointer;
+	user-select: none;
+	cursor: pointer;
 }
 form input[type="checkbox"] {
-    cursor: pointer;
+	cursor: pointer;
 }
-
 
 .register-form .reg-form #reg_email {
-    text-transform: lowercase;
+	text-transform: lowercase;
 }
 .register-form .reg-form #reg_email::placeholder {
-    text-transform: capitalize;
+	text-transform: capitalize;
 }
-
-
-
-
 
 /* Floating notification CSS  */
- 
+
 @keyframes floatingMsgAnimate {
-
-    10% {
-        right: 20px;
-        top: 40px;
-    }
-    50%  {
-        right: 20px;
-        top: 40px;
-    }
-    70%  {
-        right: 20px;
-        top: 40px;
-        opacity: 1;
-    }
-    71% {
-        opacity: 0.4;
-    }
-    100%  {
-        top: 40px;
-        right: -400px
-    }
-    
-    
+	10% {
+		right: 20px;
+		top: 40px;
+	}
+	50% {
+		right: 20px;
+		top: 40px;
+	}
+	70% {
+		right: 20px;
+		top: 40px;
+		opacity: 1;
+	}
+	71% {
+		opacity: 0.4;
+	}
+	100% {
+		top: 40px;
+		right: -400px;
+	}
 }
-
 
 .floating-alert-notification {
-    position: fixed;
-    top: -50px;
-    right: 20px;
-    width: 300px;
-    overflow: hidden;
-    display: none;
-    z-index: 1010;
+	position: fixed;
+	top: -50px;
+	right: 20px;
+	width: 300px;
+	overflow: hidden;
+	display: none;
+	z-index: 1010;
 }
-
 
 .form-content .floating-alert-notification.show {
-    display: block;
-    animation-name: floatingMsgAnimate;
-    animation-duration: 3s;
+	display: block;
+	animation-name: floatingMsgAnimate;
+	animation-duration: 3s;
 }
 
-.form-content  .floating-alert-notification .alert-msg {
-    border-radius: 5px;
-    padding: 10px 30px;
-    opacity: 0.83;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.5;
-    margin-bottom: 15px;
+.form-content .floating-alert-notification .alert-msg {
+	border-radius: 5px;
+	padding: 10px 30px;
+	opacity: 0.83;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.5;
+	margin-bottom: 15px;
 }
 
-.form-content  .floating-alert-notification .danger-alert {
-    background-color: #f44336;
-    color: white;
+.form-content .floating-alert-notification .danger-alert {
+	background-color: #f44336;
+	color: white;
 }
 
-
-.form-content  .floating-alert-notification .success-alert {
-    background-color: #04AA6D;
-    color: white;
+.form-content .floating-alert-notification .success-alert {
+	background-color: #04aa6d;
+	color: white;
 }
-
-
-
 
 /* Loading animation of the actins >> Start */
 #load-animation .load-bg {
-    background-color: #0000007a;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
+	background-color: #0000007a;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1000;
 }
 
 #load-animation .load-bg .wrap-loading {
-    width: 110px;
-    height: 110px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
+	width: 110px;
+	height: 110px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1001;
 }
 
 #load-animation .load-bg .wrap-loading .loading {
-    border: 10px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 10px solid #43aa8b;
-    width: 100%;
-    height: 100%;
-    animation: spin 1s linear infinite;
-  }
-  
-  
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+	border: 10px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 10px solid #43aa8b;
+	width: 100%;
+	height: 100%;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
 
 @media all and (max-width: 500px) {
-    #load-animation .load-bg .wrap-loading .loading {
-        border-width: 5px;
-        width: 70px;
-        height: 70px;
-    }
-    
+	#load-animation .load-bg .wrap-loading .loading {
+		border-width: 5px;
+		width: 70px;
+		height: 70px;
+	}
 }
 /* Loading animation of the actins >> End */
 
-
-
-
-
-
-
 @media all and (max-width: 500px) {
-    
-    .form-holder .form-content {
-        padding: 0;
-    }
-    
-    .form-content .form-items  {
-        max-width: 85%;
-    }
-}
+	.form-holder .form-content {
+		padding: 0;
+	}
 
+	.form-content .form-items {
+		max-width: 85%;
+	}
+}

@@ -62,6 +62,10 @@
                     <i class="fas fa-shield-alt"></i>
                     <p>security <span>and</span> login</p>
                 </a>
+                <a class="feature-path" href="/user/settings/social-links">
+                    <i class="fas fa-link"></i>
+                    <p>social links</p>
+                </a>
             </div>
 
         <% } else if (uri === "general-information") {%>
@@ -138,8 +142,25 @@
             </div>
 
         <% } else if (uri === "security") {%>
-            <div class="security-area">
+            <div class="security-info">
                 <div>Security Area</div>
+            </div>
+
+        <% } else if (uri === "social-links") {%>
+            <div class="social-links">
+                <div class="links">
+                    <div class="links-show">
+                        <div>
+                            
+                        </div>
+                        <button class="edit-btn">Edit</button>
+                    </div>
+                    <div class="links-edit-area hide">
+                        <div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
         <% } %>

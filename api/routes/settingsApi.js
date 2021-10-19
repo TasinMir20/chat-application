@@ -6,8 +6,4 @@ settingsApi.post("/", settingsRoot_ApiController);
 settingsApi.post("/general-information-edit", generalInfoUpdate_ApiController);
 settingsApi.post("/security", security_ApiController);
 
-
-
-
-
 module.exports = settingsApi;

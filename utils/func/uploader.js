@@ -4,43 +4,41 @@ const path = require("path");
 const createError = require("http-errors");
 
 function uploader(upload_folder_path, allowed_file_types, max_file_size, max_number_of_files, error_msg, fileNm) {
-    
-    // File upload folder
-    const UPLOADS_FOLDER = upload_folder_path;
+	// File upload folder
+	const UPLOADS_FOLDER = upload_folder_path;
 
-    // define the storage
-    const storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, UPLOADS_FOLDER);
-        },
-        filename: (req, file, cb) => {
-            const fileExt = path.extname(file.originalname);
-            const fileName = fileNm;
-            cb(null, fileName + fileExt);
-        },
-    });
+	// define the storage
+	const storage = multer.diskStorage({
+		destination: (req, file, cb) => {
+			cb(null, UPLOADS_FOLDER);
+		},
+		filename: (req, file, cb) => {
+			const fileExt = path.extname(file.originalname);
+			const fileName = fileNm;
+			cb(null, fileName + fileExt);
+		},
+	});
 
-    // prepare the final multer upload object
-    const upload = multer({
-        storage: storage,
-        limits: {
-            fileSize: max_file_size,
-        },
-        fileFilter: (req, file, cb) => {
-            if (req.files.length > max_number_of_files) {
-                cb(createError(`More files were selected than allowed!`));
-            } else {
- 
-                if (allowed_file_types.includes(file.mimetype)) {
-                    cb(null, true);
-                } else {
-                    cb(createError(error_msg));
-                }
-            }
-        },
-    });
+	// prepare the final multer upload object
+	const upload = multer({
+		storage: storage,
+		limits: {
+			fileSize: max_file_size,
+		},
+		fileFilter: (req, file, cb) => {
+			if (req.files.length > max_number_of_files) {
+				cb(createError(`More files were selected than allowed!`));
+			} else {
+				if (allowed_file_types.includes(file.mimetype)) {
+					cb(null, true);
+				} else {
+					cb(createError(error_msg));
+				}
+			}
+		},
+	});
 
-    return upload;
+	return upload;
 }
 
 module.exports = uploader;

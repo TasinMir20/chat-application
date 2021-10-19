@@ -13,5 +13,4 @@ loginSignupApi.post("/forget-code-submit", recoveryCodeFind, forgetPassCode_ApiC
 loginSignupApi.post("/forget-code-resend", recoveryCodeFind, forgetPassResendCode_ApiController);
 loginSignupApi.post("/forget-password-submit", recoveryCodeFind, forgetPassPassword_ApiController);
 
-
 module.exports = loginSignupApi;

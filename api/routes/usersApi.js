@@ -12,11 +12,9 @@ usersApi.post("/dashboard", dashboardApiController);
 usersApi.post("/email-verification", emailVerify_ApiController);
 usersApi.post("/email-verification-code-resend", emailVerifyResendCode_ApiController);
 
-
 // Logout Api controller
 usersApi.get("/logout", logOut_ApiController);
 usersApi.post("/logout", logOut_ApiController);
-
 
 // Messenger router
 usersApi.use("/messenger", messengerApi);
