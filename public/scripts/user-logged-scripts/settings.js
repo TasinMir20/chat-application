@@ -86,7 +86,7 @@ if (IsGeneralInformationPath) {
 
 		const dataObj = { firstName, lastName, username, email, authPassword, whichPropertyChange };
 
-		const apiUrl = "/api/user/settings/general-information-edit";
+		const apiUrl = "/api/user/settings/general-information-update";
 
 		fetch(apiUrl, {
 			headers: {
@@ -235,4 +235,146 @@ if (IsGeneralInformationPath) {
 				console.log(reason);
 			});
 	}
+}
+
+const IsSocialLinksEditPath = document.querySelector(".social-links");
+
+if (IsSocialLinksEditPath) {
+	function socialLinksEdit() {
+		// Edit button hide and update button show
+		document.querySelector(".social-links .links-show .btn-wrap .edit-btn").classList.add("hide");
+		document.querySelector(".social-links .links-show .btn-wrap .update-btn").classList.remove("hide");
+
+		// click redirect disable
+		let lnkToDisableHref = document.getElementsByClassName("single-link");
+		for (let i = 0; i < lnkToDisableHref.length; i++) {
+			lnkToDisableHref[i].setAttribute("onclick", "return false;");
+		}
+
+		// Enable links input box
+		let lnkTo = document.getElementsByClassName("link-input");
+		for (let i = 0; i < lnkTo.length; i++) {
+			lnkTo[i].removeAttribute("disabled");
+		}
+	}
+
+	document.querySelector(".social-links .links-show .btn-wrap .edit-btn").onclick = socialLinksEdit;
+
+	function socialLinksUpdate_ApiRequest() {
+		const linkedinInput = document.querySelector("#linkedin-input").value;
+		const facebookInput = document.querySelector("#facebook-input").value;
+		const instagramInput = document.querySelector("#instagram-input").value;
+		const twitterInput = document.querySelector("#twitter-input").value;
+		const githubInput = document.querySelector("#github-input").value;
+		const dribbbleInput = document.querySelector("#dribbble-input").value;
+
+		// loading animation showing
+		document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
+
+		const dataObj = { linkedinInput, facebookInput, instagramInput, twitterInput, githubInput, dribbbleInput };
+		const apiUrl = "/api/user/settings/social-link-update";
+		fetch(apiUrl, {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: JSON.stringify(dataObj),
+		})
+			.then((res) => {
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
+			.then((data) => {
+				if (!data) {
+					return;
+				}
+
+				const response = data;
+
+				// Error message remove if name changed successfully
+				document.querySelector(".err-msg").innerHTML = "";
+
+				const noIssue = !(response.linkedinIssue || response.facebookIssue || response.instagramIssue || response.twitterIssue || response.githubIssue || response.dribbbleIssue);
+				if (noIssue) {
+					// Update button hide and edit button show
+					document.querySelector(".social-links .links-show .btn-wrap .update-btn").classList.add("hide");
+					document.querySelector(".social-links .links-show .btn-wrap .edit-btn").classList.remove("hide");
+
+					// click redirect re-enable
+					let lnkToDisableHref = document.getElementsByClassName("single-link");
+					for (let i = 0; i < lnkToDisableHref.length; i++) {
+						lnkToDisableHref[i].removeAttribute("onclick");
+					}
+
+					// Disable links input box
+					let lnkTo = document.getElementsByClassName("link-input");
+					for (let i = 0; i < lnkTo.length; i++) {
+						lnkTo[i].setAttribute("disabled", "disabled");
+					}
+				}
+
+				// Update issues
+				let target = document.querySelector(".social-links .links-show .wrap .err-show.l-err");
+				if (response.linkedinIssue) {
+					target.innerHTML = `<small class="error-message">${response.linkedinIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+
+				target = document.querySelector(".social-links .links-show .wrap .err-show.f-err");
+				if (response.facebookIssue) {
+					target.innerHTML = `<small class="error-message">${response.facebookIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+
+				target = document.querySelector(".social-links .links-show .wrap .err-show.i-err");
+				if (response.instagramIssue) {
+					target.innerHTML = `<small class="error-message">${response.instagramIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+
+				target = document.querySelector(".social-links .links-show .wrap .err-show.t-err");
+				if (response.twitterIssue) {
+					target.innerHTML = `<small class="error-message">${response.twitterIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+
+				target = document.querySelector(".social-links .links-show .wrap .err-show.g-err");
+				if (response.githubIssue) {
+					target.innerHTML = `<small class="error-message">${response.githubIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+
+				target = document.querySelector(".social-links .links-show .wrap .err-show.d-err");
+				if (response.dribbbleIssue) {
+					target.innerHTML = `<small class="error-message">${response.dribbbleIssue}</small>`;
+				} else {
+					target.innerHTML = "";
+				}
+			})
+			.catch(function (reason) {
+				console.log(reason);
+			});
+	}
+
+	document.querySelector(".social-links .links-show .btn-wrap .update-btn").onclick = socialLinksUpdate_ApiRequest;
 }

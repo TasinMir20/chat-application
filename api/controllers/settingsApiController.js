@@ -209,3 +209,72 @@ exports.security_ApiController = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.socialLinksUpdate_ApiController = async (req, res, next) => {
+	try {
+		const userData = req.userData;
+
+		let { linkedinInput, facebookInput, instagramInput, twitterInput, githubInput, dribbbleInput } = req.body;
+
+		function usernameValidate(rawUsername, whichUsername, dataUser) {
+			// Check filled or not
+			const usernameF = rawUsername.length > 0;
+			// username validation
+			const isUsrNmNotNumr = String(Number(rawUsername)) === "NaN";
+			const validChar = /^[0-9a-zA-Z_.]+$/.test(rawUsername) && isUsrNmNotNumr ? true : false;
+			const usernameLng = rawUsername.length >= 3 && rawUsername.length < 40;
+			const usernameOk = validChar && usernameLng ? true : false;
+
+			if (!usernameOk) {
+				if (!usernameLng && usernameF) {
+					var issue = "Username could be 3 to 40 characters long!";
+				} else if (!validChar && usernameF) {
+					issue = `Please enter valid ${whichUsername} username!`;
+				}
+			}
+
+			let dbUsername = "";
+			if (whichUsername == "linkedin") {
+				dbUsername = dataUser.othersData.socialLinks.linkedin;
+			} else if (whichUsername == "facebook") {
+				dbUsername = dataUser.othersData.socialLinks.facebook;
+			} else if (whichUsername == "instagram") {
+				dbUsername = dataUser.othersData.socialLinks.instagram;
+			} else if (whichUsername == "twitter") {
+				dbUsername = dataUser.othersData.socialLinks.twitter;
+			} else if (whichUsername == "github") {
+				dbUsername = dataUser.othersData.socialLinks.github;
+			} else if (whichUsername == "dribbble") {
+				dbUsername = dataUser.othersData.socialLinks.dribbble;
+			}
+			const username = usernameF ? (usernameOk ? rawUsername : dbUsername) : "";
+
+			return { username, issue };
+		}
+
+		const { username: linkedin, issue: linkedinIssue } = usernameValidate(linkedinInput, "linkedin", userData);
+		const { username: facebook, issue: facebookIssue } = usernameValidate(facebookInput, "facebook", userData);
+		const { username: instagram, issue: instagramIssue } = usernameValidate(instagramInput, "instagram", userData);
+		const { username: twitter, issue: twitterIssue } = usernameValidate(twitterInput, "twitter", userData);
+		const { username: github, issue: githubIssue } = usernameValidate(githubInput, "github", userData);
+		const { username: dribbble, issue: dribbbleIssue } = usernameValidate(dribbbleInput, "dribbble", userData);
+
+		console.log({ linkedinIssue, facebookIssue, instagramIssue, twitterIssue, githubIssue, dribbbleIssue });
+
+		await User.updateOne(
+			{ _id: userData._id },
+			{
+				"othersData.socialLinks.linkedin": linkedin,
+				"othersData.socialLinks.facebook": facebook,
+				"othersData.socialLinks.instagram": instagram,
+				"othersData.socialLinks.twitter": twitter,
+				"othersData.socialLinks.github": github,
+				"othersData.socialLinks.dribbble": dribbble,
+			}
+		);
+
+		return res.json({ linkedinIssue, facebookIssue, instagramIssue, twitterIssue, githubIssue, dribbbleIssue });
+	} catch (err) {
+		next(err);
+	}
+};

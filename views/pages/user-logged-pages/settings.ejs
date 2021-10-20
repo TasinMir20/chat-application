@@ -44,6 +44,20 @@
                 nameChangeAbleAfter = 0;
             }
         }
+
+
+        // social-links part
+        const socialLinks = userData.othersData.socialLinks;
+
+        const linkedinFullLink = `https://www.linkedin.com/in/${socialLinks.linkedin}`;
+        const facebookFullLink = `https://www.facebook.com/${socialLinks.facebook}`;
+        const instagramFullLink = `https://www.instagram.com/${socialLinks.instagram}`;
+        const twitterFullLink = `https://www.twitter.com/${socialLinks.twitter}`;
+        const githubFullLink = `https://www.github.com/${socialLinks.github}`;
+        const dribbbleFullLink = `https://www.dribbble.com/${socialLinks.dribbble}`;
+
+
+
     %>
 
 
@@ -150,14 +164,48 @@
             <div class="social-links">
                 <div class="links">
                     <div class="links-show">
-                        <div>
-                            
+                        <div class="wrap">
+                            <a href="<%=linkedinFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-linkedin-in"></i>
+                                <span>/</span>
+                                <input class="link-input" id="linkedin-input" type="text" value="<%=socialLinks.linkedin%>" placeholder="Your linkedin username" disabled>
+                            </a>
+                            <div class="err-show l-err"></div>
+                            <a href="<%=facebookFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-facebook"></i>
+                                <span>/</span>
+                                <input class="link-input" id="facebook-input" type="text" value="<%=socialLinks.facebook%>" placeholder="Your facebook username" disabled>
+                            </a>
+                            <div class="err-show f-err"></div>
+                            <a href="<%=instagramFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-instagram"></i>
+                                <span>/</span>
+                                <input class="link-input" id="instagram-input" type="text" value="<%=socialLinks.instagram%>" placeholder="Your instagram username" disabled>
+                            </a>
+                            <div class="err-show i-err"></div>
+                            <a href="<%=twitterFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-twitter"></i>
+                                <span>/</span>
+                                <input class="link-input" id="twitter-input" type="text" value="<%=socialLinks.twitter%>" placeholder="Your twitter username" disabled>
+                            </a>
+                            <div class="err-show t-err"></div>
+                            <a href="<%=githubFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-github"></i>
+                                <span>/</span>
+                                <input class="link-input" id="github-input" type="text" value="<%=socialLinks.github%>" placeholder="Your github username" disabled>
+                            </a>
+                            <div class="err-show g-err"></div>
+                            <a href="<%=dribbbleFullLink%>" target="_blank" class="single-link">
+                                <i class="fab fa-dribbble"></i>
+                                <span>/</span>
+                                <input class="link-input" id="dribbble-input" type="text" value="<%=socialLinks.dribbble%>" placeholder="Your dribbble username" disabled>
+                            </a>
+                            <div class="err-show d-err"></div>
                         </div>
-                        <button class="edit-btn">Edit</button>
-                    </div>
-                    <div class="links-edit-area hide">
-                        <div>
-
+                        <div class="err-msg"></div>
+                        <div class="btn-wrap">
+                            <button class="edit-btn">Edit</button>
+                            <button class="update-btn hide">Update</button>
                         </div>
                     </div>
                 </div>

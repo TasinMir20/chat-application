@@ -16,12 +16,14 @@
 
         const socialLinks = requestedProfileData.othersData.socialLinks;
 
-        const linkedin = socialLinks.linkedin;
-        const facebook = socialLinks.facebook;
-        const instagram = socialLinks.instagram;
-        const twitter = socialLinks.twitter;
-        const github = socialLinks.github;
-        const dribbble = socialLinks.dribbble;
+        const linkedinFullLink = `https://www.linkedin.com/in/${socialLinks.linkedin}`;
+        const facebookFullLink = `https://www.facebook.com/${socialLinks.facebook}`;
+        const instagramFullLink = `https://www.instagram.com/${socialLinks.instagram}`;
+        const twitterFullLink = `https://www.twitter.com/${socialLinks.twitter}`;
+        const githubFullLink = `https://www.github.com/${socialLinks.github}`;
+        const dribbbleFullLink = `https://www.dribbble.com/${socialLinks.dribbble}`;
+
+
     %>
     <section class="sections">
         <div class="container">
@@ -38,12 +40,12 @@
                 </div>
                 <div class="social-links">
                     <!-- Profile Social Link -->
-                    <%- linkedin ? `<a href="${linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : "" %>
-                    <%- facebook ? `<a href="${facebook}" target="_blank"><i class="fab fa-facebook"></i></a>` : "" %>
-                    <%- instagram ? `<a href="${facebook}" target="_blank"><i class="fab fa-instagram"></i></a>` : "" %>
-                    <%- twitter ? `<a href="${twitter}" target="_blank"><i class="fab fa-twitter"></i></a>` : "" %>
-                    <%- github ? `<a href="${github}" target="_blank"><i class="fab fa-github"></i></a>` : "" %>
-                    <%- dribbble ? `<a href="${dribbble}" target="_blank"><i class="fab fa-dribbble"></i></a>` : "" %>
+                    <%- socialLinks.linkedin ? `<a href="${linkedinFullLink}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : "" %>
+                    <%- socialLinks.facebook ? `<a href="${facebookFullLink}" target="_blank"><i class="fab fa-facebook"></i></a>` : "" %>
+                    <%- socialLinks.instagram ? `<a href="${instagramFullLink}" target="_blank"><i class="fab fa-instagram"></i></a>` : "" %>
+                    <%- socialLinks.twitter ? `<a href="${twitterFullLink}" target="_blank"><i class="fab fa-twitter"></i></a>` : "" %>
+                    <%- socialLinks.github ? `<a href="${githubFullLink}" target="_blank"><i class="fab fa-github"></i></a>` : "" %>
+                    <%- socialLinks.dribbble ? `<a href="${dribbbleFullLink}" target="_blank"><i class="fab fa-dribbble"></i></a>` : "" %>
                 </div>
                 <!-- Profile message button -->
                 <%- !isOwnProfile ? `<div class="profle-message-div"><a href="/user/messenger/?message=${requestedProfileData._id}">Message</a></div>` : "" %>
