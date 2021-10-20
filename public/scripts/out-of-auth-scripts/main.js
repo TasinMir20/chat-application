@@ -50,7 +50,7 @@ document.querySelector(".forget-pg-hide").onclick = forgetPgHide;
 ///////////////////////////////////////////////////////////////////////
 
 // Register API request func Start
-function regApiRequest(event) {
+async function regApiRequest(event) {
 	event.preventDefault();
 
 	const firstName = document.querySelector("#first_name").value;
@@ -70,10 +70,13 @@ function regApiRequest(event) {
                         </div>
                     </div>`;
 
-		const dataObj = { firstName, lastName, regEmail, newPass, confirmPass };
+		// Get client Geolocation Data by third party API
+		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const geolocationData = await response.json();
+
+		const dataObj = { firstName, lastName, regEmail, newPass, confirmPass, geolocationData };
 
 		const apiUrl = "/api/ls/signup";
-
 		fetch(apiUrl, {
 			headers: {
 				Accept: "application/json",
@@ -179,7 +182,7 @@ document.querySelector("#register-submit").onclick = regApiRequest;
 
 // Login API request func Start
 
-function loginApiRequest(event) {
+async function loginApiRequest(event) {
 	event.preventDefault();
 
 	const emailOrUsername = document.querySelector("#user_or_email").value;
@@ -197,10 +200,13 @@ function loginApiRequest(event) {
                         </div>
                     </div>`;
 
-		const dataObj = { emailOrUsername, password, keepLogged };
+		// Get client Geolocation Data by third party API
+		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const geolocationData = await response.json();
+
+		const dataObj = { emailOrUsername, password, keepLogged, geolocationData };
 
 		const apiUrl = "/api/ls/login";
-
 		fetch(apiUrl, {
 			headers: {
 				Accept: "application/json",
@@ -508,7 +514,7 @@ function forgetPassResendCode_ApiRequest(event) {
 document.querySelector("#forget-code-resend").onclick = forgetPassResendCode_ApiRequest;
 
 /* Forget Password Submit */
-function forgetPassPassword_ApiRequest() {
+async function forgetPassPassword_ApiRequest() {
 	event.preventDefault();
 	const forgetNewPass = document.querySelector("#forget-newpass-input").value;
 	const forgetConfirmNewPass = document.querySelector("#forget-confirmpass-input").value;
@@ -522,7 +528,11 @@ function forgetPassPassword_ApiRequest() {
                         </div>
                     </div>`;
 
-		const dataObj = { forgetNewPass, forgetConfirmNewPass };
+		// Get client Geolocation Data by third party API
+		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const geolocationData = await response.json();
+
+		const dataObj = { forgetNewPass, forgetConfirmNewPass, geolocationData };
 		const apiUrl = "/api/ls/forget-password-submit";
 		fetch(apiUrl, {
 			headers: {

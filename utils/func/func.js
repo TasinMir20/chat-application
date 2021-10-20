@@ -79,8 +79,8 @@ async function doLogin(req, res, next, userData, keepLogged) {
 			session: !keepLogged,
 			createTime: currentEpochTime,
 			expireTime: howLongAge,
-			ip: req.ip,
 			userAgent: req.userAgent,
+			geolocationData: req.body.geolocationData,
 		});
 
 		const saveLoginCookieData = await loginCookieInsertStructure.save();
@@ -172,7 +172,7 @@ async function codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName) 
 			let mail = {};
 			mail = await mailSending(sentTo, subject, themMailMsg);
 			mail.saveCodeData = saveCode;
-			mail.accepted = true;
+			// mail.accepted = true;
 
 			return mail;
 		} else {
