@@ -116,16 +116,17 @@ function emailVerifyResendCode_ApiRequest(event) {
 
 						if (seconds >= 0) {
 							const min = Math.floor(seconds / 60);
-							const andSec = Math.floor(seconds % 60);
+							const retailSeconds = Math.floor(seconds % 60);
 							const hour = Math.floor(min / 60);
-							const andMin = Math.floor(min % 60);
+							const retailMins = Math.floor(min % 60);
+
 							if (hour < 1) {
-								var resendCodeAfter = `${andMin} minutes: ${andSec} seconds`;
-								if (andMin < 1) {
-									resendCodeAfter = `${andSec} seconds`;
+								var resendCodeAfter = `${retailMins} minutes: ${retailSeconds} seconds`;
+								if (retailMins < 1) {
+									resendCodeAfter = `${retailSeconds} seconds`;
 								}
 							} else {
-								resendCodeAfter = `${hour} hours: ${andMin} minutes: ${andSec} seconds`;
+								resendCodeAfter = `${hour} hours: ${retailMins} minutes: ${retailSeconds} seconds`;
 							}
 							document.querySelector("#code-send-next-time-show .txt").innerText = "Code resend request after";
 							document.querySelector("#code-send-next-time-show .tm").innerText = resendCodeAfter;

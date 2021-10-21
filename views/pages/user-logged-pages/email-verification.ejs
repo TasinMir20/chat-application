@@ -15,8 +15,11 @@
 <%- include("../../partials/top-bar.ejs") %>
     <section class="section">
         <div class="container">
-            <form action="" method="post">
+            <div class="docs">
                 <h1>Please confirm your email address</h1>
+                <p>We have sent a six-digit verification code to your email: <%=userData.email%></p>
+            </div>
+            <form action="" method="post">
                 <div class="input-cont">
                     <input type="number" class="code-input" id="email-verify-code" type="text" placeholder="Enter verification code">
                     <div class="code_msg"></div>

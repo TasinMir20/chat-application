@@ -204,13 +204,14 @@ function chatUserList_ApiRequest() {
 								circleVisibility = "hide";
 
 								const min = Math.floor(seconds / 60);
-								const andSec = Math.floor(seconds % 60);
+								const retailSeconds = Math.floor(seconds % 60);
 								const hour = Math.floor(min / 60);
-								const andMin = Math.floor(min % 60);
+								const retailMins = Math.floor(min % 60);
+
 								if (hour < 1) {
-									inactiveTime = `${andMin}m`;
-									if (andMin < 1) {
-										inactiveTime = `${andSec}s`;
+									inactiveTime = `${retailMins}m`;
+									if (retailMins < 1) {
+										inactiveTime = `${retailSeconds}s`;
 									}
 								} else {
 									inactiveTime = `${hour}h`;
@@ -221,16 +222,17 @@ function chatUserList_ApiRequest() {
 						// last message time
 						const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
 						const min = Math.floor(seconds / 60);
-						const andSec = Math.floor(seconds % 60);
+						const retailSeconds = Math.floor(seconds % 60);
 						const hour = Math.floor(min / 60);
-						const andMin = Math.floor(min % 60);
+						const retailMins = Math.floor(min % 60);
 						const day = Math.floor(hour / 24);
+
 						let lastMsgTime = "";
 						if (day < 1) {
 							if (hour < 1) {
-								lastMsgTime = `${andMin}m ago`;
-								if (andMin < 1) {
-									lastMsgTime = `${andSec}s ago`;
+								lastMsgTime = `${retailMins}m ago`;
+								if (retailMins < 1) {
+									lastMsgTime = `${retailSeconds}s ago`;
 								}
 							} else {
 								lastMsgTime = `${hour}h ago`;
@@ -402,17 +404,17 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 
 						/////////////////////////////////////////
 						const min = Math.floor(seconds / 60);
-						const andSec = Math.floor(seconds % 60);
+						const retailSeconds = Math.floor(seconds % 60);
 						const hour = Math.floor(min / 60);
-						const andMin = Math.floor(min % 60);
+						const retailMins = Math.floor(min % 60);
 						const day = Math.floor(hour / 24);
 
 						let inactiveTime = "";
 						if (day < 1) {
 							if (hour < 1) {
-								inactiveTime = `${andMin}m`;
-								if (andMin < 1) {
-									inactiveTime = `${andSec}s`;
+								inactiveTime = `${retailMins}m`;
+								if (retailMins < 1) {
+									inactiveTime = `${retailSeconds}s`;
 								}
 							} else {
 								inactiveTime = `${hour}h`;
@@ -907,15 +909,15 @@ function socketEvent() {
 						let seconds = currentEpochTime - whenInactive;
 
 						const min = Math.floor(seconds / 60);
-						const andSec = Math.floor(seconds % 60);
+						const retailSeconds = Math.floor(seconds % 60);
 						const hour = Math.floor(min / 60);
-						const andMin = Math.floor(min % 60);
+						const retailMins = Math.floor(min % 60);
 
 						let inactiveTime = "";
 						if (hour < 1) {
-							inactiveTime = `${andMin}m`;
-							if (andMin < 1) {
-								inactiveTime = `${andSec}s`;
+							inactiveTime = `${retailMins}m`;
+							if (retailMins < 1) {
+								inactiveTime = `${retailSeconds}s`;
 							}
 						} else {
 							inactiveTime = `${hour}h`;
