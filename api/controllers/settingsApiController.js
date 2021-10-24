@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require("../../models/User");
-const { emailValidation, codeSaveDBandMailSend, mailSending } = require("../../utils/func/func");
+const { worstPasswordCheck, emailValidation, codeSaveDBandMailSend, mailSending } = require("../../utils/func/func");
 
 exports.settingsRoot_ApiController = async (req, res, next) => {
 	try {
@@ -202,9 +202,96 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 	}
 };
 
-exports.security_ApiController = async (req, res, next) => {
+exports.securityPassUpdate_ApiController = async (req, res, next) => {
 	try {
-		res.send("settings security");
+		const userData = req.userData;
+
+		let { currentPass, newPass, confirmPass } = req.body;
+
+		currentPass = !!currentPass ? String(currentPass) : false;
+		newPass = !!newPass ? String(newPass) : false;
+		confirmPass = !!confirmPass ? String(confirmPass) : false;
+
+		// Check filled or not
+		const currentPassF = currentPass.length > 0;
+		const newPassF = newPass.length > 0;
+		const cnfrmPassF = confirmPass.length > 0;
+
+		/* Password validation */
+		const passLng = newPass ? newPass.length >= 8 && newPass.length <= 32 : false;
+
+		/* Weak password check */
+		if (newPass) {
+			if (String(Number(newPass)) === "NaN") {
+				var passwordEnoughStrong = !worstPasswordCheck(newPass);
+			} else {
+				var isPasswordOnlyNumber = true;
+			}
+		}
+
+		/* new pass and confirm pass match validation */
+		const newAndConfirmPassMatched = cnfrmPassF ? newPass === confirmPass : false;
+
+		const passwordOk = currentPassF && newPassF && passLng && passwordEnoughStrong && cnfrmPassF && newAndConfirmPassMatched ? true : false;
+
+		if (passwordOk) {
+			const matched = await bcrypt.compare(currentPass, userData.password); // authentication
+
+			if (matched) {
+				// Old password could not be new password
+				const isThisOldPass = await bcrypt.compare(newPass, userData.password);
+
+				if (!isThisOldPass) {
+					const encryptedPassword = await bcrypt.hash(newPass, 11);
+					const passwordUpdate = await User.updateOne({ _id: userData._id }, { password: encryptedPassword });
+
+					if (passwordUpdate.nModified == 1) {
+						const passwordUpdated = "Your password has been changed successfully";
+
+						// Password changed notification to user >> Start
+						const sentTo = userData.email;
+						const subject = "Account update! | Password has been changed!";
+						const themMailMsg = `<div style="width: 100%; font-size: 15px; line-height: 21px; color: rgb(20, 24, 35); font-family: arial, sans-serif;">
+                                                <div style="margin-top: 16px; margin-bottom: 20px;">Hi ${userData.username},</div>
+                                                <p style="color: rgb(109, 109, 108);">Successfully your account's password has been changed!</p>
+                                            </div>`;
+
+						await mailSending(sentTo, subject, themMailMsg);
+						// Password changed notification to user >> End
+
+						return res.json({ passwordUpdated });
+					}
+				} else {
+					var newPassMsg = "Your tried to set current password as a new password! Enter a different password!";
+				}
+			} else {
+				var curntPassMsg = "Your entered current password was wrong!";
+			}
+		} else {
+			if (!currentPassF) {
+				curntPassMsg = "Enter the current password to confirm that you!";
+			}
+
+			if (!newPassF) {
+				newPassMsg = "Please enter a new password!";
+			} else if (!passLng) {
+				newPassMsg = "Password should be 8 to 32 characters long!";
+			} else if (!passwordEnoughStrong) {
+				if (isPasswordOnlyNumber) {
+					newPassMsg = "Include minimum 1 letter in your password!";
+				} else {
+					newPassMsg = "Password should be more strong!";
+				}
+			}
+
+			if (!cnfrmPassF) {
+				var cnfrmPassMsg = "Must have to enter confirm password!";
+			} else if (!newAndConfirmPassMatched && passLng) {
+				cnfrmPassMsg = "Confirm password doesn't match!";
+			}
+		}
+
+		return res.json({ curntPassMsg, newPassMsg, cnfrmPassMsg });
 	} catch (err) {
 		next(err);
 	}

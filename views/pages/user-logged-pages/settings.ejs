@@ -157,7 +157,32 @@
 
         <% } else if (uri === "security") {%>
             <div class="security-info">
-                <div>Security Area</div>
+                <div class="password-change-part">
+                    <div class="docs">
+                        <h2>Change your password!</h2>
+                    </div>
+                    <form action="">
+                        <div class="input-cont current-pass-cont">
+                            <input type="password" class="password" id="current-password" placeholder="Enter your current password">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="crnt-pass-msg pass-err-msg"></div>
+                        <div class="input-cont new-pass-cont">
+                            <input type="password" class="password" id="new-password" disabled placeholder="Enter a new password">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="new-pass-msg pass-err-msg"></div>
+                        <div class="input-cont confirm-pass-cont">
+                            <input type="password" class="password" id="confirm-password" disabled placeholder="Enter confirm password">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="cnfrm-pass-msg pass-err-msg"></div>
+                        <div class="btn-cont">
+                            <button type="button" id="password-generate">Password generate</button>
+                            <button type="button" class="cng-btn" id="pass-change-btn">Change</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         <% } else if (uri === "social-links") {%>
@@ -202,7 +227,6 @@
                             </a>
                             <div class="err-show d-err"></div>
                         </div>
-                        <div class="err-msg"></div>
                         <div class="btn-wrap">
                             <button class="edit-btn">Edit</button>
                             <button class="update-btn hide">Update</button>

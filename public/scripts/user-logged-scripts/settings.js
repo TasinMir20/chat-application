@@ -227,7 +227,7 @@ if (IsGeneralInformationPath) {
 						return;
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -235,6 +235,228 @@ if (IsGeneralInformationPath) {
 				console.log(reason);
 			});
 	}
+}
+
+const IsSecurityInfoEditPath = document.querySelector(".security-info");
+
+if (IsSecurityInfoEditPath) {
+	// Password input value hide show func - START
+	function currentPassInputValueHideSHow() {
+		const input = document.querySelector("#current-password");
+		const inputTypeValue = input.getAttribute("type");
+		if (inputTypeValue == "password") {
+			input.setAttribute("type", "text");
+			this.classList.remove("fa-eye");
+			this.classList.add("fa-eye-slash");
+		} else {
+			input.setAttribute("type", "password");
+			this.classList.remove("fa-eye-slash");
+			this.classList.add("fa-eye");
+		}
+	}
+	document.querySelector(".security-info form .current-pass-cont i.fas").onclick = currentPassInputValueHideSHow;
+
+	function newPassInputValueHideSHow() {
+		const input = document.querySelector("#new-password");
+		const inputTypeValue = input.getAttribute("type");
+		if (inputTypeValue == "password") {
+			input.setAttribute("type", "text");
+			this.classList.remove("fa-eye");
+			this.classList.add("fa-eye-slash");
+		} else {
+			input.setAttribute("type", "password");
+			this.classList.remove("fa-eye-slash");
+			this.classList.add("fa-eye");
+		}
+	}
+	document.querySelector(".security-info form .new-pass-cont i.fas").onclick = newPassInputValueHideSHow;
+
+	function confirmPassInputValueHideSHow() {
+		const input = document.querySelector("#confirm-password");
+		const inputTypeValue = input.getAttribute("type");
+		if (inputTypeValue == "password") {
+			input.setAttribute("type", "text");
+			this.classList.remove("fa-eye");
+			this.classList.add("fa-eye-slash");
+		} else {
+			input.setAttribute("type", "password");
+			this.classList.remove("fa-eye-slash");
+			this.classList.add("fa-eye");
+		}
+	}
+	document.querySelector(".security-info form .confirm-pass-cont i.fas").onclick = confirmPassInputValueHideSHow;
+	// Password input value hide show func - END
+
+	function passEnteringEnableDisable() {
+		const currentPassVal = document.querySelector("#current-password").value;
+		const newPass = document.querySelector("#new-password");
+		const confirmPass = document.querySelector("#confirm-password");
+		if (currentPassVal.length > 0) {
+			newPass.removeAttribute("disabled");
+			confirmPass.removeAttribute("disabled");
+		} else {
+			newPass.setAttribute("disabled", "disabled");
+			confirmPass.setAttribute("disabled", "disabled");
+		}
+	}
+	document.querySelector("#current-password").onkeyup = passEnteringEnableDisable;
+
+	function passwordGenerate(event) {
+		event.preventDefault();
+
+		const currentPassVal = document.querySelector("#current-password").value;
+		if (currentPassVal.length < 1) {
+			return;
+		}
+
+		// Password generating -> START
+		const length = 12;
+		const string = "abcdefghijklmnopqrstuvwxyz";
+		const numeric = "0123456789";
+		const punctuation = "!@#$%^&*()_+~`}{[]:;?><,./-=";
+		let password = "";
+		let character = "";
+		while (password.length < length) {
+			entity1 = Math.ceil(string.length * Math.random() * Math.random());
+			entity2 = Math.ceil(numeric.length * Math.random() * Math.random());
+			entity3 = Math.ceil(punctuation.length * Math.random() * Math.random());
+			hold = string.charAt(entity1);
+			hold = password.length % 2 == 0 ? hold.toUpperCase() : hold;
+			character += hold;
+			character += numeric.charAt(entity2);
+			character += punctuation.charAt(entity3);
+			password = character;
+		}
+		password = password
+			.split("")
+			.sort(function () {
+				return 0.5 - Math.random();
+			})
+			.join("");
+		password = password.substr(0, length);
+		// Password generating -> END
+
+		const newPass = document.querySelector("#new-password");
+		const confirmPass = document.querySelector("#confirm-password");
+		newPass.value = password;
+		confirmPass.value = password;
+		newPass.setAttribute("type", "text");
+		confirmPass.setAttribute("type", "text");
+
+		document.querySelector(".new-pass-cont i.fas").classList.remove("fa-eye");
+		document.querySelector(".new-pass-cont i.fas").classList.add("fa-eye-slash");
+
+		document.querySelector(".confirm-pass-cont i.fas").classList.remove("fa-eye");
+		document.querySelector(".confirm-pass-cont i.fas").classList.add("fa-eye-slash");
+	}
+	document.querySelector("#password-generate").onclick = passwordGenerate;
+
+	// Api request
+	function securityPassUpdate_ApiRequest(event) {
+		event.preventDefault();
+
+		const currentPass = document.querySelector("#current-password").value;
+		const newPass = document.querySelector("#new-password").value;
+		const confirmPass = document.querySelector("#confirm-password").value;
+
+		if (!(currentPass && newPass && confirmPass)) {
+			// Floating message show if empty any input fields of the three pass input fields
+			const element = document.querySelector(".floating-alert-notification");
+			element.innerHTML = `<p class="danger-alert alert-msg">Please fill all the fields!</p>`;
+			element.classList.add("show");
+			setTimeout(() => {
+				element.classList.remove("show");
+			}, 3000);
+
+			return;
+		}
+
+		// loading animation showing
+		document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
+
+		const dataObj = { currentPass, newPass, confirmPass };
+		const apiUrl = "/api/user/settings/security-password-update";
+		fetch(apiUrl, {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: JSON.stringify(dataObj),
+		})
+			.then((res) => {
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
+			.then((data) => {
+				if (!data) {
+					return;
+				}
+
+				const response = data;
+
+				console.log(response);
+
+				if (response.passwordUpdated) {
+					// Error message remove if password changed successfully
+					document.querySelector(".crnt-pass-msg").innerHTML = "";
+					document.querySelector(".new-pass-msg").innerHTML = "";
+					document.querySelector(".cnfrm-pass-msg").innerHTML = "";
+
+					// Password input box empty if password changed successfully
+					document.querySelector("#current-password").value = "";
+					document.querySelector("#new-password").value = "";
+					document.querySelector("#confirm-password").value = "";
+
+					// Floating message show if password changed successfully
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = `<p class="success-alert alert-msg">${response.passwordUpdated}</p>`;
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
+				} else {
+					let target = document.querySelector(".crnt-pass-msg");
+					if (response.curntPassMsg) {
+						target.innerHTML = `<small class="error-message">${response.curntPassMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".new-pass-msg");
+					if (response.newPassMsg) {
+						target.innerHTML = `<small class="error-message">${response.newPassMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".cnfrm-pass-msg");
+					if (response.cnfrmPassMsg) {
+						target.innerHTML = `<small class="error-message">${response.cnfrmPassMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+				}
+			})
+			.catch(function (reason) {
+				console.log(reason);
+			});
+	}
+	document.querySelector(".security-info #pass-change-btn").onclick = securityPassUpdate_ApiRequest;
 }
 
 const IsSocialLinksEditPath = document.querySelector(".social-links");
@@ -260,6 +482,7 @@ if (IsSocialLinksEditPath) {
 
 	document.querySelector(".social-links .links-show .btn-wrap .edit-btn").onclick = socialLinksEdit;
 
+	// Api request
 	function socialLinksUpdate_ApiRequest() {
 		const linkedinInput = document.querySelector("#linkedin-input").value;
 		const facebookInput = document.querySelector("#facebook-input").value;
@@ -290,7 +513,7 @@ if (IsSocialLinksEditPath) {
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 				if (res.status == 500) {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
 					throw new Error("Server Error");
 				} else if (res.status == 404) {
 					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
@@ -305,9 +528,6 @@ if (IsSocialLinksEditPath) {
 				}
 
 				const response = data;
-
-				// Error message remove if name changed successfully
-				document.querySelector(".err-msg").innerHTML = "";
 
 				const noIssue = !(response.linkedinIssue || response.facebookIssue || response.instagramIssue || response.twitterIssue || response.githubIssue || response.dribbbleIssue);
 				if (noIssue) {

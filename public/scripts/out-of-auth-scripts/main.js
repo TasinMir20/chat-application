@@ -157,7 +157,7 @@ async function regApiRequest(event) {
 						}
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -255,7 +255,7 @@ async function loginApiRequest(event) {
 						}
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -332,7 +332,7 @@ function forgetPassEmail_ApiRequest(event) {
 						}, 2000);
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -393,7 +393,7 @@ function forgetPassCode_ApiRequest(event) {
 						}, 2000);
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -504,7 +504,7 @@ function forgetPassResendCode_ApiRequest(event) {
 					}, 2000);
 				}
 			} else {
-				document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
 			}
 		})
@@ -583,7 +583,7 @@ async function forgetPassPassword_ApiRequest() {
 						}
 					}
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})

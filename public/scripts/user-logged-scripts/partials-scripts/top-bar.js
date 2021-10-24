@@ -32,7 +32,7 @@ function logOut_ApiRequest() {
 					location.reload();
 				}
 			} else {
-				document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
 			}
 		})

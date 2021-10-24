@@ -272,7 +272,7 @@ function chatUserList_ApiRequest() {
 					chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
 				}
 			} else {
-				document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
 			}
 		})
@@ -315,7 +315,7 @@ function searchUsersToChat_ApiRequest() {
 							document.querySelector(".search-results").innerHTML = "";
 						}
 					} else {
-						document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
 					}
 				})
@@ -523,7 +523,7 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 					}
 					incre++;
 				} else {
-					document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				}
 			})
@@ -665,7 +665,7 @@ function sendMessage_ApiRequest(event) {
 							}, 3000);
 						}
 					} else {
-						document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
 					}
 				})
@@ -687,7 +687,7 @@ function sendMessage_ApiRequest(event) {
 				.then((data) => {
 					if (!(data.error === "server error")) {
 					} else {
-						document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
 					}
 				})
@@ -948,7 +948,7 @@ function typingMessage_ApiRequest() {
 		.then((data) => {
 			if (!(data.error === "server error")) {
 			} else {
-				document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
 			}
 		})
@@ -972,7 +972,7 @@ function logOut_ApiRequest() {
 					location.reload();
 				}
 			} else {
-				document.querySelector("body").innerHTML = "There is a Server Error. Please try again later, we are working to fix it...";
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
 			}
 		})
