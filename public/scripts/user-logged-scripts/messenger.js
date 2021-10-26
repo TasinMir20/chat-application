@@ -164,92 +164,105 @@ function chatUserList_ApiRequest() {
 		method: "POST",
 		body: JSON.stringify({}),
 	})
-		.then((res) => res.json())
+		.then((res) => {
+			if (res.status == 500) {
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
 		.then((data) => {
-			if (!(data.error === "server error")) {
-				const chatUserList = document.querySelector(".chat-list");
+			if (!data) {
+				return;
+			}
 
-				const { chatListUsers } = data;
+			const chatUserList = document.querySelector(".chat-list");
 
-				if (chatListUsers[0]) {
-					// both left-sidebar and right-sidebar show when at least one previous users exist in chat list
-					document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
-					document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+			const { chatListUsers } = data;
 
-					let chatUserListHTML = "";
-					for (let i = 0; i < chatListUsers.length; i++) {
-						const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+			if (chatListUsers[0]) {
+				// both left-sidebar and right-sidebar show when at least one previous users exist in chat list
+				document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+				document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
-						let circleVisibility = "";
-						let circleColor = "";
-						let inactiveTimeVisibility = "";
-						let inactiveTime = "";
-						// check user online or not
-						if (chatListUsers[i].lastOnlineTime === 1) {
+				let chatUserListHTML = "";
+				for (let i = 0; i < chatListUsers.length; i++) {
+					const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+
+					let circleVisibility = "";
+					let circleColor = "";
+					let inactiveTimeVisibility = "";
+					let inactiveTime = "";
+					// check user online or not
+					if (chatListUsers[i].lastOnlineTime === 1) {
+						inactiveTimeVisibility = "hide";
+						circleColor = "green";
+					} else if (chatListUsers[i].lastOnlineTime === 0) {
+						inactiveTimeVisibility = "hide";
+						circleVisibility = "hide";
+					} else {
+						// last online time
+						const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
+						if (seconds > 86400) {
 							inactiveTimeVisibility = "hide";
-							circleColor = "green";
-						} else if (chatListUsers[i].lastOnlineTime === 0) {
+							circleColor = "red";
+						} else if (seconds > 43200) {
 							inactiveTimeVisibility = "hide";
+							circleColor = "yellow";
+						} else {
 							circleVisibility = "hide";
-						} else {
-							// last online time
-							const seconds = currentEpochTime - chatListUsers[i].lastOnlineTime;
-							if (seconds > 86400) {
-								inactiveTimeVisibility = "hide";
-								circleColor = "red";
-							} else if (seconds > 43200) {
-								inactiveTimeVisibility = "hide";
-								circleColor = "yellow";
-							} else {
-								circleVisibility = "hide";
 
-								const min = Math.floor(seconds / 60);
-								const retailSeconds = Math.floor(seconds % 60);
-								const hour = Math.floor(min / 60);
-								const retailMins = Math.floor(min % 60);
+							const min = Math.floor(seconds / 60);
+							const retailSeconds = Math.floor(seconds % 60);
+							const hour = Math.floor(min / 60);
+							const retailMins = Math.floor(min % 60);
 
-								if (hour < 1) {
-									inactiveTime = `${retailMins}m`;
-									if (retailMins < 1) {
-										inactiveTime = `${retailSeconds}s`;
-									}
-								} else {
-									inactiveTime = `${hour}h`;
-								}
-							}
-						}
-
-						// last message time
-						const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
-						const min = Math.floor(seconds / 60);
-						const retailSeconds = Math.floor(seconds % 60);
-						const hour = Math.floor(min / 60);
-						const retailMins = Math.floor(min % 60);
-						const day = Math.floor(hour / 24);
-
-						let lastMsgTime = "";
-						if (day < 1) {
 							if (hour < 1) {
-								lastMsgTime = `${retailMins}m ago`;
+								inactiveTime = `${retailMins}m`;
 								if (retailMins < 1) {
-									lastMsgTime = `${retailSeconds}s ago`;
+									inactiveTime = `${retailSeconds}s`;
 								}
 							} else {
-								lastMsgTime = `${hour}h ago`;
+								inactiveTime = `${hour}h`;
+							}
+						}
+					}
+
+					// last message time
+					const seconds = currentEpochTime - chatListUsers[i].lastMessageTime;
+					const min = Math.floor(seconds / 60);
+					const retailSeconds = Math.floor(seconds % 60);
+					const hour = Math.floor(min / 60);
+					const retailMins = Math.floor(min % 60);
+					const day = Math.floor(hour / 24);
+
+					let lastMsgTime = "";
+					if (day < 1) {
+						if (hour < 1) {
+							lastMsgTime = `${retailMins}m ago`;
+							if (retailMins < 1) {
+								lastMsgTime = `${retailSeconds}s ago`;
 							}
 						} else {
-							lastMsgTime = `${day}d ago`;
+							lastMsgTime = `${hour}h ago`;
 						}
+					} else {
+						lastMsgTime = `${day}d ago`;
+					}
 
-						// generate unique css class from user obj ID
-						let str = chatListUsers[i]._id;
-						let setUniqueCssClass = "c" + str.substr(str.length - 5, str.length);
+					// generate unique css class from user obj ID
+					let str = chatListUsers[i]._id;
+					let setUniqueCssClass = "c" + str.substr(str.length - 5, str.length);
 
-						//  HTML tag conflation resolve
-						const rawMessage = chatListUsers[i].lastMessage;
-						let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
+					//  HTML tag conflation resolve
+					const rawMessage = chatListUsers[i].lastMessage;
+					let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
 
-						chatUserListHTML += `
+					chatUserListHTML += `
                             <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${chatListUsers[i]._id}');">
                                 <div class="img-wrap">
                                     <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
@@ -262,18 +275,14 @@ function chatUserList_ApiRequest() {
                                     <span class="last-msg-time">${lastMsgTime}</span>
                                 </div>
                             </div>`;
-					}
-
-					chatUserList.innerHTML = chatUserListHTML;
-				} else {
-					// only left-sidebar show when no previous users in chat list
-					document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
-
-					chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
 				}
+
+				chatUserList.innerHTML = chatUserListHTML;
 			} else {
-				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-				throw new Error("Server Error");
+				// only left-sidebar show when no previous users in chat list
+				document.querySelector(".sections .container .messenger-container").classList.add("no-previous-people");
+
+				chatUserList.innerHTML = "<p class='no-u-chat-list'>You have no connected people to chat with!</p>";
 			}
 		})
 		.catch(function (reason) {
@@ -306,17 +315,26 @@ function searchUsersToChat_ApiRequest() {
 				method: "POST",
 				body: JSON.stringify({ searchKeyWord }),
 			})
-				.then((res) => res.json())
-				.then((data) => {
-					if (!(data.error === "server error")) {
-						if (data.foundUser) {
-							document.querySelector(".search-results").innerHTML = data.foundUser;
-						} else {
-							document.querySelector(".search-results").innerHTML = "";
-						}
-					} else {
+				.then((res) => {
+					if (res.status == 500) {
 						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
+					} else if (res.status == 404) {
+						document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+						throw new Error("Not found...");
+					} else {
+						return res.json();
+					}
+				})
+				.then((data) => {
+					if (!data) {
+						return;
+					}
+
+					if (data.foundUser) {
+						document.querySelector(".search-results").innerHTML = data.foundUser;
+					} else {
+						document.querySelector(".search-results").innerHTML = "";
 					}
 				})
 				.catch(function (reason) {
@@ -368,102 +386,115 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 			method: "POST",
 			body: JSON.stringify({ participant, isItSearch, pagination }),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
-				if (!(data.error === "server error")) {
-					relevantUsername = data.username; // updating message recipient username
+				if (!data) {
+					return;
+				}
 
-					// when no previous user in the chat list then search someone and click on it- show chat box
-					document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");
-					document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
-					document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
+				relevantUsername = data.username; // updating message recipient username
 
-					// chat header name and profile pic update when switched to other chat
-					document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
-					document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
+				// when no previous user in the chat list then search someone and click on it- show chat box
+				document.querySelector(".sections .container .messenger-container").classList.remove("no-previous-people");
+				document.querySelector(".sections .container .messenger-container .chat-list-left-sidebar").classList.remove("w0");
+				document.querySelector(".sections .container .messenger-container .messages-right-sidebar").classList.remove("w0");
 
-					document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
-					document.querySelector(".unavailable-to-sent-msg").style = "display: none";
-					// chat header user or current chatting partner active-inactive update when switched to other chat
-					const element = document.querySelector(".chatbox-header .img-wrap i");
-					if (data.lastOnlineTime === 1) {
-						element.classList.remove("hide", "red", "yellow");
-						element.classList.add("green");
-						document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
-					} else if (data.lastOnlineTime === 0) {
-						element.classList.remove("green", "red", "yellow");
-						element.classList.add("hide");
-						document.querySelector(".messages-right-sidebar .act").innerText = "Unavailable";
+				// chat header name and profile pic update when switched to other chat
+				document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
+				document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
 
-						// lastOnlineTime = 0 means user does not exist, if does not exist so message input form have to be hide
-						document.querySelector(".msg-form-wrap .msg-input-form").classList.add("hide");
-						document.querySelector(".unavailable-to-sent-msg").style = "display: block";
-					} else {
-						const currentEpochTime = Math.floor(new Date().getTime() / 1000);
-						const seconds = currentEpochTime - data.lastOnlineTime;
+				document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
+				document.querySelector(".unavailable-to-sent-msg").style = "display: none";
+				// chat header user or current chatting partner active-inactive update when switched to other chat
+				const element = document.querySelector(".chatbox-header .img-wrap i");
+				if (data.lastOnlineTime === 1) {
+					element.classList.remove("hide", "red", "yellow");
+					element.classList.add("green");
+					document.querySelector(".messages-right-sidebar .act").innerText = "Active now";
+				} else if (data.lastOnlineTime === 0) {
+					element.classList.remove("green", "red", "yellow");
+					element.classList.add("hide");
+					document.querySelector(".messages-right-sidebar .act").innerText = "Unavailable";
 
-						/////////////////////////////////////////
-						const min = Math.floor(seconds / 60);
-						const retailSeconds = Math.floor(seconds % 60);
-						const hour = Math.floor(min / 60);
-						const retailMins = Math.floor(min % 60);
-						const day = Math.floor(hour / 24);
+					// lastOnlineTime = 0 means user does not exist, if does not exist so message input form have to be hide
+					document.querySelector(".msg-form-wrap .msg-input-form").classList.add("hide");
+					document.querySelector(".unavailable-to-sent-msg").style = "display: block";
+				} else {
+					const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+					const seconds = currentEpochTime - data.lastOnlineTime;
 
-						let inactiveTime = "";
-						if (day < 1) {
-							if (hour < 1) {
-								inactiveTime = `${retailMins}m`;
-								if (retailMins < 1) {
-									inactiveTime = `${retailSeconds}s`;
-								}
-							} else {
-								inactiveTime = `${hour}h`;
+					/////////////////////////////////////////
+					const min = Math.floor(seconds / 60);
+					const retailSeconds = Math.floor(seconds % 60);
+					const hour = Math.floor(min / 60);
+					const retailMins = Math.floor(min % 60);
+					const day = Math.floor(hour / 24);
+
+					let inactiveTime = "";
+					if (day < 1) {
+						if (hour < 1) {
+							inactiveTime = `${retailMins}m`;
+							if (retailMins < 1) {
+								inactiveTime = `${retailSeconds}s`;
 							}
 						} else {
-							inactiveTime = `${day}d`;
+							inactiveTime = `${hour}h`;
 						}
-						document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
-						/////////////////////////////////////////
-
-						if (seconds > 86400) {
-							element.classList.remove("hide", "yellow", "green");
-							element.classList.add("red");
-						} else if (seconds < 86400) {
-							element.classList.remove("hide", "red", "green");
-							element.classList.add("yellow");
-						}
+					} else {
+						inactiveTime = `${day}d`;
 					}
-					/////////////////////////////////////////////////////////
+					document.querySelector(".messages-right-sidebar .act").innerText = `Active ${inactiveTime} ago`;
+					/////////////////////////////////////////
 
-					// chat list message update to front when switched to other chat
-					if (data.conversations) {
-						const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
+					if (seconds > 86400) {
+						element.classList.remove("hide", "yellow", "green");
+						element.classList.add("red");
+					} else if (seconds < 86400) {
+						element.classList.remove("hide", "red", "green");
+						element.classList.add("yellow");
+					}
+				}
+				/////////////////////////////////////////////////////////
 
-						let conversations = data.conversations;
-						let eachMessageHTMLBody = "";
-						for (let i = 0; i < conversations.length; i++) {
-							// Time convert to client local (Whole Date and time)
-							const msgSendTime = conversations[i].msgSendTime;
-							const msgDate = new Date(msgSendTime * 1000);
-							const date = msgDate.toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric" });
-							const time = msgDate.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
-							const localDateAndTime = `${date} at ${time}`;
+				// chat list message update to front when switched to other chat
+				if (data.conversations) {
+					const selfProfilePic = document.querySelector(".chat-list-left-sidebar .self-profile .img-wrap img").src;
 
-							// defining this message incoming or outgoing
-							let incomingOrOutgoing = "";
-							let messageAuthorPic = "";
-							if (String(conversations[i].sender) === String(mySelfId)) {
-								incomingOrOutgoing = "outgoing-message";
-								messageAuthorPic = selfProfilePic;
-							} else {
-								incomingOrOutgoing = "incoming-message";
-								messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
-							}
+					let conversations = data.conversations;
+					let eachMessageHTMLBody = "";
+					for (let i = 0; i < conversations.length; i++) {
+						// Time convert to client local (Whole Date and time)
+						const msgSendTime = conversations[i].msgSendTime;
+						const msgDate = new Date(msgSendTime * 1000);
+						const date = msgDate.toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric" });
+						const time = msgDate.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
+						const localDateAndTime = `${date} at ${time}`;
 
-							const cssClass = conversations[i].attachmentName ? "attachment-style" : "";
-							const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
-							// the message html structure
-							eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
+						// defining this message incoming or outgoing
+						let incomingOrOutgoing = "";
+						let messageAuthorPic = "";
+						if (String(conversations[i].sender) === String(mySelfId)) {
+							incomingOrOutgoing = "outgoing-message";
+							messageAuthorPic = selfProfilePic;
+						} else {
+							incomingOrOutgoing = "incoming-message";
+							messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
+						}
+
+						const cssClass = conversations[i].attachmentName ? "attachment-style" : "";
+						const theMessage = messageHtmlInnerBody(conversations[i].attachmentName, conversations[i].message, participant);
+						// the message html structure
+						eachMessageHTMLBody += `<div class="${incomingOrOutgoing} single-msg-box">
                                                     <div class="author-img">
                                                         <img src="${messageAuthorPic}" alt="">
                                                     </div>
@@ -474,58 +505,54 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
                                                         <span class="msg-time">${localDateAndTime}</span>
                                                     </div>
                                                 </div>`;
-						}
+					}
 
-						if (pagination > 1) {
-							document.querySelector(".chat-box").insertAdjacentHTML("beforeend", eachMessageHTMLBody);
+					if (pagination > 1) {
+						document.querySelector(".chat-box").insertAdjacentHTML("beforeend", eachMessageHTMLBody);
 
-							// pagination loading remove/hide
-							const msgPaginationLoading = document.querySelector(".chatbox-header .msg-pagination-loading");
-							msgPaginationLoading.innerHTML = "";
-							msgPaginationLoading.classList.remove("show");
-						} else {
-							window.pagination = 1;
-							document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
-						}
-
-						// all message fetching finished
-						window.allMessagesFetched = data.allMessagesFetched;
+						// pagination loading remove/hide
+						const msgPaginationLoading = document.querySelector(".chatbox-header .msg-pagination-loading");
+						msgPaginationLoading.innerHTML = "";
+						msgPaginationLoading.classList.remove("show");
 					} else {
-						document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
+						window.pagination = 1;
+						document.querySelector(".chat-box").innerHTML = eachMessageHTMLBody;
+					}
 
-						if (isItSearch) {
-							const chatUserList = document.querySelector(".chat-list");
+					// all message fetching finished
+					window.allMessagesFetched = data.allMessagesFetched;
+				} else {
+					document.querySelector(".chat-box").innerHTML = "<h1 class='no-conv-yet'>No conversation yet!</h1>";
 
-							// If No previous user in chat list so first remove the "You have no connected people to chat with" message
-							const noUcL = chatUserList.innerHTML.match('no-u-chat-list">');
-							if (noUcL) {
-								chatUserList.innerHTML = "";
-							}
+					if (isItSearch) {
+						const chatUserList = document.querySelector(".chat-list");
 
-							// the searched user already inserted or not in chat list
-							const alreadyExist = chatUserList.innerHTML.match(participant);
-							if (!alreadyExist) {
-								chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
-							}
+						// If No previous user in chat list so first remove the "You have no connected people to chat with" message
+						const noUcL = chatUserList.innerHTML.match('no-u-chat-list">');
+						if (noUcL) {
+							chatUserList.innerHTML = "";
+						}
+
+						// the searched user already inserted or not in chat list
+						const alreadyExist = chatUserList.innerHTML.match(participant);
+						if (!alreadyExist) {
+							chatUserList.insertAdjacentHTML("afterbegin", data.newChatToAppendChatUserList);
 						}
 					}
-
-					// in chat list current conversation user background color change as selected
-					const str = participant;
-					const getUniqueCssClass = "c" + str.substr(str.length - 5, str.length);
-					const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
-
-					for (let i = 0; i < toRemoveClass.length; i++) {
-						toRemoveClass[i].classList.remove("selected");
-					}
-					if (incre > 0) {
-						document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
-					}
-					incre++;
-				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
 				}
+
+				// in chat list current conversation user background color change as selected
+				const str = participant;
+				const getUniqueCssClass = "c" + str.substr(str.length - 5, str.length);
+				const toRemoveClass = document.querySelectorAll(".chat-list .single-user");
+
+				for (let i = 0; i < toRemoveClass.length; i++) {
+					toRemoveClass[i].classList.remove("selected");
+				}
+				if (incre > 0) {
+					document.querySelector(`.${getUniqueCssClass}`).classList.add("selected");
+				}
+				incre++;
 			})
 			.catch(function (reason) {
 				console.log(reason);
@@ -644,29 +671,32 @@ function sendMessage_ApiRequest(event) {
 				body: formData,
 			})
 				.then((res) => {
-					window.statusCode = res.status;
-					return res.json();
-				})
-				.then((data) => {
-					if (!(data.error === "server error")) {
-						if (window.statusCode !== 406) {
-							const theMessage = messageHtmlInnerBody(data.attachmentName, "", recipientId);
-							insertAfterResponse.innerHTML = theMessage;
-						} else {
-							// remove message sending loading
-							insertAfterResponse.remove();
-
-							// Floating message show if file upload any requirement not be fill
-							const element = document.querySelector(".floating-alert-notification");
-							element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
-							element.classList.add("show");
-							setTimeout(() => {
-								element.classList.remove("show");
-							}, 3000);
-						}
-					} else {
+					if (res.status == 500) {
 						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
+					} else if (res.status == 404) {
+						document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+						throw new Error("Not found...");
+					} else {
+						window.statusCode = res.status;
+						return res.json();
+					}
+				})
+				.then((data) => {
+					if (window.statusCode !== 406) {
+						const theMessage = messageHtmlInnerBody(data.attachmentName, "", recipientId);
+						insertAfterResponse.innerHTML = theMessage;
+					} else {
+						// remove message sending loading
+						insertAfterResponse.remove();
+
+						// Floating message show if file upload any requirement not be fill
+						const element = document.querySelector(".floating-alert-notification");
+						element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
+						element.classList.add("show");
+						setTimeout(() => {
+							element.classList.remove("show");
+						}, 3000);
 					}
 				})
 				.catch(function (reason) {
@@ -683,13 +713,22 @@ function sendMessage_ApiRequest(event) {
 				method: "POST",
 				body: JSON.stringify({ message, recipientId }),
 			})
-				.then((res) => res.json())
-				.then((data) => {
-					if (!(data.error === "server error")) {
-					} else {
+				.then((res) => {
+					if (res.status == 500) {
 						document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 						throw new Error("Server Error");
+					} else if (res.status == 404) {
+						document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+						throw new Error("Not found...");
+					} else {
+						return res.json();
 					}
+				})
+				.then((data) => {
+					if (!data) {
+						return;
+					}
+					//......................
 				})
 				.catch(function (reason) {
 					console.log(reason);
@@ -944,13 +983,22 @@ function typingMessage_ApiRequest() {
 		method: "POST",
 		body: JSON.stringify({ recipientId }),
 	})
-		.then((res) => res.json())
-		.then((data) => {
-			if (!(data.error === "server error")) {
-			} else {
+		.then((res) => {
+			if (res.status == 500) {
 				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
 			}
+		})
+		.then((data) => {
+			if (!data) {
+				return;
+			}
+			//......
 		})
 		.catch(function (reason) {
 			console.log(reason);
@@ -963,17 +1011,26 @@ function logOut_ApiRequest() {
 	fetch(apiUrl, {
 		method: "POST",
 	})
-		.then((res) => res.json())
-		.then((data) => {
-			if (!(data.error === "server error")) {
-				if (data.logout) {
-					location.replace("/account");
-				} else {
-					location.reload();
-				}
-			} else {
+		.then((res) => {
+			if (res.status == 500) {
 				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
+		.then((data) => {
+			if (!data) {
+				return;
+			}
+
+			if (data.logout) {
+				location.replace("/account");
+			} else {
+				location.reload();
 			}
 		})
 		.catch(function (reason) {

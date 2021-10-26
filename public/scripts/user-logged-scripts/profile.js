@@ -55,40 +55,43 @@ function profilePhotoUploading_ApiRequest() {
 			body: formData,
 		})
 			.then((res) => {
-				window.statusCode = res.status;
-				return res.json();
-			})
-			.then((data) => {
-				if (!(data.error === "server error")) {
-					if (window.statusCode !== 406) {
-						document.querySelector(".profile .profile-photo .profile-photo-set-elements").innerHTML = "";
-
-						// update profile photo img tag src url
-						document.querySelector(".top-bar .top-info .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
-						document.querySelector(".top-bar .dropdown .dropdown-elements .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
-						document.querySelector(".profile .profile-photo .photo img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
-
-						// Floating message show if profile photo upload successful
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = `<p class="success-alert alert-msg">${data.upload}</p>`;
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
-					} else {
-						unSelectedFile();
-
-						// Floating message show if profile photo upload any requirement not be fill
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
-					}
-				} else {
+				if (res.status == 500) {
 					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					window.statusCode = res.status;
+					return res.json();
+				}
+			})
+			.then((data) => {
+				if (window.statusCode !== 406) {
+					document.querySelector(".profile .profile-photo .profile-photo-set-elements").innerHTML = "";
+
+					// update profile photo img tag src url
+					document.querySelector(".top-bar .top-info .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
+					document.querySelector(".top-bar .dropdown .dropdown-elements .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
+					document.querySelector(".profile .profile-photo .photo img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
+
+					// Floating message show if profile photo upload successful
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = `<p class="success-alert alert-msg">${data.upload}</p>`;
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
+				} else {
+					unSelectedFile();
+
+					// Floating message show if profile photo upload any requirement not be fill
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = `<p class="danger-alert alert-msg">${data.issue}</p>`;
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 				}
 			})
 			.catch(function (reason) {

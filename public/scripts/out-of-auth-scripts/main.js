@@ -85,80 +85,89 @@ async function regApiRequest(event) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
+
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.account_create) {
-						// Clear input box after register successful
-						document.querySelector("#first_name").value = "";
-						document.querySelector("#last_name").value = "";
-						document.querySelector("#reg_email").value = "";
-						document.querySelector("#reg_password").value = "";
-						document.querySelector("#reg_confirm_password").value = "";
+				if (response.account_create) {
+					// Clear input box after register successful
+					document.querySelector("#first_name").value = "";
+					document.querySelector("#last_name").value = "";
+					document.querySelector("#reg_email").value = "";
+					document.querySelector("#reg_password").value = "";
+					document.querySelector("#reg_confirm_password").value = "";
 
-						// Error message remove if account created
-						document.querySelector(".fst-nm-msg").innerHTML = "";
-						document.querySelector(".lst-nm-msg").innerHTML = "";
-						document.querySelector(".eml-msg").innerHTML = "";
-						document.querySelector(".reg-pass-msg").innerHTML = "";
-						document.querySelector(".confirm-pass-msg").innerHTML = "";
+					// Error message remove if account created
+					document.querySelector(".fst-nm-msg").innerHTML = "";
+					document.querySelector(".lst-nm-msg").innerHTML = "";
+					document.querySelector(".eml-msg").innerHTML = "";
+					document.querySelector(".reg-pass-msg").innerHTML = "";
+					document.querySelector(".confirm-pass-msg").innerHTML = "";
 
-						// Floating message show if account create successful
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = '<p class="success-alert alert-msg">Account created successfully</p>';
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
+					// Floating message show if account create successful
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">Account created successfully</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 
-						// redirecting after 3 seconds
-						setTimeout(() => {
-							location.replace("/user");
-						}, 3000);
-					} else {
-						let target = document.querySelector(".fst-nm-msg");
-						if (response.firstNameMsg) {
-							target.innerHTML = `<small class="error-message">${response.firstNameMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-
-						target = document.querySelector(".lst-nm-msg");
-						if (response.lastNameMsg) {
-							target.innerHTML = `<small class="error-message">${response.lastNameMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-
-						target = document.querySelector(".eml-msg");
-						if (response.emailMsg) {
-							target.innerHTML = `<small class="error-message">${response.emailMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-
-						target = document.querySelector(".reg-pass-msg");
-						if (response.newPassMsg) {
-							target.innerHTML = `<small class="error-message">${response.newPassMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-
-						target = document.querySelector(".confirm-pass-msg");
-						if (response.cnfrmPassMsg) {
-							target.innerHTML = `<small class="error-message">${response.cnfrmPassMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-					}
+					// redirecting after 3 seconds
+					setTimeout(() => {
+						location.replace("/user");
+					}, 3000);
 				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					let target = document.querySelector(".fst-nm-msg");
+					if (response.firstNameMsg) {
+						target.innerHTML = `<small class="error-message">${response.firstNameMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".lst-nm-msg");
+					if (response.lastNameMsg) {
+						target.innerHTML = `<small class="error-message">${response.lastNameMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".eml-msg");
+					if (response.emailMsg) {
+						target.innerHTML = `<small class="error-message">${response.emailMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".reg-pass-msg");
+					if (response.newPassMsg) {
+						target.innerHTML = `<small class="error-message">${response.newPassMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".confirm-pass-msg");
+					if (response.cnfrmPassMsg) {
+						target.innerHTML = `<small class="error-message">${response.cnfrmPassMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
 				}
 			})
 			.catch(function (reason) {
@@ -215,48 +224,56 @@ async function loginApiRequest(event) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
-				if (!(response.error === "server error")) {
-					if (response.loginSuccess) {
-						// Error message remove if Logged in
-						document.querySelector(".eml_or_user_msg").innerHTML = "";
-						document.querySelector(".pass-msg").innerHTML = "";
+				if (response.loginSuccess) {
+					// Error message remove if Logged in
+					document.querySelector(".eml_or_user_msg").innerHTML = "";
+					document.querySelector(".pass-msg").innerHTML = "";
 
-						// Floating message show if login success
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = '<p class="success-alert alert-msg">You\'re successfully Logged in.</p>';
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
+					// Floating message show if login success
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">You\'re successfully Logged in.</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 
-						// redirecting after 3 seconds
-						setTimeout(() => {
-							location.replace("/user");
-						}, 3000);
-					} else {
-						let target = document.querySelector(".eml_or_user_msg");
-						if (response.userMsg) {
-							target.innerHTML = `<small class="error-message">${response.userMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-
-						target = document.querySelector(".pass-msg");
-						if (response.passMsg) {
-							target.innerHTML = `<small class="error-message">${response.passMsg}</small>`;
-						} else {
-							target.innerHTML = "";
-						}
-					}
+					// redirecting after 3 seconds
+					setTimeout(() => {
+						location.replace("/user");
+					}, 3000);
 				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					let target = document.querySelector(".eml_or_user_msg");
+					if (response.userMsg) {
+						target.innerHTML = `<small class="error-message">${response.userMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
+
+					target = document.querySelector(".pass-msg");
+					if (response.passMsg) {
+						target.innerHTML = `<small class="error-message">${response.passMsg}</small>`;
+					} else {
+						target.innerHTML = "";
+					}
 				}
 			})
 			.catch(function (reason) {
@@ -303,37 +320,45 @@ function forgetPassEmail_ApiRequest(event) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.codeSend) {
-						// Floating message show if recovery code sent
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = '<p class="success-alert alert-msg">We have sent a recovery code to your email.</p>';
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
+				if (response.codeSend) {
+					// Floating message show if recovery code sent
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">We have sent a recovery code to your email.</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 
-						// hiding forget- email input part and show forget code input part
-						document.querySelector(".forget-email-div").classList.add("hide");
-						document.querySelector(".forget-code-div").classList.remove("hide");
-					} else if (response.forgetUserMsg) {
-						document.querySelector(".forget_eml_msg").innerHTML = `<small class='error-message'>${response.forgetUserMsg}</small>`;
-					} else if (response.rld) {
-						// reload current page
-						setTimeout(() => {
-							location.reload();
-						}, 2000);
-					}
-				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					// hiding forget- email input part and show forget code input part
+					document.querySelector(".forget-email-div").classList.add("hide");
+					document.querySelector(".forget-code-div").classList.remove("hide");
+				} else if (response.forgetUserMsg) {
+					document.querySelector(".forget_eml_msg").innerHTML = `<small class='error-message'>${response.forgetUserMsg}</small>`;
+				} else if (response.rld) {
+					// reload current page
+					setTimeout(() => {
+						location.reload();
+					}, 2000);
 				}
 			})
 			.catch(function (reason) {
@@ -372,29 +397,37 @@ function forgetPassCode_ApiRequest(event) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.codeMatched) {
-						// hiding forget- code input part and show forget password input part
-						document.querySelector(".forget-code-div").classList.add("hide");
-						document.querySelector(".forget-pass-div").classList.remove("hide");
-					} else if (response.codeMsg) {
-						document.querySelector(".forget_code_msg").innerHTML = `<small class='error-message'>${response.codeMsg}</small>`;
-					} else if (response.rld) {
-						// reload current page
-						setTimeout(() => {
-							location.reload();
-						}, 2000);
-					}
-				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+				if (response.codeMatched) {
+					// hiding forget- code input part and show forget password input part
+					document.querySelector(".forget-code-div").classList.add("hide");
+					document.querySelector(".forget-pass-div").classList.remove("hide");
+				} else if (response.codeMsg) {
+					document.querySelector(".forget_code_msg").innerHTML = `<small class='error-message'>${response.codeMsg}</small>`;
+				} else if (response.rld) {
+					// reload current page
+					setTimeout(() => {
+						location.reload();
+					}, 2000);
 				}
 			})
 			.catch(function (reason) {
@@ -432,80 +465,88 @@ function forgetPassResendCode_ApiRequest(event) {
 		method: "POST",
 		body: JSON.stringify({}),
 	})
-		.then((res) => res.json())
+		.then((res) => {
+			if (res.status == 500) {
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
 		.then((data) => {
+			if (!data) {
+				return;
+			}
 			// loading animation clear
 			document.querySelector("#load-animation").innerHTML = "";
 
 			const response = data;
-			if (!(response.error === "server error")) {
-				if (response.seconds) {
-					document.querySelector("#temporarily-store-seconds").value = response.seconds;
+			if (response.seconds) {
+				document.querySelector("#temporarily-store-seconds").value = response.seconds;
 
-					if (interval != null) {
-						clearInterval(interval);
-					}
+				if (interval != null) {
+					clearInterval(interval);
+				}
 
-					interval = setInterval(function () {
-						let seconds = document.querySelector("#temporarily-store-seconds").value;
-						seconds = Number(seconds) - 1;
-						document.querySelector("#temporarily-store-seconds").value = seconds; // temporarily store seconds
+				interval = setInterval(function () {
+					let seconds = document.querySelector("#temporarily-store-seconds").value;
+					seconds = Number(seconds) - 1;
+					document.querySelector("#temporarily-store-seconds").value = seconds; // temporarily store seconds
 
-						if (seconds >= 0) {
-							const min = Math.floor(seconds / 60);
-							const retailSeconds = Math.floor(seconds % 60);
-							const hour = Math.floor(min / 60);
-							const retailMins = Math.floor(min % 60);
+					if (seconds >= 0) {
+						const min = Math.floor(seconds / 60);
+						const retailSeconds = Math.floor(seconds % 60);
+						const hour = Math.floor(min / 60);
+						const retailMins = Math.floor(min % 60);
 
-							if (hour < 1) {
-								var resendCodeAfter = `${retailMins} minutes: ${retailSeconds} seconds`;
-								if (retailMins < 1) {
-									resendCodeAfter = `${retailSeconds} seconds`;
-								}
-							} else {
-								resendCodeAfter = `${hour} hours: ${retailMins} minutes: ${retailSeconds} seconds`;
+						if (hour < 1) {
+							var resendCodeAfter = `${retailMins} minutes: ${retailSeconds} seconds`;
+							if (retailMins < 1) {
+								resendCodeAfter = `${retailSeconds} seconds`;
 							}
-							document.querySelector("#code-send-next-time-show .txt").innerText = "Code resend request after";
-							document.querySelector("#code-send-next-time-show .tm").innerText = resendCodeAfter;
 						} else {
-							document.querySelector("#code-send-next-time-show .txt").innerText = "";
-							document.querySelector("#code-send-next-time-show .tm").innerText = "";
+							resendCodeAfter = `${hour} hours: ${retailMins} minutes: ${retailSeconds} seconds`;
 						}
-					}, 1000);
-				}
-
-				if (response.codeResend) {
-					// Floating message show if recovery code resent
-					const element = document.querySelector(".floating-alert-notification");
-					element.innerHTML = '<p class="success-alert alert-msg">Code resent successfully</p>';
-					element.classList.add("show");
-					setTimeout(() => {
-						element.classList.remove("show");
-					}, 3000);
-				} else if (response.resendTurnsNotAvailable === "yes") {
-					// Floating message show if recovery code resend turns not available at current time
-					const element = document.querySelector(".floating-alert-notification");
-					const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
-
-					if (resendCodeAfter.length > 2) {
-						element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
+						document.querySelector("#code-send-next-time-show .txt").innerText = "Code resend request after";
+						document.querySelector("#code-send-next-time-show .tm").innerText = resendCodeAfter;
 					} else {
-						element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
+						document.querySelector("#code-send-next-time-show .txt").innerText = "";
+						document.querySelector("#code-send-next-time-show .tm").innerText = "";
 					}
+				}, 1000);
+			}
 
-					element.classList.add("show");
-					setTimeout(() => {
-						element.classList.remove("show");
-					}, 3000);
-				} else if (response.rld) {
-					// reload current page
-					setTimeout(() => {
-						location.reload();
-					}, 2000);
+			if (response.codeResend) {
+				// Floating message show if recovery code resent
+				const element = document.querySelector(".floating-alert-notification");
+				element.innerHTML = '<p class="success-alert alert-msg">Code resent successfully</p>';
+				element.classList.add("show");
+				setTimeout(() => {
+					element.classList.remove("show");
+				}, 3000);
+			} else if (response.resendTurnsNotAvailable === "yes") {
+				// Floating message show if recovery code resend turns not available at current time
+				const element = document.querySelector(".floating-alert-notification");
+				const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
+
+				if (resendCodeAfter.length > 2) {
+					element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
+				} else {
+					element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
 				}
-			} else {
-				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-				throw new Error("Server Error");
+
+				element.classList.add("show");
+				setTimeout(() => {
+					element.classList.remove("show");
+				}, 3000);
+			} else if (response.rld) {
+				// reload current page
+				setTimeout(() => {
+					location.reload();
+				}, 2000);
 			}
 		})
 		.catch(function (reason) {
@@ -543,48 +584,56 @@ async function forgetPassPassword_ApiRequest() {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.passUpdate) {
-						// Floating message show if password changed successful by forget
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = '<p class="success-alert alert-msg">Password changed successfully</p>';
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
+				if (response.passUpdate) {
+					// Floating message show if password changed successful by forget
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">Password changed successfully</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 
-						// redirecting after 4 seconds
-						setTimeout(() => {
-							location.replace("/user");
-						}, 3000);
-					} else if (response.rld) {
-						// reload current page
-						setTimeout(() => {
-							location.reload();
-						}, 2000);
-					} else {
-						if (response.forgetNewPassMsg) {
-							document.querySelector(".forget_newpass_msg").innerHTML = `<small class='error-message'>${response.forgetNewPassMsg}</small>`;
-						} else {
-							document.querySelector(".forget_newpass_msg").innerHTML = "";
-						}
-
-						if (response.forgetcnfrmPassMsg) {
-							document.querySelector(".forget_confirmpass_msg").innerHTML = `<small class='error-message'>${response.forgetcnfrmPassMsg}</small>`;
-						} else {
-							document.querySelector(".forget_confirmpass_msg").innerHTML = "";
-						}
-					}
+					// redirecting after 4 seconds
+					setTimeout(() => {
+						location.replace("/user");
+					}, 3000);
+				} else if (response.rld) {
+					// reload current page
+					setTimeout(() => {
+						location.reload();
+					}, 2000);
 				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					if (response.forgetNewPassMsg) {
+						document.querySelector(".forget_newpass_msg").innerHTML = `<small class='error-message'>${response.forgetNewPassMsg}</small>`;
+					} else {
+						document.querySelector(".forget_newpass_msg").innerHTML = "";
+					}
+
+					if (response.forgetcnfrmPassMsg) {
+						document.querySelector(".forget_confirmpass_msg").innerHTML = `<small class='error-message'>${response.forgetcnfrmPassMsg}</small>`;
+					} else {
+						document.querySelector(".forget_confirmpass_msg").innerHTML = "";
+					}
 				}
 			})
 			.catch(function (reason) {

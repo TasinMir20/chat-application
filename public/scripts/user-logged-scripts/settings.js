@@ -96,139 +96,147 @@ if (IsGeneralInformationPath) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.whichPropertyChange == "name") {
-						if (response.nameUpdated) {
-							// Error message remove if name changed successfully
-							document.querySelector(".fst-nm-msg").innerHTML = "";
-							document.querySelector(".lst-nm-msg").innerHTML = "";
-							document.querySelector(".nm-msg").innerHTML = "";
+				if (response.whichPropertyChange == "name") {
+					if (response.nameUpdated) {
+						// Error message remove if name changed successfully
+						document.querySelector(".fst-nm-msg").innerHTML = "";
+						document.querySelector(".lst-nm-msg").innerHTML = "";
+						document.querySelector(".nm-msg").innerHTML = "";
 
-							// Disable name's input and hide name's update button and hide and show related messages
-							document.querySelector(".user-property.name .edit-area #first-name").setAttribute("disabled", "disabled");
-							document.querySelector(".user-property.name .edit-area #last-name").setAttribute("disabled", "disabled");
-							document.querySelector(".user-property.name .edit-area .msg-for-nm-change").classList.add("hide");
-							document.querySelector(".user-property.name .edit-area .btn-cont").classList.add("hide");
+						// Disable name's input and hide name's update button and hide and show related messages
+						document.querySelector(".user-property.name .edit-area #first-name").setAttribute("disabled", "disabled");
+						document.querySelector(".user-property.name .edit-area #last-name").setAttribute("disabled", "disabled");
+						document.querySelector(".user-property.name .edit-area .msg-for-nm-change").classList.add("hide");
+						document.querySelector(".user-property.name .edit-area .btn-cont").classList.add("hide");
 
-							// Editing collapse
-							document.querySelector(".user-property.name .edit-area").classList.add("hide");
-							document.querySelector(".user-property.name .inner").classList.remove("hide");
+						// Editing collapse
+						document.querySelector(".user-property.name .edit-area").classList.add("hide");
+						document.querySelector(".user-property.name .inner").classList.remove("hide");
 
-							// instantly update name to the front-end
-							const { firstName, lastName } = response.theUpdatedName;
-							const fullName = `${firstName} ${lastName}`;
-							document.querySelector(".user-property.name .inner .content").innerText = fullName;
-							document.querySelector(".top-bar .top-info .user-name").innerText = firstName;
-							document.querySelector(".top-bar .dropdown .dropdown-elements .user-name .name").innerText = fullName;
+						// instantly update name to the front-end
+						const { firstName, lastName } = response.theUpdatedName;
+						const fullName = `${firstName} ${lastName}`;
+						document.querySelector(".user-property.name .inner .content").innerText = fullName;
+						document.querySelector(".top-bar .top-info .user-name").innerText = firstName;
+						document.querySelector(".top-bar .dropdown .dropdown-elements .user-name .name").innerText = fullName;
 
-							// Floating message show if name changed successfully
-							const element = document.querySelector(".floating-alert-notification");
-							element.innerHTML = `<p class="success-alert alert-msg">${response.nameUpdated}</p>`;
-							element.classList.add("show");
-							setTimeout(() => {
-								element.classList.remove("show");
-							}, 3000);
-						} else {
-							let target = document.querySelector(".fst-nm-msg");
-							if (response.firstNameMsg) {
-								target.innerHTML = `<small class="error-message">${response.firstNameMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-
-							target = document.querySelector(".lst-nm-msg");
-							if (response.lastNameMsg) {
-								target.innerHTML = `<small class="error-message">${response.lastNameMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-
-							target = document.querySelector(".nm-msg");
-							if (response.nameMsg) {
-								target.innerHTML = `<small class="error-message">${response.nameMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-						}
-					} else if (response.whichPropertyChange == "username") {
-						if (response.usernameUpdated) {
-							// Error message remove if name changed successfully
-							document.querySelector(".usernm-msg").innerHTML = "";
-
-							// Editing collapse
-							document.querySelector(".user-property.username .edit-area").classList.add("hide");
-							document.querySelector(".user-property.username .inner").classList.remove("hide");
-
-							// instantly update username to the front-end
-							document.querySelector(".user-property.username .inner .content").innerText = response.theUpdatedUsername;
-							document.querySelector(".top-bar .top-info .user").href = `/${response.theUpdatedUsername}`;
-							document.querySelector(".top-bar .dropdown .dropdown-elements .user").href = `/${response.theUpdatedUsername}`;
-
-							// Floating message show if username changed successfully
-							const element = document.querySelector(".floating-alert-notification");
-							element.innerHTML = `<p class="success-alert alert-msg">${response.usernameUpdated}</p>`;
-							element.classList.add("show");
-							setTimeout(() => {
-								element.classList.remove("show");
-							}, 3000);
-						} else {
-							let target = document.querySelector(".usernm-msg");
-							if (response.usernameMsg) {
-								target.innerHTML = `<small class="error-message">${response.usernameMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-						}
-					} else if (response.whichPropertyChange == "email") {
-						if (response.emailUpdated) {
-							// Error message remove if name changed successfully
-							document.querySelector(".eml-msg").innerHTML = "";
-							document.querySelector(".auth-password-msg").innerHTML = "";
-							document.querySelector(".general-information-area #auth-password").value = "";
-
-							// Editing collapse
-							document.querySelector(".user-property.email .edit-area").classList.add("hide");
-							document.querySelector(".user-property.email .inner").classList.remove("hide");
-
-							// instantly update username to the front-end
-							document.querySelector(".user-property.email .inner .content").innerText = response.theUpdatedEmail;
-
-							// Floating message show if username changed successfully
-							const element = document.querySelector(".floating-alert-notification");
-							element.innerHTML = `<p class="success-alert alert-msg">${response.emailUpdated}</p>`;
-							element.classList.add("show");
-							setTimeout(() => {
-								element.classList.remove("show");
-								location.assign("/user/email-verification");
-							}, 3000);
-						} else {
-							let target = document.querySelector(".eml-msg");
-							if (response.emailMsg) {
-								target.innerHTML = `<small class="error-message">${response.emailMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-
-							target = document.querySelector(".auth-password-msg");
-							if (response.authPassMsg) {
-								target.innerHTML = `<small class="error-message">${response.authPassMsg}</small>`;
-							} else {
-								target.innerHTML = "";
-							}
-						}
+						// Floating message show if name changed successfully
+						const element = document.querySelector(".floating-alert-notification");
+						element.innerHTML = `<p class="success-alert alert-msg">${response.nameUpdated}</p>`;
+						element.classList.add("show");
+						setTimeout(() => {
+							element.classList.remove("show");
+						}, 3000);
 					} else {
-						return;
+						let target = document.querySelector(".fst-nm-msg");
+						if (response.firstNameMsg) {
+							target.innerHTML = `<small class="error-message">${response.firstNameMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
+
+						target = document.querySelector(".lst-nm-msg");
+						if (response.lastNameMsg) {
+							target.innerHTML = `<small class="error-message">${response.lastNameMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
+
+						target = document.querySelector(".nm-msg");
+						if (response.nameMsg) {
+							target.innerHTML = `<small class="error-message">${response.nameMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
+					}
+				} else if (response.whichPropertyChange == "username") {
+					if (response.usernameUpdated) {
+						// Error message remove if name changed successfully
+						document.querySelector(".usernm-msg").innerHTML = "";
+
+						// Editing collapse
+						document.querySelector(".user-property.username .edit-area").classList.add("hide");
+						document.querySelector(".user-property.username .inner").classList.remove("hide");
+
+						// instantly update username to the front-end
+						document.querySelector(".user-property.username .inner .content").innerText = response.theUpdatedUsername;
+						document.querySelector(".top-bar .top-info .user").href = `/${response.theUpdatedUsername}`;
+						document.querySelector(".top-bar .dropdown .dropdown-elements .user").href = `/${response.theUpdatedUsername}`;
+
+						// Floating message show if username changed successfully
+						const element = document.querySelector(".floating-alert-notification");
+						element.innerHTML = `<p class="success-alert alert-msg">${response.usernameUpdated}</p>`;
+						element.classList.add("show");
+						setTimeout(() => {
+							element.classList.remove("show");
+						}, 3000);
+					} else {
+						let target = document.querySelector(".usernm-msg");
+						if (response.usernameMsg) {
+							target.innerHTML = `<small class="error-message">${response.usernameMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
+					}
+				} else if (response.whichPropertyChange == "email") {
+					if (response.emailUpdated) {
+						// Error message remove if name changed successfully
+						document.querySelector(".eml-msg").innerHTML = "";
+						document.querySelector(".auth-password-msg").innerHTML = "";
+						document.querySelector(".general-information-area #auth-password").value = "";
+
+						// Editing collapse
+						document.querySelector(".user-property.email .edit-area").classList.add("hide");
+						document.querySelector(".user-property.email .inner").classList.remove("hide");
+
+						// instantly update username to the front-end
+						document.querySelector(".user-property.email .inner .content").innerText = response.theUpdatedEmail;
+
+						// Floating message show if username changed successfully
+						const element = document.querySelector(".floating-alert-notification");
+						element.innerHTML = `<p class="success-alert alert-msg">${response.emailUpdated}</p>`;
+						element.classList.add("show");
+						setTimeout(() => {
+							element.classList.remove("show");
+							location.assign("/user/email-verification");
+						}, 3000);
+					} else {
+						let target = document.querySelector(".eml-msg");
+						if (response.emailMsg) {
+							target.innerHTML = `<small class="error-message">${response.emailMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
+
+						target = document.querySelector(".auth-password-msg");
+						if (response.authPassMsg) {
+							target.innerHTML = `<small class="error-message">${response.authPassMsg}</small>`;
+						} else {
+							target.innerHTML = "";
+						}
 					}
 				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					return;
 				}
 			})
 			.catch(function (reason) {
@@ -413,10 +421,8 @@ if (IsSecurityInfoEditPath) {
 			body: JSON.stringify(dataObj),
 		})
 			.then((res) => {
-				// loading animation clear
-				document.querySelector("#load-animation").innerHTML = "";
 				if (res.status == 500) {
-					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				} else if (res.status == 404) {
 					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
@@ -429,6 +435,8 @@ if (IsSecurityInfoEditPath) {
 				if (!data) {
 					return;
 				}
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
@@ -502,10 +510,8 @@ if (IsSecurityInfoEditPath) {
 			body: JSON.stringify(dataObj),
 		})
 			.then((res) => {
-				// loading animation clear
-				document.querySelector("#load-animation").innerHTML = "";
 				if (res.status == 500) {
-					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				} else if (res.status == 404) {
 					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
@@ -518,6 +524,8 @@ if (IsSecurityInfoEditPath) {
 				if (!data) {
 					return;
 				}
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
@@ -593,10 +601,8 @@ if (IsSocialLinksEditPath) {
 			body: JSON.stringify(dataObj),
 		})
 			.then((res) => {
-				// loading animation clear
-				document.querySelector("#load-animation").innerHTML = "";
 				if (res.status == 500) {
-					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 					throw new Error("Server Error");
 				} else if (res.status == 404) {
 					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
@@ -609,6 +615,8 @@ if (IsSocialLinksEditPath) {
 				if (!data) {
 					return;
 				}
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 

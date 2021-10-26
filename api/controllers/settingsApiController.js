@@ -377,8 +377,6 @@ exports.socialLinksUpdate_ApiController = async (req, res, next) => {
 		const { username: github, issue: githubIssue } = usernameValidate(githubInput, "github", userData);
 		const { username: dribbble, issue: dribbbleIssue } = usernameValidate(dribbbleInput, "dribbble", userData);
 
-		console.log({ linkedinIssue, facebookIssue, instagramIssue, twitterIssue, githubIssue, dribbbleIssue });
-
 		await User.updateOne(
 			{ _id: userData._id },
 			{

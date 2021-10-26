@@ -28,33 +28,38 @@ function emailVerify_ApiRequest(event) {
 			method: "POST",
 			body: JSON.stringify(dataObj),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
 			.then((data) => {
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
 				const response = data;
 
-				if (!(response.error === "server error")) {
-					if (response.codeMatched) {
-						// Floating message show if Email address confirmed
-						const element = document.querySelector(".floating-alert-notification");
-						element.innerHTML = '<p class="success-alert alert-msg">Email address confirmed successfully</p>';
-						element.classList.add("show");
-						setTimeout(() => {
-							element.classList.remove("show");
-						}, 3000);
+				if (response.codeMatched) {
+					// Floating message show if Email address confirmed
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">Email address confirmed successfully</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
 
-						// redirecting after 3 seconds
-						setTimeout(() => {
-							location.replace("/user");
-						}, 3000);
-					} else if (response.codeMsg) {
-						document.querySelector(".code_msg").innerHTML = `<small class='error-message'>${response.codeMsg}</small>`;
-					}
-				} else {
-					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-					throw new Error("Server Error");
+					// redirecting after 3 seconds
+					setTimeout(() => {
+						location.replace("/user");
+					}, 3000);
+				} else if (response.codeMsg) {
+					document.querySelector(".code_msg").innerHTML = `<small class='error-message'>${response.codeMsg}</small>`;
 				}
 			})
 			.catch(function (reason) {
@@ -94,81 +99,86 @@ function emailVerifyResendCode_ApiRequest(event) {
 		method: "POST",
 		body: JSON.stringify({}),
 	})
-		.then((res) => res.json())
+		.then((res) => {
+			if (res.status == 500) {
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
 		.then((data) => {
 			// loading animation clear
 			document.querySelector("#load-animation").innerHTML = "";
 
 			const response = data;
 
-			if (!(response.error === "server error")) {
-				if (response.seconds) {
-					document.querySelector("#temporarily-store-seconds").value = response.seconds;
+			if (response.seconds) {
+				document.querySelector("#temporarily-store-seconds").value = response.seconds;
 
-					if (interval != null) {
-						clearInterval(interval);
-					}
+				if (interval != null) {
+					clearInterval(interval);
+				}
 
-					interval = setInterval(function () {
-						let seconds = document.querySelector("#temporarily-store-seconds").value;
-						seconds = Number(seconds) - 1;
-						document.querySelector("#temporarily-store-seconds").value = seconds; // temporarily store seconds
+				interval = setInterval(function () {
+					let seconds = document.querySelector("#temporarily-store-seconds").value;
+					seconds = Number(seconds) - 1;
+					document.querySelector("#temporarily-store-seconds").value = seconds; // temporarily store seconds
 
-						if (seconds >= 0) {
-							const min = Math.floor(seconds / 60);
-							const retailSeconds = Math.floor(seconds % 60);
-							const hour = Math.floor(min / 60);
-							const retailMins = Math.floor(min % 60);
+					if (seconds >= 0) {
+						const min = Math.floor(seconds / 60);
+						const retailSeconds = Math.floor(seconds % 60);
+						const hour = Math.floor(min / 60);
+						const retailMins = Math.floor(min % 60);
 
-							if (hour < 1) {
-								var resendCodeAfter = `${retailMins} minutes: ${retailSeconds} seconds`;
-								if (retailMins < 1) {
-									resendCodeAfter = `${retailSeconds} seconds`;
-								}
-							} else {
-								resendCodeAfter = `${hour} hours: ${retailMins} minutes: ${retailSeconds} seconds`;
+						if (hour < 1) {
+							var resendCodeAfter = `${retailMins} minutes: ${retailSeconds} seconds`;
+							if (retailMins < 1) {
+								resendCodeAfter = `${retailSeconds} seconds`;
 							}
-							document.querySelector("#code-send-next-time-show .txt").innerText = "Code resend request after";
-							document.querySelector("#code-send-next-time-show .tm").innerText = resendCodeAfter;
 						} else {
-							document.querySelector("#code-send-next-time-show .txt").innerText = "";
-							document.querySelector("#code-send-next-time-show .tm").innerText = "";
+							resendCodeAfter = `${hour} hours: ${retailMins} minutes: ${retailSeconds} seconds`;
 						}
-					}, 1000);
-				}
-
-				if (response.codeResend) {
-					// Floating message show if verification code resent
-					const element = document.querySelector(".floating-alert-notification");
-					element.innerHTML = '<p class="success-alert alert-msg">Verification code resent successfully</p>';
-					element.classList.add("show");
-					setTimeout(() => {
-						element.classList.remove("show");
-					}, 3000);
-				} else if (response.resendTurnsNotAvailable === "yes") {
-					// Floating message show if verification code resend turns not available at current time
-					const element = document.querySelector(".floating-alert-notification");
-					const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
-
-					if (resendCodeAfter.length > 2) {
-						element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
+						document.querySelector("#code-send-next-time-show .txt").innerText = "Code resend request after";
+						document.querySelector("#code-send-next-time-show .tm").innerText = resendCodeAfter;
 					} else {
-						element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
+						document.querySelector("#code-send-next-time-show .txt").innerText = "";
+						document.querySelector("#code-send-next-time-show .tm").innerText = "";
 					}
+				}, 1000);
+			}
 
-					element.classList.add("show");
-					setTimeout(() => {
-						element.classList.remove("show");
-					}, 3000);
-				} else if (response.rld) {
-					// reload current page
-					setTimeout(() => {
-						location.reload();
-					}, 2000);
+			if (response.codeResend) {
+				// Floating message show if verification code resent
+				const element = document.querySelector(".floating-alert-notification");
+				element.innerHTML = '<p class="success-alert alert-msg">Verification code resent successfully</p>';
+				element.classList.add("show");
+				setTimeout(() => {
+					element.classList.remove("show");
+				}, 3000);
+			} else if (response.resendTurnsNotAvailable === "yes") {
+				// Floating message show if verification code resend turns not available at current time
+				const element = document.querySelector(".floating-alert-notification");
+				const resendCodeAfter = document.querySelector("#code-send-next-time-show .tm").innerText;
+
+				if (resendCodeAfter.length > 2) {
+					element.innerHTML = `<p class="danger-alert alert-msg">Try again after ${resendCodeAfter}</p>`;
+				} else {
+					element.innerHTML = `<p class="danger-alert alert-msg">Try again later!</p>`;
 				}
-			} else {
-				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
-				throw new Error("Server Error");
+
+				element.classList.add("show");
+				setTimeout(() => {
+					element.classList.remove("show");
+				}, 3000);
+			} else if (response.rld) {
+				// reload current page
+				setTimeout(() => {
+					location.reload();
+				}, 2000);
 			}
 		})
 		.catch(function (reason) {
