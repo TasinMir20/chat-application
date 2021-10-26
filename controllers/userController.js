@@ -1,10 +1,11 @@
+const LoginCookie = require("../models/LoginCooke");
 const mongoose = require("mongoose"); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
 
 const VerifyCode = require("../models/VerifyCode");
 const Conversation = require("../models/Conversation");
 const User = require("../models/User");
 
-const { codeSaveDBandMailSend } = require("../utils/func/func");
+const { codeSaveDBandMailSend, arrayItemMove } = require("../utils/func/func");
 
 exports.mainPathGetController = async (req, res, next) => {
 	try {
@@ -92,12 +93,26 @@ exports.settingsGetController = async (req, res, next) => {
 
 		const uri = req.params.uri;
 
+		// find Cookies or Logged devices
+		let cookiesData = await LoginCookie.find({ userObjId: userData._id });
+		cookiesData.reverse();
+
+		///////////////////////////
+		for (let i = 0; i < cookiesData.length; i++) {
+			if (cookiesData[i].cookieVal == req.cookies.access_l) {
+				cookiesData[i].thisLoggedCookieVal = true;
+				cookiesData = arrayItemMove(cookiesData, i, 0);
+			}
+		}
+
 		// Unneccery or Sensitive Data Empty
 		userData.password = "";
 		userData.othersData.codeSendTimes = "";
 
+		const title = uri === "general-information" ? "General Information" : uri === "security" ? "Security" : uri === "social-links" ? "Social Links Update" : "Settings";
+
 		if (uri === undefined || uri === "general-information" || uri === "security" || uri === "social-links") {
-			res.render("pages/user-logged-pages/settings.ejs", { userData, uri });
+			res.render("pages/user-logged-pages/settings.ejs", { userData, uri, cookiesData, title });
 		} else {
 			next();
 		}

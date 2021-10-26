@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="/font-icon/fontawesome-free-5.15.4-web/css/all.min.css"/>
     <link rel="stylesheet" href="/css/user-logged-css/partials/top-bar.css">
     <link rel="stylesheet" href="/css/user-logged-css/settings.css">
@@ -84,6 +84,9 @@
 
         <% } else if (uri === "general-information") {%>
             <div class="general-information-area">
+                <div class="docs">
+                    <h3>General Information Update</h3>
+                </div>
                 <div class="user-property name">
                     <div class="inner">
                         <p class="title">Name</p>
@@ -159,7 +162,7 @@
             <div class="security-info">
                 <div class="password-change-part">
                     <div class="docs">
-                        <h2>Change your password!</h2>
+                        <h3>Change your password!</h3>
                     </div>
                     <form action="">
                         <div class="input-cont current-pass-cont">
@@ -183,11 +186,79 @@
                         </div>
                     </form>
                 </div>
+                <div class="logged-device-part">
+                    <div class="cont">
+                        <h3>Where You're Logged In</h3>
+                        <div class="all-logout">
+                            <button class="btn" onclick="logoutFromLoggedDevices_ApiRequest('ALL_LOGOUT')">Logout from others device</button>
+                        </div>
+                        <% for (let i = 0; i < cookiesData.length; i++) { %>
+
+                        <% 
+                            // generate unique css class from user obj ID
+                            const str = String(cookiesData[i]._id);
+                            const setUniqueCssClass = "c" + str.substr(str.length - 7, str.length);
+
+                            let country =  (cookiesData[i].geolocationData.country).toUpperCase();
+                            country = new Intl.DisplayNames(["en"], { type: "region" }).of(country);
+
+                            const thisDevice = cookiesData[i].thisLoggedCookieVal;
+
+                            // Time convert to client local (Whole Date and time)
+							const msgSendTime = cookiesData[i].createTime;
+							const msgDate = new Date(msgSendTime * 1000);
+							const date = msgDate.toLocaleString("en-US", { timeZone: 'Asia/Dhaka', month: "long", day: "numeric", year: "numeric" });
+							const time = msgDate.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
+							const localDateAndTime = `${date} at ${time}`;
+
+                            
+                            const osName =  cookiesData[i].userAgent.os.name;
+                            const browser =  `${cookiesData[i].userAgent.browser.name} - ${(cookiesData[i].userAgent.browser.version).slice(0, 4)}`;
+                            const ip =  cookiesData[i].geolocationData.ip;
+                            const device = cookiesData[i].userAgent.device.vendor ? cookiesData[i].userAgent.device.vendor + " > " + cookiesData[i].userAgent.device.model : undefined;
+
+                            const geographicalLocation =  `${cookiesData[i].geolocationData.city}, ${cookiesData[i].geolocationData.region}, ${country}`;
+                            const isp = cookiesData[i].geolocationData.org;
+                            const postalCode = cookiesData[i].geolocationData.postal;
+                            const tomeZone = cookiesData[i].geolocationData.timezone;
+
+                        %>
+                        <div class="single-log <%= setUniqueCssClass %>">
+                            <div class="show-data">
+                                <span class="os" title="Operating System"><%= osName %> . </span>
+                                <span class="location" title="Geographical location"><%= geographicalLocation %>. </span>
+                                <span class="ip" title="Public IP Address"><%= ip %></span>
+                                <i class="fas fa-chevron-left expand-coll-8uo71nk" title="Expand"></i>
+                            </div>
+                            <div class="extended-and-collapse-data">
+                                <p class="device" title="Device"><%= device %></p>
+                                <p class="isp" title="Internet Service Provider">AS24432 TM International Bangladesh Ltd.Internet service Provider,Gulshan-1,Dhaka-1212</p>
+                                <p class="postal" title="Postal Code"><%= postalCode %></p>
+                                <p class="time-zome" title="Time zone"><%= tomeZone %></p>
+                            </div>
+                            <div class="foot">
+                                <span class="brwoser" title="Browser"><%= browser %> . </span>
+                                <span><%= localDateAndTime %></span>
+                                <% if (thisDevice) {%>
+                                    <span class="this-device">This device</span>
+                                <%} else {%>
+                                    <button onclick="logoutFromLoggedDevices_ApiRequest('<%=cookiesData[i]._id%>')" class="logout-this-device">Logout</button>
+                                <%}%>
+
+                                
+                            </div>
+                        </div>
+                        <% } %> 
+                    </div>
+                </div>
             </div>
 
         <% } else if (uri === "social-links") {%>
             <div class="social-links">
                 <div class="links">
+                    <div class="docs">
+                        <h3>Social Links Update</h3>
+                    </div>
                     <div class="links-show">
                         <div class="wrap">
                             <a href="<%=linkedinFullLink%>" target="_blank" class="single-link">

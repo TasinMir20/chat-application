@@ -226,4 +226,15 @@ async function auth(req, res) {
 	}
 }
 
-module.exports = { worstPasswordCheck, emailValidation, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth };
+function arrayItemMove(arr, old_index, new_index) {
+	if (new_index >= arr.length) {
+		let k = new_index - arr.length + 1;
+		while (k--) {
+			arr.push(undefined);
+		}
+	}
+	arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+	return arr;
+}
+
+module.exports = { worstPasswordCheck, emailValidation, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth, arrayItemMove };

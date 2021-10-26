@@ -351,6 +351,29 @@ if (IsSecurityInfoEditPath) {
 	}
 	document.querySelector("#password-generate").onclick = passwordGenerate;
 
+	function logExpandCollapse() {
+		const thisElement = this;
+		const expandCollapseEl = thisElement.parentElement.nextElementSibling;
+		expandCollapseEl.classList.toggle("expand");
+		const colClass = expandCollapseEl.getAttribute("class");
+		const isShow = !!colClass.match("expand");
+		if (isShow) {
+			thisElement.classList.remove("fa-chevron-left");
+			thisElement.classList.add("fa-chevron-down");
+			thisElement.setAttribute("title", "Collapse");
+		} else {
+			thisElement.classList.remove("fa-chevron-down");
+			thisElement.classList.add("fa-chevron-left");
+			thisElement.setAttribute("title", "Expand");
+		}
+	}
+
+	let coll = document.getElementsByClassName("expand-coll-8uo71nk");
+	let i;
+	for (i = 0; i < coll.length; i++) {
+		coll[i].addEventListener("click", logExpandCollapse);
+	}
+
 	// Api request
 	function securityPassUpdate_ApiRequest(event) {
 		event.preventDefault();
@@ -457,6 +480,66 @@ if (IsSecurityInfoEditPath) {
 			});
 	}
 	document.querySelector(".security-info #pass-change-btn").onclick = securityPassUpdate_ApiRequest;
+
+	function logoutFromLoggedDevices_ApiRequest(logId) {
+		// loading animation showing
+		document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
+
+		console.log(logId);
+		const dataObj = { logId };
+		const apiUrl = "/api/user/settings/logout-from-logged-devices";
+		fetch(apiUrl, {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: JSON.stringify(dataObj),
+		})
+			.then((res) => {
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2><h2>There is a Server Error. Please try again later, we are working to fix it...</h2></h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
+			.then((data) => {
+				if (!data) {
+					return;
+				}
+
+				const response = data;
+
+				if (response.requestSuccess) {
+					if (logId === "ALL_LOGOUT") {
+						location.reload();
+					} else {
+						const str = logId;
+						const getUniqueCssClass = "c" + str.substr(str.length - 7, str.length);
+						const removeAbleElement = document.querySelector(`.logged-device-part .cont .${getUniqueCssClass}`);
+						const isExist = document.querySelector(".logged-device-part").contains(removeAbleElement);
+
+						if (isExist) {
+							removeAbleElement.remove();
+						}
+					}
+				}
+			})
+			.catch(function (reason) {
+				console.log(reason);
+			});
+	}
 }
 
 const IsSocialLinksEditPath = document.querySelector(".social-links");

@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require("../../models/User");
+const LoginCookie = require("../../models/LoginCooke");
+
 const { worstPasswordCheck, emailValidation, codeSaveDBandMailSend, mailSending } = require("../../utils/func/func");
+const mongoose = require("mongoose"); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
 
 exports.settingsRoot_ApiController = async (req, res, next) => {
 	try {
@@ -292,6 +295,34 @@ exports.securityPassUpdate_ApiController = async (req, res, next) => {
 		}
 
 		return res.json({ curntPassMsg, newPassMsg, cnfrmPassMsg });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.logoutFromLoggedDevices_ApiController = async (req, res, next) => {
+	try {
+		const userData = req.userData;
+		let { logId } = req.body;
+
+		const isValidObjId = mongoose.Types.ObjectId.isValid(logId);
+
+		if (isValidObjId) {
+			const deleteCookie = await LoginCookie.deleteOne({ $and: [{ userObjId: userData._id }, { _id: logId }] });
+
+			if (deleteCookie.deletedCount) {
+				return res.json({ requestSuccess: true });
+			}
+		} else if (logId === "ALL_LOGOUT") {
+			// detect all cookies except current device
+			const deleteAllCookie = await LoginCookie.deleteMany({
+				$and: [{ userObjId: userData._id }, { $nor: [{ cookieVal: req.cookies.access_l }] }],
+			});
+
+			if (deleteAllCookie) {
+				return res.json({ requestSuccess: true });
+			}
+		}
 	} catch (err) {
 		next(err);
 	}
