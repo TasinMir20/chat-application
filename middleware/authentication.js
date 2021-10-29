@@ -31,7 +31,7 @@ exports.isLogin = async (req, res, next) => {
 			} else if (access.emailVerified && req.originalUrl === "/user/email-verification") {
 				return res.redirect("/user");
 			} else if (!access.emailVerified && req.originalUrl !== "/user/email-verification") {
-				res.redirect("/user/email-verification");
+				return res.redirect("/user/email-verification");
 			} else {
 				next();
 			}

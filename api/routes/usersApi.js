@@ -1,14 +1,12 @@
 const usersApi = require("express").Router();
 
 // controller imports
-const { mainPathApiController, dashboardApiController, logOut_ApiController, emailVerify_ApiController, emailVerifyResendCode_ApiController } = require("../controllers/userApiController");
+const { logOut_ApiController, emailVerify_ApiController, emailVerifyResendCode_ApiController } = require("../controllers/userApiController");
 
 const messengerApi = require("./messengerApi");
 const profileApi = require("./profileApi");
 const settingsApi = require("./settingsApi");
 
-usersApi.post("/", mainPathApiController);
-usersApi.post("/dashboard", dashboardApiController);
 usersApi.post("/email-verification", emailVerify_ApiController);
 usersApi.post("/email-verification-code-resend", emailVerifyResendCode_ApiController);
 

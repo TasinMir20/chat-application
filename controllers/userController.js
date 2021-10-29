@@ -19,14 +19,6 @@ exports.mainPathGetController = async (req, res, next) => {
 	}
 };
 
-exports.dashboardGetController = async (req, res, next) => {
-	try {
-		res.send("Dashboard");
-	} catch (err) {
-		next(err);
-	}
-};
-
 exports.emailVerificationGetController = async (req, res, next) => {
 	try {
 		const userData = req.userData;

@@ -5,14 +5,6 @@ const LoginCookie = require("../../models/LoginCooke");
 const { worstPasswordCheck, emailValidation, codeSaveDBandMailSend, mailSending } = require("../../utils/func/func");
 const mongoose = require("mongoose"); // in this file mongoose required only for this method-> mongoose.Types.ObjectId.isValid
 
-exports.settingsRoot_ApiController = async (req, res, next) => {
-	try {
-		res.send("settings Root");
-	} catch (err) {
-		next(err);
-	}
-};
-
 exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 	try {
 		const userData = req.userData;
@@ -95,7 +87,9 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 			const isUsrNmNotNumr = String(Number(username)) === "NaN";
 			const validChar = /^[0-9a-zA-Z_.]+$/.test(username) && isUsrNmNotNumr ? true : false;
 			const usernameLng = username.length >= 3 && username.length < 40;
-			const usernameOk = validChar && usernameLng ? true : false;
+			const forbiddenUsernames = ["account", "accounts", "user", "users", "api"];
+			const IsForbiddenUsernames = forbiddenUsernames.includes(username);
+			const usernameOk = validChar && usernameLng && !IsForbiddenUsernames ? true : false;
 
 			if (usernameOk) {
 				const invalidChangeReq = userData.username == username;
@@ -123,6 +117,8 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 						usernameMsg = "Username could be 3 to 40 characters long!";
 					} else if (!validChar) {
 						usernameMsg = "Please enter valid username!";
+					} else if (IsForbiddenUsernames) {
+						usernameMsg = "This word is not allowed to set as username!";
 					}
 				}
 			}

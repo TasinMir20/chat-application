@@ -4,22 +4,6 @@ const VerifyCode = require("../../models/VerifyCode");
 
 const { codeResendTimeInSeconds, codeSaveDBandMailSend } = require("../../utils/func/func");
 
-exports.mainPathApiController = async (req, res, next) => {
-	try {
-		res.send("User main path APi");
-	} catch (err) {
-		next(err);
-	}
-};
-
-exports.dashboardApiController = async (req, res, next) => {
-	try {
-		res.send("Dashboard Api");
-	} catch (err) {
-		next(err);
-	}
-};
-
 exports.logOut_ApiController = async (req, res, next) => {
 	try {
 		const loginCookie = req.cookies.access_l;
