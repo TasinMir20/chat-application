@@ -141,13 +141,45 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 		let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
 		// Line break or line ending replace with <br /> tag
 		validatedMessage = validatedMessage.replace(/\r\n/g, "<br />").replace(/[\r\n]/g, "<br />");
-		var textMessage = `<p class="message">${validatedMessage}</p>`;
+
+		// if detected url in text message then replace with <a><a/> tag the url
+		function detectUrlAndReplaceWithATag(text) {
+			const urlRegex = /(https?:\/\/[^\s]+)/g;
+			return text.replace(urlRegex, function (url) {
+				return `<a target="_blank" href="${url}">${url}</a>`;
+			});
+		}
+		const textUrlify = detectUrlAndReplaceWithATag(validatedMessage);
+
+		textMessage = `<p class="message">${textUrlify}</p>`;
 
 		theMessage = textMessage;
 	}
 
 	return theMessage;
 }
+
+// Push Notification func
+function pushNotification(notificationHeader, notificationMsg, iconUrl) {
+	function showNotification() {
+		const notification = new Notification(notificationHeader, {
+			body: notificationMsg,
+			icon: iconUrl,
+		});
+	}
+
+	if (Notification.permission === "granted") {
+		showNotification();
+	} else if (Notification.permission !== "denied") {
+		Notification.requestPermission().then((permission) => {
+			console.log(permission);
+			if (permission === "granted") {
+				showNotification();
+			}
+		});
+	}
+}
+
 // End -> Reuseable function or component
 
 /**************************** API request Function start form here *****************************/
@@ -613,13 +645,23 @@ function sendMessage_ApiRequest(event) {
 		let validatedMessage = rawMessage.replace(/</g, "&lt").replace(/>/g, "&gt");
 		// Line break or line ending replace with <br /> tag
 		validatedMessage = validatedMessage.replace(/\r\n/g, "<br />").replace(/[\r\n]/g, "<br />");
+
+		// if detected url in text message then replace with <a><a/> tag the url
+		function detectUrlAndReplaceWithATag(text) {
+			const urlRegex = /(https?:\/\/[^\s]+)/g;
+			return text.replace(urlRegex, function (url) {
+				return `<a target="_blank" href="${url}">${url}</a>`;
+			});
+		}
+		const textUrlify = detectUrlAndReplaceWithATag(validatedMessage);
+
 		let eachMessageHTMLBody = `<div class="outgoing-message single-msg-box">
                                         <div class="author-img">
                                             <img src="${selfProfilePic}" alt="">
                                         </div>
                                         <div class="msg-n-meta clearfix">
                                             <div class="msg-inner ${cssClass}">
-                                                ${fileChosen.files.length > 0 ? `<img style="height: 80px; width: 80px;" src="/images/utils-img/loading.gif" title="Just wait..." />` : `<p class="message">${validatedMessage}</p>`}
+                                                ${fileChosen.files.length > 0 ? `<img style="height: 80px; width: 80px;" src="/images/utils-img/loading.gif" title="Just wait..." />` : `<p class="message">${textUrlify}</p>`}
                                             </div>
                                             <span class="msg-time">${localDateAndTime}</span>
                                         </div>
@@ -752,8 +794,19 @@ function socketEvent() {
 	socket.on(socketMsgEventName, function (data) {
 		const sender = data.sender;
 
+		// push notification property
+		const notificationH = `New message from ${data.name}`;
+		const notificationText = data.attachmentName ? "Attachment" : data.message;
+		const notificationIcon = "/images/logo.png";
+
 		// Message update real time in viewed conversion
 		if (String(recipientId) === String(sender)) {
+			// if minimize browser or others tab then show notification
+			if (document.hidden) {
+				// push notification call
+				pushNotification(notificationH, notificationText, notificationIcon);
+			}
+
 			// Typing Animation element remove before insert an new message
 			const getTypingAnimation = document.querySelector(".chat-box #typing-animation");
 			const typingAnimationIsInserted = document.querySelector(".chat-box").contains(getTypingAnimation);
@@ -807,6 +860,9 @@ function socketEvent() {
 			if (!isExistUserElement) {
 				chatUserList_ApiRequest();
 			}
+
+			// push notification call
+			pushNotification(notificationH, notificationText, notificationIcon);
 		}
 
 		// last message and last message send time update in chat list

@@ -1,7 +1,7 @@
 {
 	"name": "chat-web-application",
 	"version": "1.0.0",
-	"description": "This is a real-time chatting wen application made with Nodejs",
+	"description": "This is a real-time chatting web application made with Nodejs",
 	"main": "app.js",
 	"scripts": {
 		"start": "nodemon app.js"

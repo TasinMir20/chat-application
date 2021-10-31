@@ -259,6 +259,8 @@ exports.sendMessage_ApiController = async (req, res, next) => {
 				}
 			}
 
+			messageBody.name = `${userData.firstName} ${userData.lastName}`;
+
 			const socketMsgEventName = recipientId + "message";
 			// socket.io messages Event at server
 			global.io.emit(socketMsgEventName, messageBody);
