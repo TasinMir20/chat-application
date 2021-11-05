@@ -10,6 +10,39 @@ function selfOffline() {
 }
 body.onoffline = selfOffline;
 
+// Dark mode Scripts - START
+const userMode = localStorage.getItem("dark_mode");
+if (userMode == "yes") {
+	document.querySelector(".un4jio").classList.add("dark-mode");
+	document.querySelector("#mode #dark-option").setAttribute("selected", "selected");
+} else {
+	document.querySelector(".un4jio").classList.remove("dark-mode");
+	document.querySelector("#mode #light-option").setAttribute("selected", "selected");
+}
+
+function modeChange() {
+	const mode = document.querySelector(".more-options .options-box .mode #mode").value;
+	if (mode === "dark") {
+		document.querySelector(".un4jio").classList.add("dark-mode");
+		// Save data in localStorage
+		localStorage.setItem("dark_mode", "yes");
+	} else {
+		document.querySelector(".un4jio").classList.remove("dark-mode");
+		// Remove localStorage Data
+		localStorage.removeItem("dark_mode");
+	}
+
+	document.querySelector(".chatbox-header .three-dott .more-options .options-box").classList.remove("show");
+}
+document.querySelector(".more-options .options-box .mode #mode").addEventListener("change", modeChange);
+
+// Dark mode Scripts  - END
+
+function showChatMoreOption() {
+	document.querySelector(".chatbox-header .three-dott .more-options .options-box").classList.toggle("show");
+}
+document.querySelector(".chatbox-header .three-dott .three_dott").onclick = showChatMoreOption;
+
 // redirect recipient Profile when click recipient on recipients of the chat header
 function redirectUserProfile() {
 	location.assign(`/${relevantUsername}`);
@@ -25,7 +58,15 @@ setTimeout(() => {
 }, 0);
 
 // Whole messenger full screen and Exit full screen
-function messengerFullScreenN_Exit() {
+function messengerFullScreenN_Exit(e) {
+	/* Double click should not be work some child element of  .chatbox-header*/
+	const aa = document.querySelector(".three-dott .options-box button");
+	const bb = document.querySelector(".three-dott .options-box");
+	const cc = document.querySelector(".three-dott .three_dott");
+	const dd = document.querySelector(".three-dott .mode #mode");
+	if (e.target == aa || e.target == bb || e.target == cc || e.target == dd) return;
+	///////////////////////////////
+
 	if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
 		// current working methods
 		if (document.documentElement.requestFullscreen) {
@@ -172,7 +213,6 @@ function pushNotification(notificationHeader, notificationMsg, iconUrl) {
 		showNotification();
 	} else if (Notification.permission !== "denied") {
 		Notification.requestPermission().then((permission) => {
-			console.log(permission);
 			if (permission === "granted") {
 				showNotification();
 			}
@@ -323,7 +363,7 @@ function chatUserList_ApiRequest() {
 }
 window.addEventListener("load", chatUserList_ApiRequest);
 
-// chatUserList_ApiRequest() function in Interval to refresh user online offline time
+/******** chatUserList_ApiRequest() function in Interval to refresh user online offline time *******/
 setInterval(() => {
 	chatUserList_ApiRequest();
 }, 60000);
@@ -913,7 +953,7 @@ function socketEvent() {
 				chatBox.insertAdjacentHTML("afterbegin", typingAnimationElement);
 			}
 
-			/* Typing element remove 2 seconds delay if constant not typing */
+			/* Typing element remove after 2 seconds if continue not typing */
 			timeOut3 = setTimeout(function () {
 				act.innerText = "Active now";
 				act.classList.remove("typing");

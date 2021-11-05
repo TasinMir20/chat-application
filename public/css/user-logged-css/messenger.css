@@ -118,6 +118,14 @@ img {
 	font-style: normal;
 	font-display: swap;
 }
+/* ////////////// */
+@font-face {
+	font-family: "Calibri-Regular";
+	src: url("/fonts/Calibri-Regular.woff2") format("woff2"), url("/fonts/Calibri-Regular.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
 
 /* Font Family end */
 
@@ -402,7 +410,6 @@ body {
 	left: 0;
 	right: 0;
 	width: 100%;
-	background-color: #2c3e50;
 	box-shadow: -14px -2px 22px -11px rgb(0 0 0 / 62%);
 }
 .sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner {
@@ -441,8 +448,7 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header {
 	user-select: none;
 	display: flex;
-	height: 75px;
-	padding: 0 15px;
+	padding: 0 7px;
 	background-color: #f5f5f5;
 	align-items: center;
 	position: relative;
@@ -450,7 +456,7 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow {
-	color: rgb(26, 24, 24);
+	color: rgb(74 74 74);
 	overflow: hidden;
 	display: none;
 }
@@ -513,13 +519,13 @@ body {
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta {
 	margin-left: 15px;
-	padding: 10px 0;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .name {
 	font-size: 18px;
 	color: #32465a;
-	font-family: Montserrat-Bold;
+	font-family: Calibri-Regular;
+	line-height: 16px;
 	padding-bottom: 3px;
 	cursor: pointer;
 }
@@ -527,7 +533,7 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .act {
 	font-size: 13px;
 	color: #32465a;
-	font-family: Montserrat-Medium;
+	font-family: Lato-Regular;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .act.typing::after {
@@ -536,6 +542,70 @@ body {
 	position: absolute;
 	overflow: hidden;
 	animation: typing-dots-animation 1s infinite;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott {
+	margin-left: auto;
+	padding-right: 15px;
+	font-size: 17px;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options {
+	color: rgb(74 74 74);
+	position: relative;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options i {
+	padding: 8px 10px;
+	cursor: pointer;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box {
+	display: none;
+	position: absolute;
+	top: 42px;
+	right: 0;
+	min-height: 250px;
+	width: 210px;
+	z-index: 100;
+	background-color: #ffffff;
+	padding: 8px 0;
+	overflow: hidden;
+	box-shadow: 0 1px 30px 0 rgb(0 0 0 / 20%), 0 2px 4px 0 rgb(0 0 0 / 10%), inset 0 0 0 1px rgb(255 255 255 / 50%);
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box.show {
+	display: block;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item {
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item:hover {
+	background-color: rgb(209, 209, 209);
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode {
+	margin-right: 20px;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode #mode {
+	padding: 12px 15px;
+	width: 100%;
+	border-radius: 5px;
+	border: none;
+	background: #fff;
+	background-color: transparent;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 16px;
+	transition: all 150ms ease;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item span {
+	font-size: 15px;
+	display: block;
+	padding: 10px 15px;
 }
 
 @keyframes typing-dots-animation {
@@ -602,7 +672,7 @@ body {
 /* chat-box */
 .sections .container .messenger-container .messages-right-sidebar .chat-box {
 	background-color: #e6eaea;
-	padding: 40px 10px 10px 10px;
+	padding: 40px 10px 20px 10px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: flex;
@@ -648,13 +718,13 @@ body {
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .no-conv-yet {
 	color: black;
-	margin: 37% auto;
+	margin: auto;
 }
 
 /*************************** */
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box {
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 3px;
 	display: flex;
 }
 
@@ -679,12 +749,12 @@ body {
 	font-size: 10px;
 	text-align: center;
 	position: absolute;
-	top: -35px;
+	top: -30px;
 	width: 180px;
 	display: block;
 	background-color: #000000c0;
 	color: #fff;
-	padding: 8px;
+	padding: 6px;
 	border-radius: 5px;
 	z-index: 100;
 	box-shadow: -1px 2px 8px 2px rgba(0, 0, 0, 0.55);
@@ -698,8 +768,8 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
 	overflow: hidden;
 	display: inline-block;
-	padding: 7px 15px;
-	border-radius: 20px;
+	padding: 6px 10px;
+	border-radius: 7.5px;
 	text-align: left;
 	box-shadow: 0px 2px 4px -2px rgb(111 111 111 / 63%);
 }
@@ -759,11 +829,12 @@ body {
 
 /* Typing Animation CSS Start */
 #typing-animation {
-	margin-bottom: 10px;
+	margin-bottom: 3px;
 }
 #typing-animation .chat-bubble {
 	background-color: #e6f8f1;
-	padding: 10px 20px;
+	margin-left: 30px;
+	padding: 9px 18px;
 	-webkit-border-radius: 20px;
 	-webkit-border-bottom-left-radius: 2px;
 	-moz-border-radius: 20px;
@@ -782,9 +853,9 @@ body {
 	background-color: #6cad96;
 	border-radius: 50%;
 	height: 7px;
+	width: 7px;
 	margin-right: 4px;
 	vertical-align: middle;
-	width: 7px;
 	display: inline-block;
 }
 #typing-animation .chat-bubble .typing .dot:nth-child(1) {
@@ -827,6 +898,7 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner {
+	border-bottom-left-radius: 0;
 	background-color: #435f7a;
 	color: #f5f5f5;
 	float: left;
@@ -871,6 +943,7 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
+	border-bottom-right-radius: 0;
 	background-color: #f5f5f5;
 	color: #32465a;
 	float: right;
@@ -932,7 +1005,7 @@ body {
 }
 .sections .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-msg-cont #input-msg {
 	padding: 10px 0 0 15px;
-	font-size: 16px;
+	font-size: 15px;
 	font-family: Montserrat-Medium;
 	border: 1px solid #cecece;
 	border-radius: 5px;
@@ -1005,6 +1078,151 @@ body {
 	justify-content: center;
 	align-items: center;
 }
+
+/* Dark mode Style = START */
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar {
+	background-color: #131c21;
+}
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .self-profile .wrap #logout {
+	background-color: #252c30;
+}
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .self-profile .wrap #logout:hover {
+	color: inherit;
+	background-color: inherit;
+	border-color: rgb(118 117 117 / 59%);
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a {
+	border-color: rgb(118 117 117 / 30%);
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .search-users input {
+	background-color: #2a2f32;
+}
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .search-users input:focus {
+	background-color: #424547;
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user {
+	background-color: #424547;
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .chat-list .single-user.selected {
+	background-color: #323739;
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .chat-list .single-user:hover {
+	background-color: #2d3134;
+}
+
+.sections.dark-mode .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link .inner a:hover {
+	background-color: #2a2f32;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header {
+	background-color: #2a2f32;
+	box-shadow: none;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow i {
+	color: #b1b3b5;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap i {
+	border-color: #2a2f32;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .meta .name {
+	color: rgb(241 241 242 / 92%);
+}
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .meta .act {
+	color: rgb(241 241 242 / 63%);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options i {
+	color: #b1b3b5;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box {
+	background-color: #2a2f32;
+	color: rgb(241 241 242 / 92%);
+	box-shadow: 0 1px 30px 0 rgb(0 0 0 / 20%), 0 2px 4px 0 rgb(0 0 0 / 10%), inset 0 0 0 1px rgb(44 44 44 / 50%);
+}
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode #mode {
+	color: rgb(241 241 242 / 92%);
+}
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode #mode option {
+	color: #0d1418;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item:hover {
+	background-color: #20272b;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box {
+	background-color: #0d1418;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .no-conv-yet {
+	color: rgb(255, 255, 255);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .fetch-message-loading {
+	color: rgb(207, 207, 207);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner {
+	box-shadow: none;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner {
+	color: rgb(241 241 242 / 95%);
+	background-color: #262d31;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
+	background-color: #056162;
+	color: rgb(241 241 242 / 95%);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-time {
+	color: black;
+	background-color: rgba(255, 255, 255, 0.808);
+}
+
+.sections.dark-mode #typing-animation .chat-bubble {
+	background-color: #262d31;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form {
+	background-color: #1e2428;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-msg-cont #input-msg {
+	background-color: #33383b;
+	color: rgb(241 241 242 / 95%);
+	font-family: Montserrat-Regular;
+	border-color: transparent;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-msg-cont #input-msg:focus {
+	border-color: #757575;
+	box-shadow: none;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-msg-cont #input-msg::placeholder {
+	color: #85888a;
+	border: none;
+}
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form .input-file-cont i {
+	color: #9d9d9d;
+}
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form #msg-sent-btn {
+	background-color: #333e48;
+}
+
+/* Dark mode Style - END */
 
 /* Messenger images full screen */
 #img-expand {
@@ -1215,6 +1433,10 @@ body {
 		width: 67%;
 	}
 
+	.sections .container .messenger-container .messages-right-sidebar .chatbox-header .meta .name {
+		font-weight: 700;
+	}
+
 	.sections .container .messenger-container .messages-right-sidebar .chat-box {
 		padding: 5px 6px 10px 6px;
 	}
@@ -1252,5 +1474,9 @@ body {
 	}
 	.sections .container .messenger-container .messages-right-sidebar .chatbox-header .left-arrow i {
 		padding: 24px 20px 24px 5px;
+	}
+
+	.sections .container .messenger-container .messages-right-sidebar .chatbox-header .img-wrap {
+		margin-left: 0;
 	}
 }
