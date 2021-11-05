@@ -785,11 +785,16 @@ body {
 	font-family: Montserrat-Regular;
 	word-break: break-word;
 }
+
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a {
-	text-decoration: underline;
+	color: #68bbe4;
 }
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:visited {
+	color: inherit;
+}
+
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:hover {
-	color: #2888e1 !important;
+	text-decoration: underline;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner img {
@@ -904,14 +909,6 @@ body {
 	float: left;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner .message a {
-	color: #f5f5f5;
-}
-
-.sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner .message a:visited {
-	color: #e4e4e4;
-}
-
 .sections .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner img {
 	float: left;
 }
@@ -947,14 +944,6 @@ body {
 	background-color: #f5f5f5;
 	color: #32465a;
 	float: right;
-}
-
-.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner .message a {
-	color: #141313;
-}
-
-.sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner .message a:visited {
-	color: #5b738a;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner img {
@@ -1184,6 +1173,10 @@ body {
 .sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
 	background-color: #056162;
 	color: rgb(241 241 242 / 95%);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner.attachment-style {
+	background-color: transparent;
 }
 
 .sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-time {
