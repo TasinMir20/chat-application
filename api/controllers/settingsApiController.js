@@ -11,8 +11,8 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 
 		let { firstName, lastName, username, email, authPassword, whichPropertyChange } = req.body;
 
-		firstName = !!firstName ? String(firstName).trim() : false;
-		lastName = !!lastName ? String(lastName).trim() : false;
+		firstName = !!firstName ? String(firstName).replace(/  +/g, " ").trim() : false;
+		lastName = !!lastName ? String(lastName).replace(/  +/g, " ").trim() : false;
 		username = !!username ? String(username).toLowerCase().trim() : false;
 		email = !!email ? String(email).toLowerCase().trim() : false;
 		authPassword = !!authPassword ? String(authPassword) : false;
@@ -23,7 +23,7 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 			const lstNmF = lastName.length > 0;
 
 			// First name validation
-			const letters = /^[A-Za-z]+$/;
+			const letters = /^[A-Za-z\s]+$/;
 
 			const fnmLng = firstName.length <= 46 && firstName.length >= 3;
 			const fNameLettersValid = firstName ? !!firstName.match(letters) : false;

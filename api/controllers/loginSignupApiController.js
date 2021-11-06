@@ -9,8 +9,8 @@ exports.signupApiController = async (req, res, next) => {
 	let { firstName, lastName, regEmail, newPass, confirmPass } = req.body;
 
 	try {
-		firstName = !!firstName ? String(firstName).trim() : false;
-		lastName = !!lastName ? String(lastName).trim() : false;
+		firstName = !!firstName ? String(firstName).replace(/  +/g, " ").trim() : false;
+		lastName = !!lastName ? String(lastName).replace(/  +/g, " ").trim() : false;
 		regEmail = !!regEmail ? String(regEmail).toLowerCase().trim() : false;
 		newPass = !!newPass ? String(newPass) : false;
 		confirmPass = !!confirmPass ? String(confirmPass) : false;
@@ -25,7 +25,7 @@ exports.signupApiController = async (req, res, next) => {
 		//////////////////////////////////////// INPUT VALIDATION START ////////////////////////////////////////
 
 		// First name validation
-		const letters = /^[A-Za-z]+$/;
+		const letters = /^[A-Za-z\s]+$/;
 
 		const fnmLng = firstName.length <= 46 && firstName.length >= 3;
 		const fNameLettersValid = firstName ? !!firstName.match(letters) : false;

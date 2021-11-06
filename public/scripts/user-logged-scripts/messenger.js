@@ -10,6 +10,11 @@ function selfOffline() {
 }
 body.onoffline = selfOffline;
 
+function showChatMoreOption() {
+	document.querySelector(".chatbox-header .three-dott .more-options .options-box").classList.toggle("show");
+}
+document.querySelector(".chatbox-header .three-dott .three_dott").onclick = showChatMoreOption;
+
 // Dark mode Scripts - START
 const userMode = localStorage.getItem("dark_mode");
 if (userMode == "yes") {
@@ -38,14 +43,42 @@ document.querySelector(".more-options .options-box .mode #mode").addEventListene
 
 // Dark mode Scripts  - END
 
-function showChatMoreOption() {
-	document.querySelector(".chatbox-header .three-dott .more-options .options-box").classList.toggle("show");
+// Mute Unmute Scripts  - START
+const IsMute = localStorage.getItem("is_mute");
+if (IsMute === "yes") {
+	document.querySelector(".more-options .options-box .item #mute-unmute span").innerText = "Unmute";
+	document.querySelector(".more-options .options-box .item #mute-unmute i").classList.remove("fa-bell");
+	document.querySelector(".more-options .options-box .item #mute-unmute i").classList.add("fa-bell-slash");
+} else {
+	document.querySelector(".more-options .options-box .item #mute-unmute span").innerText = "Mute";
+	document.querySelector(".more-options .options-box .item #mute-unmute i").classList.remove("fa-bell-slash");
+	document.querySelector(".more-options .options-box .item #mute-unmute i").classList.add("fa-bell");
 }
-document.querySelector(".chatbox-header .three-dott .three_dott").onclick = showChatMoreOption;
+
+function muteUnmute() {
+	const IsMute = localStorage.getItem("is_mute");
+	if (IsMute === "yes") {
+		// Remove localStorage Data
+		localStorage.removeItem("is_mute");
+		document.querySelector(".more-options .options-box .item #mute-unmute span").innerText = "Mute";
+		document.querySelector(".more-options .options-box .item #mute-unmute i").classList.remove("fa-bell-slash");
+		document.querySelector(".more-options .options-box .item #mute-unmute i").classList.add("fa-bell");
+	} else {
+		// Save data in localStorage
+		localStorage.setItem("is_mute", "yes");
+		document.querySelector(".more-options .options-box .item #mute-unmute span").innerText = "Unmute";
+		document.querySelector(".more-options .options-box .item #mute-unmute i").classList.remove("fa-bell");
+		document.querySelector(".more-options .options-box .item #mute-unmute i").classList.add("fa-bell-slash");
+	}
+}
+document.querySelector(".more-options .options-box .item #mute-unmute").onclick = muteUnmute;
+// Mute Unmute Scripts  - END
 
 // redirect recipient Profile when click recipient on recipients of the chat header
 function redirectUserProfile() {
-	location.assign(`/${relevantUsername}`);
+	if (relevantUsername) {
+		location.assign(`/${relevantUsername}`);
+	}
 }
 document.querySelector(".chatbox-header .img-wrap").onclick = redirectUserProfile;
 document.querySelector(".chatbox-header .name").onclick = redirectUserProfile;
@@ -64,7 +97,10 @@ function messengerFullScreenN_Exit(e) {
 	const bb = document.querySelector(".three-dott .options-box");
 	const cc = document.querySelector(".three-dott .three_dott");
 	const dd = document.querySelector(".three-dott .mode #mode");
-	if (e.target == aa || e.target == bb || e.target == cc || e.target == dd) return;
+	const ee = document.querySelector(".three-dott #mute-unmute");
+	const ff = document.querySelector(".three-dott #mute-unmute span");
+	const gg = document.querySelector(".three-dott #mute-unmute i");
+	if (e.target == aa || e.target == bb || e.target == cc || e.target == dd || e.target == ee || e.target == ff || e.target == gg) return;
 	///////////////////////////////
 
 	if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
@@ -201,7 +237,7 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 }
 
 // Push Notification func
-function pushNotification(notificationHeader, notificationMsg, iconUrl) {
+function pushNotification(notificationHeader, notificationMsg, iconUrl, soundUrl) {
 	function showNotification() {
 		const notification = new Notification(notificationHeader, {
 			body: notificationMsg,
@@ -218,6 +254,11 @@ function pushNotification(notificationHeader, notificationMsg, iconUrl) {
 			}
 		});
 	}
+
+	// Notification Sound
+	soundUrl = soundUrl || "/audio/default.mp3";
+	const audio = new Audio(soundUrl);
+	audio.play();
 }
 
 // End -> Reuseable function or component
@@ -843,8 +884,11 @@ function socketEvent() {
 		if (String(recipientId) === String(sender)) {
 			// if minimize browser or others tab then show notification
 			if (document.hidden) {
-				// push notification call
-				pushNotification(notificationH, notificationText, notificationIcon);
+				const IsMute = localStorage.getItem("is_mute");
+				if (IsMute !== "yes") {
+					// push notification call
+					pushNotification(notificationH, notificationText, notificationIcon, "/audio/new-message.mp3");
+				}
 			}
 
 			// Typing Animation element remove before insert an new message
@@ -901,8 +945,11 @@ function socketEvent() {
 				chatUserList_ApiRequest();
 			}
 
-			// push notification call
-			pushNotification(notificationH, notificationText, notificationIcon);
+			const IsMute = localStorage.getItem("is_mute");
+			if (IsMute !== "yes") {
+				// push notification call
+				pushNotification(notificationH, notificationText, notificationIcon, "/audio/new-message.mp3");
+			}
 		}
 
 		// last message and last message send time update in chat list

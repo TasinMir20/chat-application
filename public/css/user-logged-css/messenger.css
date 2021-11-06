@@ -553,7 +553,7 @@ body {
 	position: relative;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options i {
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options i.three_dott {
 	padding: 8px 10px;
 	cursor: pointer;
 }
@@ -580,6 +580,8 @@ body {
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item {
+	cursor: pointer;
+	font-size: 14px;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item:hover {
@@ -588,9 +590,16 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode {
 	margin-right: 20px;
 }
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .inner {
+	padding: 12px 15px;
+}
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode {
+	padding: 0 15px;
+}
 
 .sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item .mode #mode {
-	padding: 12px 15px;
+	padding-top: 12px;
+	padding-bottom: 12px;
 	width: 100%;
 	border-radius: 5px;
 	border: none;
@@ -598,14 +607,17 @@ body {
 	background-color: transparent;
 	cursor: pointer;
 	font-family: inherit;
-	font-size: 16px;
 	transition: all 150ms ease;
 }
 
-.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item span {
-	font-size: 15px;
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item #mute-unmute {
+	padding-left: 18px;
 	display: block;
-	padding: 10px 15px;
+	width: 100%;
+}
+
+.sections .container .messenger-container .messages-right-sidebar .chatbox-header .three-dott .more-options .options-box .item #mute-unmute span {
+	margin-right: 10px;
 }
 
 @keyframes typing-dots-animation {
@@ -1213,6 +1225,11 @@ body {
 }
 .sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form #msg-sent-btn {
 	background-color: #333e48;
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .unavailable-to-sent-msg {
+	background-color: #1e2428;
+	color: #c5c3c3;
 }
 
 /* Dark mode Style - END */
