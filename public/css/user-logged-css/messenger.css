@@ -406,6 +406,7 @@ body {
 .sections .container .messenger-container .chat-list-left-sidebar .profile-setting-page-link {
 	overflow: hidden;
 	position: absolute;
+	background-color: inherit;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -849,7 +850,7 @@ body {
 	margin-bottom: 3px;
 }
 #typing-animation .chat-bubble {
-	background-color: #e6f8f1;
+	background-color: #285580;
 	margin-left: 30px;
 	padding: 9px 18px;
 	-webkit-border-radius: 20px;
@@ -1197,7 +1198,7 @@ body {
 }
 
 .sections.dark-mode #typing-animation .chat-bubble {
-	background-color: #262d31;
+	background-color: #393d3f;
 }
 
 .sections.dark-mode .container .messenger-container .messages-right-sidebar .msg-form-wrap .msg-input-form {
