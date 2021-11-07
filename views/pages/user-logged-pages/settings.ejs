@@ -207,8 +207,8 @@
                             // Time convert to client local (Whole Date and time)
 							const msgSendTime = cookiesData[i].createTime;
 							const msgDate = new Date(msgSendTime * 1000);
-							const date = msgDate.toLocaleString("en-US", { timeZone: 'Asia/Dhaka', month: "long", day: "numeric", year: "numeric" });
-							const time = msgDate.toLocaleString("en-US", { timeZone: 'Asia/Dhaka', hour: "numeric", minute: "numeric" });
+							const date = msgDate.toLocaleString("en-US", { timeZone: thisSessionTimeZone, month: "long", day: "numeric", year: "numeric" });
+							const time = msgDate.toLocaleString("en-US", { timeZone: thisSessionTimeZone, hour: "numeric", minute: "numeric" });
 							const localDateAndTime = `${date} at ${time}`;
 
                             

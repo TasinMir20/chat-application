@@ -90,9 +90,11 @@ exports.settingsGetController = async (req, res, next) => {
 		cookiesData.reverse();
 
 		///////////////////////////
+		let thisSessionTimeZone = "";
 		for (let i = 0; i < cookiesData.length; i++) {
 			if (cookiesData[i].cookieVal == req.cookies.access_l) {
 				cookiesData[i].thisLoggedCookieVal = true;
+				thisSessionTimeZone = cookiesData[i].geolocationData.timezone;
 				cookiesData = arrayItemMove(cookiesData, i, 0);
 			}
 		}
@@ -104,7 +106,7 @@ exports.settingsGetController = async (req, res, next) => {
 		const title = uri === "general-information" ? "General Information" : uri === "security" ? "Security" : uri === "social-links" ? "Social Links Update" : "Settings";
 
 		if (uri === undefined || uri === "general-information" || uri === "security" || uri === "social-links") {
-			res.render("pages/user-logged-pages/settings.ejs", { userData, uri, cookiesData, title });
+			res.render("pages/user-logged-pages/settings.ejs", { userData, uri, cookiesData, title, thisSessionTimeZone });
 		} else {
 			next();
 		}
