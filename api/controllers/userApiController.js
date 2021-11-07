@@ -2,7 +2,7 @@ const User = require("../../models/User");
 const LoginCookie = require("../../models/LoginCooke");
 const VerifyCode = require("../../models/VerifyCode");
 
-const { codeResendTimeInSeconds, codeSaveDBandMailSend } = require("../../utils/func/func");
+const { emailValidation, codeResendTimeInSeconds, codeSaveDBandMailSend } = require("../../utils/func/func");
 
 exports.logOut_ApiController = async (req, res, next) => {
 	try {
@@ -121,6 +121,68 @@ exports.emailVerifyResendCode_ApiController = async (req, res, next) => {
 		} else {
 			return res.json({ rld: true });
 		}
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.editVerifyEmail_ApiController = async (req, res, next) => {
+	try {
+		const userData = req.userData;
+		let { editedEmail } = req.body;
+
+		editedEmail = !!editedEmail ? String(editedEmail).toLowerCase().trim() : false;
+
+		// Check filled or not
+		const emlF = editedEmail.length > 0;
+
+		// email validation
+		const emlLng = editedEmail.length < 40;
+		const validEmail = emailValidation(editedEmail);
+		const emailOk = emlF && emlLng && validEmail ? true : false;
+
+		if (emailOk) {
+			const invalidChangeReq = userData.email == editedEmail;
+
+			if (!invalidChangeReq) {
+				const emailExist = await User.findOne({ email: editedEmail });
+				if (!emailExist) {
+					console.log(editedEmail);
+					const emailUpdate = await User.updateOne({ _id: userData._id, "othersData.emailVerified": false }, { email: editedEmail });
+
+					if (emailUpdate.nModified == 1) {
+						// before send new verification code, delete old verification code from database
+						await VerifyCode.deleteMany({ $and: [{ userObjId: userData._id }, { codeName: "Email_verification_code" }] });
+
+						// email verification code sending
+						userData.email = editedEmail;
+						const subject = "Verify email address";
+						const plainTextMsg = "To confirm new email address, please enter the following verification code:";
+						const codeName = "Email_verification_code";
+						const mail = (await codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName)) || {};
+
+						if (mail.accepted) {
+							const updatedEmail = editedEmail;
+							return res.json({ updatedEmail });
+						}
+					}
+				} else {
+					var editEmailMsg = "Email is already used! Please enter another email address!";
+				}
+			} else {
+				editEmailMsg = "First make change in input box then try!";
+			}
+		} else {
+			if (!emlF) {
+				editEmailMsg = "You must have an email address with your account!";
+			} else if (!emlLng) {
+				editEmailMsg = "Your email address length is too long!";
+			} else if (!validEmail) {
+				editEmailMsg = "Please enter valid  email address!";
+			}
+		}
+
+		return res.json({ editEmailMsg });
 	} catch (err) {
 		next(err);
 	}

@@ -91,6 +91,7 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
 					{
 						$or: [{ firstName: KeyWordRegExp }, { lastName: KeyWordRegExp }, { username: KeyWordRegExp }, { email: KeyWordRegExp }],
 					},
+					{ "othersData.emailVerified": true } /* Email unverified users will not appear in the search results */,
 					{ $nor: [{ _id: userData._id }] } /* User self Id/account will not appear in the search results */,
 				],
 			});

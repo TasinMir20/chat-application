@@ -208,7 +208,7 @@
 							const msgSendTime = cookiesData[i].createTime;
 							const msgDate = new Date(msgSendTime * 1000);
 							const date = msgDate.toLocaleString("en-US", { timeZone: 'Asia/Dhaka', month: "long", day: "numeric", year: "numeric" });
-							const time = msgDate.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
+							const time = msgDate.toLocaleString("en-US", { timeZone: 'Asia/Dhaka', hour: "numeric", minute: "numeric" });
 							const localDateAndTime = `${date} at ${time}`;
 
                             

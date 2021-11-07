@@ -1,3 +1,17 @@
+function showEditEmail() {
+	document.querySelector(".edit-email-part .email-edit-wrap").classList.add("show");
+	document.querySelector(".edit-email-part .edit-btn-wrap").classList.add("hide");
+
+	document.querySelector("#edit-email-input").select();
+}
+document.querySelector(".edit-email-part .edit-btn-wrap #edit-btn").onclick = showEditEmail;
+
+function cancelEditEmail() {
+	document.querySelector(".edit-email-part .email-edit-wrap").classList.remove("show");
+	document.querySelector(".edit-email-part .edit-btn-wrap").classList.remove("hide");
+}
+document.querySelector(".edit-email-part .email-edit-wrap .cncl").onclick = cancelEditEmail;
+
 /**************************** API request *****************************/
 ///////////////////////////////////////////////////////////////////////
 
@@ -40,6 +54,9 @@ function emailVerify_ApiRequest(event) {
 				}
 			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				// loading animation clear
 				document.querySelector("#load-animation").innerHTML = "";
 
@@ -111,6 +128,9 @@ function emailVerifyResendCode_ApiRequest(event) {
 			}
 		})
 		.then((data) => {
+			if (!data) {
+				return;
+			}
 			// loading animation clear
 			document.querySelector("#load-animation").innerHTML = "";
 
@@ -186,3 +206,77 @@ function emailVerifyResendCode_ApiRequest(event) {
 		});
 }
 document.querySelector("#email-verify-code-resend").onclick = emailVerifyResendCode_ApiRequest;
+
+/* Verify email edit API request func Start */
+function editVerifyEmail_ApiRequest(event) {
+	event.preventDefault();
+
+	const editedEmail = document.querySelector("#edit-email-input").value;
+
+	if (editedEmail) {
+		// loading animation showing
+		document.querySelector("#load-animation").innerHTML = `
+                    <div class="load-bg">
+                        <div class="wrap-loading">
+                            <div class="loading"></div>
+                        </div>
+                    </div>`;
+
+		const dataObj = { editedEmail };
+		const apiUrl = "/api/user/edit-verify-email";
+		fetch(apiUrl, {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: JSON.stringify(dataObj),
+		})
+			.then((res) => {
+				if (res.status == 500) {
+					document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+					throw new Error("Server Error");
+				} else if (res.status == 404) {
+					document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+					throw new Error("Not found...");
+				} else {
+					return res.json();
+				}
+			})
+			.then((data) => {
+				if (!data) {
+					return;
+				}
+				// loading animation clear
+				document.querySelector("#load-animation").innerHTML = "";
+
+				const response = data;
+
+				console.log(response);
+
+				if (response.updatedEmail) {
+					// Floating message show if edited Email address and sent code to new email
+					const element = document.querySelector(".floating-alert-notification");
+					element.innerHTML = '<p class="success-alert alert-msg">Verify code sent to your new email</p>';
+					element.classList.add("show");
+					setTimeout(() => {
+						element.classList.remove("show");
+					}, 3000);
+
+					document.querySelector(".section .docs .email").innerText = response.updatedEmail;
+					document.querySelector(".edit-email-part .email-edit-wrap").classList.remove("show");
+					document.querySelector(".edit-email-part .edit-btn-wrap").classList.remove("hide");
+				} else if (response.editEmailMsg) {
+					document.querySelector(".edit_email_msg").innerHTML = `<small class='error-message'>${response.editEmailMsg}</small>`;
+				}
+			})
+			.catch(function (reason) {
+				console.log(reason);
+			});
+	} else {
+		document.querySelector(".edit_email_msg").innerHTML = "<small class='error-message'>Please Enter your email</small>";
+	}
+}
+
+document.querySelector("#edit-email").onclick = editVerifyEmail_ApiRequest;
+/* Verify email edit API request func End */

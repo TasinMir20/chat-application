@@ -17,7 +17,22 @@
         <div class="container">
             <div class="docs">
                 <h1>Please confirm your email address</h1>
-                <p>We have sent a six-digit verification code to your email: <%=userData.email%></p>
+                <p>We have sent a six-digit verification code to your email: <span class="email"><%=userData.email%></span></p>
+            </div>
+            <div class="edit-email-part">
+                <div class="edit-btn-wrap">
+                    <button id="edit-btn">Edit Email</button>
+                </div>
+                <div class="email-edit-wrap">
+                    <div class="input-wrap">
+                        <input type="text" value="<%=userData.email%>" id="edit-email-input" placeholder="Enter your another email address">
+                        <div class="edit_email_msg"></div>
+                    </div>
+                    <div class="b-wrap">
+                        <button class="cng" id="edit-email">Change</button>
+                        <button class="cncl">Cancel</button>
+                    </div>
+                </div>
             </div>
             <form action="" method="post">
                 <div class="input-cont">
