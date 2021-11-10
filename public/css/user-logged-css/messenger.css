@@ -1184,7 +1184,17 @@ body {
 	background-color: #262d31;
 }
 
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .incoming-message .msg-n-meta .msg-inner .lnk-wrap a {
+	color: rgb(241 241 242 / 95%);
+	background-color: #262d31;
+}
+
 .sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner {
+	background-color: #056162;
+	color: rgb(241 241 242 / 95%);
+}
+
+.sections.dark-mode .container .messenger-container .messages-right-sidebar .chat-box .outgoing-message .msg-n-meta .msg-inner .lnk-wrap a {
 	background-color: #056162;
 	color: rgb(241 241 242 / 95%);
 }

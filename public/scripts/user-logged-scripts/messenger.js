@@ -236,29 +236,38 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 	return theMessage;
 }
 
-// Push Notification func
-function pushNotification(notificationHeader, notificationMsg, iconUrl, soundUrl) {
-	function showNotification() {
-		const notification = new Notification(notificationHeader, {
-			body: notificationMsg,
-			icon: iconUrl,
-		});
-	}
-
-	if (Notification.permission === "granted") {
-		showNotification();
-	} else if (Notification.permission !== "denied") {
-		Notification.requestPermission().then((permission) => {
-			if (permission === "granted") {
-				showNotification();
-			}
-		});
-	}
-
-	// Notification Sound
+// typing sound func
+function sound(soundUrl) {
 	soundUrl = soundUrl || "/audio/default.mp3";
 	const audio = new Audio(soundUrl);
 	audio.play();
+}
+
+// Push Notification func
+function pushNotification(notificationHeader, notificationMsg, iconUrl, soundUrl) {
+	// Notification Sound
+	sound(soundUrl);
+
+	function notificationShow() {
+		try {
+			const notification = new Notification(notificationHeader, {
+				body: notificationMsg,
+				icon: iconUrl,
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	if (Notification.permission === "granted") {
+		notificationShow();
+	} else if (Notification.permission !== "denied") {
+		Notification.requestPermission().then((permission) => {
+			if (permission === "granted") {
+				notificationShow();
+			}
+		});
+	}
 }
 
 // End -> Reuseable function or component
@@ -998,6 +1007,12 @@ function socketEvent() {
                                                 </div>`;
 				const chatBox = document.querySelector(".chat-box");
 				chatBox.insertAdjacentHTML("afterbegin", typingAnimationElement);
+
+				const IsMute = localStorage.getItem("is_mute");
+				if (IsMute !== "yes") {
+					// typing sound
+					sound("/audio/chat-bubble-sound.mp3");
+				}
 			}
 
 			/* Typing element remove after 2 seconds if continue not typing */
