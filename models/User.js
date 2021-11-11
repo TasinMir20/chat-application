@@ -33,6 +33,8 @@ const userSchema = new Schema({
 		userCreateTime: Number,
 		profilePic: String,
 		lastOnlineTime: Number,
+		lastServerReq: Number,
+		keyWord: String,
 		nameLastChange: {
 			type: Number,
 			default: 0,

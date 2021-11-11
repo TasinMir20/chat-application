@@ -105,6 +105,8 @@ exports.signupApiController = async (req, res, next) => {
 					userCreateTime: currentEpochTime,
 					profilePic: "default_profile_pic.png",
 					lastOnlineTime: currentEpochTime,
+					lastServerReq: currentEpochTime,
+					keyWord: `${firstName} ${lastName}`,
 					emailVerified: false,
 					codeSendTimes: {
 						email_verify_code: 1,

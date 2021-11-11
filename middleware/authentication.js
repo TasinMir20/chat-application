@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const { auth } = require("../utils/func/func"); // authentication processing function
 
 exports.notLogin = async (req, res, next) => {
@@ -23,6 +24,11 @@ exports.isLogin = async (req, res, next) => {
 		const access = await auth(request, response);
 
 		if (access.accessible) {
+			const userData = request.userData;
+			const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+			// user last server request time update
+			await User.updateOne({ _id: userData._id }, { "othersData.lastServerReq": currentEpochTime });
+
 			const requestRoute = req.originalUrl;
 			const isLoggedApi = requestRoute.slice(0, 10) === "/api/user/";
 

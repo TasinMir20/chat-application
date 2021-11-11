@@ -10,10 +10,6 @@ const { codeSaveDBandMailSend, arrayItemMove } = require("../utils/func/func");
 exports.mainPathGetController = async (req, res, next) => {
 	try {
 		return res.redirect("/user/messenger");
-
-		const fullName = req.userData.firstName + " " + req.userData.lastName;
-		const username = req.userData.username;
-		res.render("pages/user-logged-pages/user-main.ejs", { dataPass: { username, fullName } });
 	} catch (err) {
 		next(err);
 	}

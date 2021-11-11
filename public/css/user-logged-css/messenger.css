@@ -264,13 +264,18 @@ body {
 
 .sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results {
 	width: 80%;
-	overflow: hidden;
+	max-height: 400px;
+	overflow-x: hidden;
+	overflow-y: auto;
 	position: absolute;
 	top: 101%;
 	left: 1%;
 	z-index: 100;
 	border-radius: 5px;
 	box-shadow: -1px 4px 11px -2px rgba(0, 0, 0, 0.64);
+}
+.sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results::-webkit-scrollbar {
+	display: none;
 }
 .sections .container .messenger-container .chat-list-left-sidebar .search-users .search-results .search-single-user {
 	background-color: #435f7a;
@@ -304,16 +309,15 @@ body {
 	height: 87%;
 	padding-bottom: 20px;
 	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow-y: auto;
+}
+.sections .container .messenger-container .chat-list-left-sidebar .chat-list::-webkit-scrollbar {
+	display: none;
 }
 
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .no-u-chat-list {
 	margin: 20% auto;
 	text-align: center;
-}
-
-.sections .container .messenger-container .chat-list-left-sidebar .chat-list::-webkit-scrollbar {
-	display: none;
 }
 
 .sections .container .messenger-container .chat-list-left-sidebar .chat-list .single-user {

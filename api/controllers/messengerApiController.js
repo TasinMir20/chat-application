@@ -89,12 +89,12 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
 			const findUserToConversation = await User.find({
 				$and: [
 					{
-						$or: [{ firstName: KeyWordRegExp }, { lastName: KeyWordRegExp }, { username: KeyWordRegExp }, { email: KeyWordRegExp }],
+						$or: [{ firstName: KeyWordRegExp }, { lastName: KeyWordRegExp }, { username: KeyWordRegExp }, { email: KeyWordRegExp }, { "othersData.keyWord": KeyWordRegExp }],
 					},
 					{ "othersData.emailVerified": true } /* Email unverified users will not appear in the search results */,
 					{ $nor: [{ _id: userData._id }] } /* User self Id/account will not appear in the search results */,
 				],
-			});
+			}).sort({ "othersData.lastServerReq": -1 });
 
 			let foundUser = "";
 			if (findUserToConversation[0]) {
