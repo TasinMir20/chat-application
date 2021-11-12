@@ -236,7 +236,7 @@ function messageHtmlInnerBody(attachment, textMessage, participant) {
 	return theMessage;
 }
 
-// typing sound func
+// sound func
 function sound(soundUrl) {
 	soundUrl = soundUrl || "/audio/default.mp3";
 	const audio = new Audio(soundUrl);
@@ -454,7 +454,10 @@ function searchUsersToChat_ApiRequest() {
 					}
 
 					if (data.foundUser) {
-						document.querySelector(".search-results").innerHTML = data.foundUser;
+						const searchInputNotEmpty = document.querySelector("#search").value;
+						if (searchInputNotEmpty) {
+							document.querySelector(".search-results").innerHTML = data.foundUser;
+						}
 					} else {
 						document.querySelector(".search-results").innerHTML = "";
 					}
