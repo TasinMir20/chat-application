@@ -1,3 +1,12 @@
+// right click disabled
+document.addEventListener(
+	"contextmenu",
+	function (e) {
+		e.preventDefault();
+	},
+	false
+);
+
 const body = document.querySelector("body");
 
 function selfOnline() {

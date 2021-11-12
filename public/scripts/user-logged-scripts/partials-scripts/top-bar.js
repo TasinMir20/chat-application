@@ -1,3 +1,12 @@
+// right click disabled
+document.addEventListener(
+	"contextmenu",
+	function (e) {
+		e.preventDefault();
+	},
+	false
+);
+
 if (window.innerWidth < 768) {
 	document.querySelector(".top-bar .dropdown-elements").style = `width: ${window.innerWidth - 30}px`;
 }

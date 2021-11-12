@@ -1,3 +1,12 @@
+// right click disabled
+document.addEventListener(
+	"contextmenu",
+	function (e) {
+		e.preventDefault();
+	},
+	false
+);
+
 function regPgShow(event) {
 	event.preventDefault();
 
