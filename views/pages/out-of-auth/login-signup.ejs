@@ -1,131 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="theme-color" content="#2c3e50" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login to your account!</title>
-        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="/bootstrap/css/fontawesome-all.min.css" />
-        <link rel="stylesheet" type="text/css" href="/css/login-reg-style.css" />
-        <link rel="stylesheet" type="text/css" href="/css/login-reg-style-theme2.css" />
-        <link rel="stylesheet" type="text/css" href="/css/login-reg-style-my-mod.css" />
-    </head>
-    <body>
-        <div class="form-body">
-            <div class="website-logo">
-                <a href="/">
-                    <div class="logo">
-                        <img src="/images/logo.png" alt="">
-                    </div>
-                </a>
-            </div>
-            <div class="row">
-                <div class="img-holder">
-                    <div class="bg"></div>
-                    <div class="info-holder"></div>
-                </div>
-                <div class="form-holder">
-                    <div class="form-content">
-                        <div class="form-items">
-                            <!-- Login Register section -->
-                            <div class="login-register<%= dataPass.forgetPartShow ? ' hide' : '' %>">
-                                <h3>Get connected to the world.</h3>
-                                <p>Access to the most powerful real-time communication platform through the Internet.</p>
-                                <div class="page-links">
-                                    <a href="" class="active login-pg">Login</a>
-                                    <a href="" class="register-pg">Register</a></div>
-                                <!-- Login form -->
-                                <div class="login-form">
-                                    <form action="" method="post">
-                                        <input class="form-control" type="text" id="user_or_email" placeholder="Username or E-mail Address" required="" />
-                                        <div class="eml_or_user_msg"></div>
-                                        <input class="form-control" type="password" id="password" placeholder="Password" required="" />
-                                        <div class="pass-msg"></div>
-                                        <span class="ck-bx">
-                                            <input type="checkbox" id="chk1" />
-                                            <label for="chk1">Remember me</label>
-                                        </span>
-                                        <div class="form-button">
-                                            <button id="login-submit" type="submit" class="ibtn">Login</button>
-                                            <a href="" class="forget-pg">Forget password?</a>
-                                        </div>
-                                    </form>
-                                    <div class="other-links">
-                                        <span>Or login with</span><a href="">Facebook</a><a href="">Google</a>
-                                        <a href="">Linkedin</a>
-                                    </div>
-                                </div>
-                                <!-- Register form -->
-                                <div class="register-form">
-                                    <form class="reg-form" action="" method="post">
-                                        <input class="form-control" type="text" id="first_name" placeholder="First Name" required />
-                                        <div class="fst-nm-msg"></div>
-                                        <input class="form-control" type="text" id="last_name" placeholder="Last Name" required />
-                                        <div class="lst-nm-msg"></div>
-                                        <input class="form-control" type="email" id="reg_email" placeholder="E-mail Address" required />
-                                        <div class="eml-msg"></div>
-                                        <input class="form-control" type="password" id="reg_password" placeholder="Password" required />
-                                        <div class="reg-pass-msg"></div>
-                                        <input class="form-control" type="password" id="reg_confirm_password" placeholder="Repeat Password" required />
-                                        <div class="confirm-pass-msg"></div>
-                                        <div class="form-button">
-                                            <button id="register-submit" type="submit" class="ibtn">Register</button>
-                                        </div>
-                                    </form>
-                                    <div class="other-links"><span>Or register with</span><a href="#">Facebook</a><a href="#">Google</a><a href="#">Linkedin</a></div>
-                                </div>
-                            </div>
-                            <!-- Forget form -->
-                            <div class="forget-pass-form<%= dataPass.forgetPartShow ? ' show' : '' %>">
-                                <h3>Password Reset</h3>
-                                <p>To reset your password, enter the username or email address you use to sign in to here</p>
-                                <form action="" method="post" id="forget-pass-form">
-                                    <div class="forget-email-div<%= dataPass.forgetPartShow ? ' hide' : '' %>">
-                                        <input class="form-control" id="forget-email-input" type="text" placeholder="Username or E-mail Address" />
-                                        <div class="forget_eml_msg"></div>
-                                        <div class="form-button full-width">
-                                            <button id="forget-email-submit" type="submit" class="ibtn">Send Reset Code</button>
-                                        </div>
-                                    </div>
-                                    <div class="forget-code-div<%= dataPass.codePartShow ? '' : ' hide' %>">
-                                        <input class="form-control" id="forget-code-input" type="text" placeholder="Enter recovery code" />
-                                        <div class="forget_code_msg"></div>
-                                        <div class="form-button full-width">
-                                            <button id="forget-code-submit" class="ibtn" type="submit">Submit Code</button>
-                                            <button id="forget-code-resend" class="ibtn" style="margin-top: 10px;" type="submit">Resend Code</button>
-                                            <div id="code-send-next-time-show" style="text-align: center; color: #d6d6d6; font-size: 80%; margin: 6px 0;"><span class="txt"></span> <span class="tm"></span></div>
-                                            <input type="text" id="temporarily-store-seconds" style="display: none;">
-                                        </div>
-                                    </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="theme-color" content="#2c3e50" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="google-signin-scope" content="profile email" />
+		<meta name="google-signin-client_id" content="<%=process.env.SIGN_IN_WITH_GOOGLE_CLIENT_ID%>" />
+		<title>Login to your account!</title>
+		<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="/bootstrap/css/fontawesome-all.min.css" />
+		<link rel="stylesheet" type="text/css" href="/css/login-reg-style.css" />
+		<link rel="stylesheet" type="text/css" href="/css/login-reg-style-theme2.css" />
+		<link rel="stylesheet" type="text/css" href="/css/login-reg-style-my-mod.css" />
+	</head>
+	<body>
+		<div class="form-body">
+			<div class="website-logo">
+				<a href="/">
+					<div class="logo">
+						<img src="/images/logo.png" alt="" />
+					</div>
+				</a>
+			</div>
+			<div class="row">
+				<div class="img-holder">
+					<div class="bg"></div>
+					<div class="info-holder"></div>
+				</div>
+				<div class="form-holder">
+					<div class="form-content">
+						<div class="form-items">
+							<!-- Login Register section -->
+							<div class="login-register<%= dataPass.forgetPartShow ? ' hide' : '' %>">
+								<h3>Get connected to the world.</h3>
+								<p>Access to the most powerful real-time communication platform through the Internet.</p>
+								<div class="page-links">
+									<a href="" class="active login-pg">Login</a>
+									<a href="" class="register-pg">Register</a>
+								</div>
+								<!-- Login form -->
+								<div class="login-form">
+									<form action="" method="post">
+										<input class="form-control" type="text" id="user_or_email" placeholder="Username or E-mail Address" required="" />
+										<div class="eml_or_user_msg"></div>
+										<input class="form-control" type="password" id="password" placeholder="Password" required="" />
+										<div class="pass-msg"></div>
+										<span class="ck-bx">
+											<input type="checkbox" id="chk1" />
+											<label for="chk1">Remember me</label>
+										</span>
+										<div class="form-button">
+											<button id="login-submit" type="submit" class="ibtn">Login</button>
+											<a href="" class="forget-pg">Forget password?</a>
+										</div>
+									</form>
+									<div class="other-links">
+										<span>Or login with</span>
+										<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+									</div>
+								</div>
+								<!-- Register form -->
+								<div class="register-form">
+									<form class="reg-form" action="" method="post">
+										<input class="form-control" type="text" id="first_name" placeholder="First Name" required />
+										<div class="fst-nm-msg"></div>
+										<input class="form-control" type="text" id="last_name" placeholder="Last Name" required />
+										<div class="lst-nm-msg"></div>
+										<input class="form-control" type="email" id="reg_email" placeholder="E-mail Address" required />
+										<div class="eml-msg"></div>
+										<input class="form-control" type="password" id="reg_password" placeholder="Password" required />
+										<div class="reg-pass-msg"></div>
+										<input class="form-control" type="password" id="reg_confirm_password" placeholder="Repeat Password" required />
+										<div class="confirm-pass-msg"></div>
+										<div class="form-button">
+											<button id="register-submit" type="submit" class="ibtn">Register</button>
+										</div>
+									</form>
+									<div class="other-links">
+										<span>Or register with</span>
+										<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+									</div>
+								</div>
+							</div>
+							<!-- Forget form -->
+							<div class="forget-pass-form<%= dataPass.forgetPartShow ? ' show' : '' %>">
+								<h3>Password Reset</h3>
+								<p>To reset your password, enter the username or email address you use to sign in to here</p>
+								<form action="" method="post" id="forget-pass-form">
+									<div class="forget-email-div<%= dataPass.forgetPartShow ? ' hide' : '' %>">
+										<input class="form-control" id="forget-email-input" type="text" placeholder="Username or E-mail Address" />
+										<div class="forget_eml_msg"></div>
+										<div class="form-button full-width">
+											<button id="forget-email-submit" type="submit" class="ibtn">Send Reset Code</button>
+										</div>
+									</div>
+									<div class="forget-code-div<%= dataPass.codePartShow ? '' : ' hide' %>">
+										<input class="form-control" id="forget-code-input" type="text" placeholder="Enter recovery code" />
+										<div class="forget_code_msg"></div>
+										<div class="form-button full-width">
+											<button id="forget-code-submit" class="ibtn" type="submit">Submit Code</button>
+											<button id="forget-code-resend" class="ibtn" style="margin-top: 10px" type="submit">Resend Code</button>
+											<div id="code-send-next-time-show" style="text-align: center; color: #d6d6d6; font-size: 80%; margin: 6px 0"><span class="txt"></span> <span class="tm"></span></div>
+											<input type="text" id="temporarily-store-seconds" style="display: none" />
+										</div>
+									</div>
 
-                                    <div class="forget-pass-div<%= dataPass.passPartShow ? '' : ' hide' %>">
-                                        <input class="form-control" id="forget-newpass-input" type="password" placeholder="Enter new password" />
-                                        <div class="forget_newpass_msg"></div>
-                                        <input class="form-control" id="forget-confirmpass-input" type="password" placeholder="Repeat New Password" />
-                                        <div class="forget_confirmpass_msg"></div>
-                                        <div class="form-button full-width">
-                                            <button id="forget-pass-submit" class="ibtn" type="submit">Change Password</button>
-                                        </div>
-                                    </div>
-                                    
-                                </form>
-                                <div class="form-button text-center">
-                                    <a href="" class="forget-pg-hide">Login</a>
-                                </div>
-                            </div>
+									<div class="forget-pass-div<%= dataPass.passPartShow ? '' : ' hide' %>">
+										<input class="form-control" id="forget-newpass-input" type="password" placeholder="Enter new password" />
+										<div class="forget_newpass_msg"></div>
+										<input class="form-control" id="forget-confirmpass-input" type="password" placeholder="Repeat New Password" />
+										<div class="forget_confirmpass_msg"></div>
+										<div class="form-button full-width">
+											<button id="forget-pass-submit" class="ibtn" type="submit">Change Password</button>
+										</div>
+									</div>
+								</form>
+								<div class="form-button text-center">
+									<a href="" class="forget-pg-hide">Login</a>
+								</div>
+							</div>
 
-                            <div class="floating-alert-notification"></div>
-                            <div id="load-animation"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script src="/bootstrap/js/jquery.min.js"></script>
-        <script src="/bootstrap/js/popper.min.js"></script>
-        <script src="/bootstrap/js/bootstrap.min.js"></script>
-        <script src="/scripts/out-of-auth-scripts/main.js"></script>
-    </body>
+							<div class="floating-alert-notification"></div>
+							<div id="load-animation"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/bootstrap/js/jquery.min.js"></script>
+		<script src="/bootstrap/js/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+		<script>
+			const geolocationApiUrl = "<%=process.env.GEOLOCATION_API%>";
+		</script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="/scripts/out-of-auth-scripts/main.js"></script>
+	</body>
 </html>

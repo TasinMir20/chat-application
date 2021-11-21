@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../../models/User");
 const VerifyCode = require("../../models/VerifyCode");
 
-const { worstPasswordCheck, emailValidation, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend } = require("../../utils/func/func");
+const { worstPasswordCheck, emailValidation, usernameGenerating, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend } = require("../../utils/func/func");
 
 exports.signupApiController = async (req, res, next) => {
 	let { firstName, lastName, regEmail, newPass, confirmPass } = req.body;
@@ -38,30 +38,7 @@ exports.signupApiController = async (req, res, next) => {
 
 		/* username generating */
 		if (regEmail) {
-			const forbiddenUsernames = ["account", "accounts", "user", "users", "api"];
-			const targetOfSlice = regEmail.indexOf("@");
-			var username = regEmail.slice(0, targetOfSlice);
-			let usernameExist = await User.findOne({ username });
-			let IsForbiddenUsernames = forbiddenUsernames.includes(username);
-
-			if (usernameExist || IsForbiddenUsernames) {
-				for (let i = 1; i < 1000; ) {
-					// get specific random number
-					const min = 1;
-					const max = 999;
-					const rndInt = Math.floor(Math.random() * (max - min + 1) + min);
-
-					var u = username + rndInt;
-					usernameExist = await User.findOne({ username: u });
-					IsForbiddenUsernames = forbiddenUsernames.includes(u);
-					console.trace("Looping at 'signupApiController' to generate username");
-
-					if (!usernameExist && !IsForbiddenUsernames) {
-						i += 1001;
-					}
-				}
-				username = u;
-			}
+			var username = await usernameGenerating(regEmail);
 		}
 
 		/* Email validation */

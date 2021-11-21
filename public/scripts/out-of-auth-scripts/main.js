@@ -58,6 +58,73 @@ document.querySelector(".forget-pg-hide").onclick = forgetPgHide;
 /**************************** API request Function start form here *****************************/
 ///////////////////////////////////////////////////////////////////////
 
+// Login SignUp with Google -- START ----------->
+async function onSignIn(googleUser) {
+	const id_token = googleUser.getAuthResponse().id_token;
+
+	// Get client Geolocation Data by third party API
+	const response = await fetch(geolocationApiUrl);
+	const geolocationData = await response.json();
+
+	const dataObj = { id_token, geolocationData };
+
+	const apiUrl = "/api/ls/login";
+	fetch(apiUrl, {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		method: "POST",
+		body: JSON.stringify(dataObj),
+	})
+		.then((res) => {
+			if (res.status == 500) {
+				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
+				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
+		.then((data) => {
+			if (!data) {
+				return;
+			}
+
+			const response = data;
+
+			console.log(response);
+
+			const alertType = response.authMsg ? "danger-alert" : response.msg ? "success-alert" : "";
+			const serverMsg = response.authMsg || response.msg;
+			// Floating message show if login success
+			const element = document.querySelector(".floating-alert-notification");
+			element.innerHTML = `<p class="${alertType} alert-msg">${serverMsg}</p>`;
+			element.classList.add("show");
+			setTimeout(() => {
+				element.classList.remove("show");
+			}, 3000);
+
+			if (response.loginSuccess) {
+				// redirecting after 3 seconds
+				setTimeout(() => {
+					location.replace("/user");
+				}, 3000);
+			} else {
+				// if the id_token doesn't validate to the server side so Sign out with Google Signed in
+				let auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut();
+			}
+		})
+		.catch(function (reason) {
+			console.log(reason);
+		});
+}
+
+// Login SignUp with Google -- END
+
 // Register API request func Start
 async function regApiRequest(event) {
 	event.preventDefault();
@@ -80,7 +147,7 @@ async function regApiRequest(event) {
                     </div>`;
 
 		// Get client Geolocation Data by third party API
-		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const response = await fetch(geolocationApiUrl);
 		const geolocationData = await response.json();
 
 		const dataObj = { firstName, lastName, regEmail, newPass, confirmPass, geolocationData };
@@ -219,7 +286,7 @@ async function loginApiRequest(event) {
                     </div>`;
 
 		// Get client Geolocation Data by third party API
-		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const response = await fetch(geolocationApiUrl);
 		const geolocationData = await response.json();
 
 		const dataObj = { emailOrUsername, password, keepLogged, geolocationData };
@@ -580,7 +647,7 @@ async function forgetPassPassword_ApiRequest() {
                     </div>`;
 
 		// Get client Geolocation Data by third party API
-		const response = await fetch("https://ipinfo.io/json?token=6d39f4f16b81ac");
+		const response = await fetch(geolocationApiUrl);
 		const geolocationData = await response.json();
 
 		const dataObj = { forgetNewPass, forgetConfirmNewPass, geolocationData };

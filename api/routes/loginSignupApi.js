@@ -1,10 +1,11 @@
 const loginSignupApi = require("express").Router();
+const { signInWithGoogle } = require("../../middleware/signinWithGoogle");
 
 // controller imports
 const { signupApiController, loginApiController, forgetPassEmail_ApiController, forgetPassCode_ApiController, forgetPassResendCode_ApiController, forgetPassPassword_ApiController } = require("../controllers/loginSignupApiController");
 
 loginSignupApi.post("/signup", signupApiController);
-loginSignupApi.post("/login", loginApiController);
+loginSignupApi.post("/login", signInWithGoogle, loginApiController);
 
 const { recoveryCodeFind } = require("../../middleware/recoveryCodeFind"); // middleware
 // Forget APIs routes

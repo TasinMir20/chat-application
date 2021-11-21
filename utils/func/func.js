@@ -21,6 +21,34 @@ function emailValidation(email) {
 	return valid ? true : false;
 }
 
+async function usernameGenerating(email, forbiddenUsernames) {
+	forbiddenUsernames = forbiddenUsernames || ["account", "accounts", "user", "users", "api"];
+	const targetOfSlice = email.indexOf("@");
+	let username = email.slice(0, targetOfSlice);
+	let usernameExist = await User.findOne({ username });
+	let IsForbiddenUsernames = forbiddenUsernames.includes(username);
+
+	if (usernameExist || IsForbiddenUsernames) {
+		let i;
+		let increment = 1;
+		while (!i) {
+			var u = username + increment;
+			usernameExist = await User.findOne({ username: u });
+			IsForbiddenUsernames = forbiddenUsernames.includes(u);
+			console.trace("Looping at 'usernameGenerating' func to generate username");
+
+			if (!usernameExist && !IsForbiddenUsernames) {
+				i = true;
+			} else {
+				increment++;
+			}
+		}
+		username = u;
+	}
+
+	return username;
+}
+
 function generate_cookie_token(length) {
 	const a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
 	const b = [];
@@ -237,4 +265,4 @@ function arrayItemMove(arr, old_index, new_index) {
 	return arr;
 }
 
-module.exports = { worstPasswordCheck, emailValidation, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth, arrayItemMove };
+module.exports = { worstPasswordCheck, emailValidation, usernameGenerating, generate_cookie_token, mailSending, doLogin, codeResendTimeInSeconds, codeSaveDBandMailSend, auth, arrayItemMove };

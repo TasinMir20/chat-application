@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include("../../partials/googleSignInElements.ejs") %>
     <title><%= title %></title>
     <link rel="stylesheet" href="/font-icon/fontawesome-free-5.15.4-web/css/all.min.css"/>
     <link rel="stylesheet" href="/css/user-logged-css/partials/top-bar.css">
@@ -205,10 +206,10 @@
                             const thisDevice = cookiesData[i].thisLoggedCookieVal;
 
                             // Time convert to client local (Whole Date and time)
-							const msgSendTime = cookiesData[i].createTime;
-							const msgDate = new Date(msgSendTime * 1000);
-							const date = msgDate.toLocaleString("en-US", { timeZone: thisSessionTimeZone, month: "long", day: "numeric", year: "numeric" });
-							const time = msgDate.toLocaleString("en-US", { timeZone: thisSessionTimeZone, hour: "numeric", minute: "numeric" });
+							const cookieCreateTime = cookiesData[i].createTime;
+							const readableTime = new Date(cookieCreateTime * 1000);
+							const date = readableTime.toLocaleString("en-US", { timeZone: thisSessionTimeZone, month: "long", day: "numeric", year: "numeric" });
+							const time = readableTime.toLocaleString("en-US", { timeZone: thisSessionTimeZone, hour: "numeric", minute: "numeric" });
 							const localDateAndTime = `${date} at ${time}`;
 
                             

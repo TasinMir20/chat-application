@@ -1,61 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | <%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></title>
-    <link rel="stylesheet" href="/font-icon/fontawesome-free-5.15.4-web/css/all.min.css"/>
-    <link rel="stylesheet" href="/css/user-logged-css/partials/top-bar.css">
-    <link rel="stylesheet" href="/css/user-logged-css/profile.css">
-</head>
-<body>
-<%- include("../../partials/top-bar.ejs") %>
-    <%
-        const isOwnProfile = String(userData._id) == String(requestedProfileData._id);
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <%- include("../../partials/googleSignInElements.ejs") %>
+        <title>Profile | <%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></title>
+        <link rel="stylesheet" href="/font-icon/fontawesome-free-5.15.4-web/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/user-logged-css/partials/top-bar.css">
+        <link rel="stylesheet" href="/css/user-logged-css/profile.css">
+    </head>
+    <body>
+    <%- include("../../partials/top-bar.ejs") %>
+        <%
+            const isOwnProfile = String(userData._id) == String(requestedProfileData._id);
 
-        const socialLinks = requestedProfileData.othersData.socialLinks;
+            const socialLinks = requestedProfileData.othersData.socialLinks;
 
-        const linkedinFullLink = `https://www.linkedin.com/in/${socialLinks.linkedin}`;
-        const facebookFullLink = `https://www.facebook.com/${socialLinks.facebook}`;
-        const instagramFullLink = `https://www.instagram.com/${socialLinks.instagram}`;
-        const twitterFullLink = `https://www.twitter.com/${socialLinks.twitter}`;
-        const githubFullLink = `https://www.github.com/${socialLinks.github}`;
-        const dribbbleFullLink = `https://www.dribbble.com/${socialLinks.dribbble}`;
+            const linkedinFullLink = `https://www.linkedin.com/in/${socialLinks.linkedin}`;
+            const facebookFullLink = `https://www.facebook.com/${socialLinks.facebook}`;
+            const instagramFullLink = `https://www.instagram.com/${socialLinks.instagram}`;
+            const twitterFullLink = `https://www.twitter.com/${socialLinks.twitter}`;
+            const githubFullLink = `https://www.github.com/${socialLinks.github}`;
+            const dribbbleFullLink = `https://www.dribbble.com/${socialLinks.dribbble}`;
 
 
-    %>
-    <section class="sections">
-        <div class="container">
-            <div class="profile">
-                <div class="profile-photo">
-                    <div class="photo">
-                        <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+        %>
+        <section class="sections">
+            <div class="container">
+                <div class="profile">
+                    <div class="profile-photo">
+                        <div class="photo">
+                            <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+                        </div>
+                        <%- isOwnProfile ? `<div class="edit-icon"><i class="fas fa-edit"></i></div>` : "" %>
+                        <div class="profile-photo-set-elements"></div>
                     </div>
-                    <%- isOwnProfile ? `<div class="edit-icon"><i class="fas fa-edit"></i></div>` : "" %>
-                    <div class="profile-photo-set-elements"></div>
+                    <div class="profile-name">
+                        <p class="name"><%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></p>
+                    </div>
+                    <div class="social-links">
+                        <!-- Profile Social Link -->
+                        <%- socialLinks.linkedin ? `<a href="${linkedinFullLink}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : "" %>
+                        <%- socialLinks.facebook ? `<a href="${facebookFullLink}" target="_blank"><i class="fab fa-facebook"></i></a>` : "" %>
+                        <%- socialLinks.instagram ? `<a href="${instagramFullLink}" target="_blank"><i class="fab fa-instagram"></i></a>` : "" %>
+                        <%- socialLinks.twitter ? `<a href="${twitterFullLink}" target="_blank"><i class="fab fa-twitter"></i></a>` : "" %>
+                        <%- socialLinks.github ? `<a href="${githubFullLink}" target="_blank"><i class="fab fa-github"></i></a>` : "" %>
+                        <%- socialLinks.dribbble ? `<a href="${dribbbleFullLink}" target="_blank"><i class="fab fa-dribbble"></i></a>` : "" %>
+                    </div>
+                    <!-- Profile message button -->
+                    <%- !isOwnProfile ? `<div class="profle-message-div"><a href="/user/messenger/?message=${requestedProfileData._id}">Message</a></div>` : "" %>
+                    
                 </div>
-                <div class="profile-name">
-                    <p class="name"><%=`${requestedProfileData.firstName} ${requestedProfileData.lastName}`%></p>
-                </div>
-                <div class="social-links">
-                    <!-- Profile Social Link -->
-                    <%- socialLinks.linkedin ? `<a href="${linkedinFullLink}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : "" %>
-                    <%- socialLinks.facebook ? `<a href="${facebookFullLink}" target="_blank"><i class="fab fa-facebook"></i></a>` : "" %>
-                    <%- socialLinks.instagram ? `<a href="${instagramFullLink}" target="_blank"><i class="fab fa-instagram"></i></a>` : "" %>
-                    <%- socialLinks.twitter ? `<a href="${twitterFullLink}" target="_blank"><i class="fab fa-twitter"></i></a>` : "" %>
-                    <%- socialLinks.github ? `<a href="${githubFullLink}" target="_blank"><i class="fab fa-github"></i></a>` : "" %>
-                    <%- socialLinks.dribbble ? `<a href="${dribbbleFullLink}" target="_blank"><i class="fab fa-dribbble"></i></a>` : "" %>
-                </div>
-                <!-- Profile message button -->
-                <%- !isOwnProfile ? `<div class="profle-message-div"><a href="/user/messenger/?message=${requestedProfileData._id}">Message</a></div>` : "" %>
-                
+                <div class="floating-alert-notification"></div>
             </div>
-            <div class="floating-alert-notification"></div>
-        </div>
-    </section>
+        </section>
 
-    <script src="/scripts/user-logged-scripts/partials-scripts/top-bar.js"></script>
-    <script src="/scripts/user-logged-scripts/profile.js"></script>
-</body>
+        <script src="/scripts/user-logged-scripts/partials-scripts/top-bar.js"></script>
+        <script src="/scripts/user-logged-scripts/profile.js"></script>
+    </body>
 </html>

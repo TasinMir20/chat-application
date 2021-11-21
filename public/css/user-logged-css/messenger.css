@@ -147,7 +147,7 @@ body {
 }
 
 .sections .container {
-	max-width: 1536px;
+	max-width: 100%;
 	height: 100%;
 	background-color: #ffffff;
 }
@@ -807,8 +807,9 @@ body {
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a {
 	color: #68bbe4;
 }
-.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:visited {
-	color: inherit;
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:visited,
+.sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:active {
+	color: #669ab4;
 }
 
 .sections .container .messenger-container .messages-right-sidebar .chat-box .single-msg-box .msg-n-meta .msg-inner .message a:hover {

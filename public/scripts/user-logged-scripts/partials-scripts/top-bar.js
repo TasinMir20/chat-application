@@ -32,21 +32,36 @@ function logOut_ApiRequest() {
 	fetch(apiUrl, {
 		method: "POST",
 	})
-		.then((res) => res.json())
-		.then((data) => {
-			if (!(data.error === "server error")) {
-				if (data.logout) {
-					location.replace("/account");
-				} else {
-					location.reload();
-				}
-			} else {
+		.then((res) => {
+			if (res.status == 500) {
 				document.querySelector("body").innerHTML = "<h2>There is a Server Error. Please try again later, we are working to fix it...</h2>";
 				throw new Error("Server Error");
+			} else if (res.status == 404) {
+				document.querySelector("body").innerHTML = "<h4>Not found...</h4>";
+				throw new Error("Not found...");
+			} else {
+				return res.json();
+			}
+		})
+		.then((data) => {
+			if (!data) {
+				return;
+			}
+
+			if (data.logout) {
+				location.replace("/account");
+			} else {
+				location.reload();
 			}
 		})
 		.catch(function (reason) {
 			console.log(reason);
 		});
+
+	// Sign out with Google Signed in
+	let auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+		console.log("Sign out with Google Signed in");
+	});
 }
 document.querySelector("#logout").onclick = logOut_ApiRequest;

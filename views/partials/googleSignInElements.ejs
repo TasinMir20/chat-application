@@ -1,0 +1,5 @@
+        <!-- Elements of Sign in with Google -->
+        <meta name="google-signin-scope" content="profile email" />
+        <meta name="google-signin-client_id" content="<%=process.env.SIGN_IN_WITH_GOOGLE_CLIENT_ID%>" />
+        <div style="display: none !important; width: 0; height: 0; visibility: hidden; opacity: 0" class="g-signin2" data-onsuccess="onSignIn">Google Sing in</div>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
