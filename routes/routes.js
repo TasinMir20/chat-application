@@ -11,6 +11,11 @@ const { notLogin, isLogin } = require("../middleware/authentication");
 routers.get("/", (req, res) => res.redirect("/account"));
 routers.post("/", (req, res) => res.redirect("/account"));
 
+// privacy-policy route - START
+// controller imports
+const { privacyPolicy } = require("../controllers/privacyPolicy");
+routers.all("/privacy-policy", privacyPolicy);
+
 // Login, Signup, and forget routes
 routers.use("/account", notLogin, loginSignupRoutes);
 
