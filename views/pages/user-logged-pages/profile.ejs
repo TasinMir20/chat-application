@@ -31,7 +31,7 @@
                 <div class="profile">
                     <div class="profile-photo">
                         <div class="photo">
-                            <img src="/images/users/profile-photo/<%=requestedProfileData.othersData.profilePic%>" alt="">
+                            <img src="<%=requestedProfileData.othersData.profilePicPathName%>" alt="">
                         </div>
                         <%- isOwnProfile ? `<div class="edit-icon"><i class="fas fa-edit"></i></div>` : "" %>
                         <div class="profile-photo-set-elements"></div>

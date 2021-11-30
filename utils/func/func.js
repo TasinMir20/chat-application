@@ -229,6 +229,9 @@ async function auth(req, res) {
 					const userData = await User.findOne({ _id: loginCookieFind.userObjId });
 					if (userData) {
 						if (loginCookieFind.login) {
+							// Make profile pic right path
+							userData.othersData.profilePicPathName = userData.othersData.profilePicPath ? `${userData.othersData.profilePicPath}${userData.othersData.profilePic}` : userData.othersData.profilePic;
+
 							req.userData = userData;
 							access.accessible = true;
 							if (userData.othersData.emailVerified) {

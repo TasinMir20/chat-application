@@ -7,7 +7,7 @@
             </div>
             <div class="top-info">
                 <a href="/<%=userData.username%>" class="user" title="See your profile">
-                    <div class="user-pic"><img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt=""></div>
+                    <div class="user-pic"><img src="<%=userData.othersData.profilePicPathName%>" alt=""></div>
                     <div class="user-name"><span><%= userData.firstName %></span></div>
                 </a>
                 <div class="others-pages">
@@ -18,7 +18,7 @@
                         <div class="dropdown-elements">
                             <div class="inner">
                                 <a href="/<%=userData.username%>" class="user">
-                                    <div class="user-pic"><img src="/images/users/profile-photo/<%=userData.othersData.profilePic%>" alt=""></div>
+                                    <div class="user-pic"><img src="<%=userData.othersData.profilePicPathName%>" alt=""></div>
                                     <div class="user-name">
                                         <span class="name"><%=`${userData.firstName} ${userData.lastName}`%></span>
                                         <span class="title">See your profile</span>

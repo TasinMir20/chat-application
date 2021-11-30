@@ -71,9 +71,9 @@ function profilePhotoUploading_ApiRequest() {
 					document.querySelector(".profile .profile-photo .profile-photo-set-elements").innerHTML = "";
 
 					// update profile photo img tag src url
-					document.querySelector(".top-bar .top-info .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
-					document.querySelector(".top-bar .dropdown .dropdown-elements .user-pic img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
-					document.querySelector(".profile .profile-photo .photo img").src = `/images/users/profile-photo/${data.uploadedProfilePhotoName}`;
+					document.querySelector(".top-bar .top-info .user-pic img").src = data.profilePicPathName;
+					document.querySelector(".top-bar .dropdown .dropdown-elements .user-pic img").src = data.profilePicPathName;
+					document.querySelector(".profile .profile-photo .photo img").src = data.profilePicPathName;
 
 					// Floating message show if profile photo upload successful
 					const element = document.querySelector(".floating-alert-notification");

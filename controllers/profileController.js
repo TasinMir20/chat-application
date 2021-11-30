@@ -19,6 +19,9 @@ exports.profileGetController = async (req, res, next) => {
 			requestedProfileData.password = "";
 			requestedProfileData.othersData.codeSendTimes = "";
 
+			// Make profile pic right path
+			requestedProfileData.othersData.profilePicPathName = requestedProfileData.othersData.profilePicPath ? `${requestedProfileData.othersData.profilePicPath}${requestedProfileData.othersData.profilePic}` : requestedProfileData.othersData.profilePic;
+
 			return res.render("pages/user-logged-pages/profile.ejs", { userData, requestedProfileData });
 		} else {
 			return next();

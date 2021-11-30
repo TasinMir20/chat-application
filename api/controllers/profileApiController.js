@@ -17,10 +17,13 @@ exports.profilePhotoUpload_ApiController = async (req, res, next) => {
 		}
 
 		// profile photo name update on database
-		const profilePhotoNameUpdate = await User.updateOne({ _id: userData._id }, { "othersData.profilePic": uploadedProfilePhotoName });
+		const profilePhotoNameUpdate = await User.updateOne({ _id: userData._id }, { "othersData.profilePic": uploadedProfilePhotoName, "othersData.profilePicPath": "/images/users/profile-photo/" });
+
+		// Make profile pic right path
+		const profilePicPathName = `/images/users/profile-photo/${uploadedProfilePhotoName}`;
 
 		if (profilePhotoNameUpdate.nModified) {
-			return res.json({ upload: "Profile photo upload successful", uploadedProfilePhotoName });
+			return res.json({ upload: "Profile photo upload successful", profilePicPathName });
 		}
 	} catch (err) {
 		next(err);

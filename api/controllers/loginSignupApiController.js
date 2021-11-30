@@ -81,6 +81,7 @@ exports.signupApiController = async (req, res, next) => {
 				othersData: {
 					userCreateTime: currentEpochTime,
 					profilePic: "default_profile_pic.png",
+					profilePicPath: "/images/users/profile-photo/",
 					lastOnlineTime: currentEpochTime,
 					lastServerReq: currentEpochTime,
 					keyWord: `${firstName} ${lastName}`,

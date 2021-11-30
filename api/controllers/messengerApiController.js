@@ -35,7 +35,7 @@ exports.chatUserList_ApiController = async (req, res, next) => {
 						firstName: "User not",
 						lastName: "Exist",
 						othersData: {
-							profilePic: "not-exist_profile_pic.jpg",
+							profilePic: "/images/users/profile-photo/not-exist_profile_pic.jpg",
 							lastOnlineTime: 0,
 						},
 					};
@@ -51,11 +51,14 @@ exports.chatUserList_ApiController = async (req, res, next) => {
 					let lastMessage = lastMsg.length > 30 ? `${lastMsg.slice(0, 30)}...` : lastMsg;
 					lastMessage = String(sender) === String(userData._id) ? `You: ${lastMessage}` : lastMessage;
 
+					// Make profile pic right path
+					chatListUserSingle.othersData.profilePicPathName = chatListUserSingle.othersData.profilePicPath ? `${chatListUserSingle.othersData.profilePicPath}${chatListUserSingle.othersData.profilePic}` : chatListUserSingle.othersData.profilePic;
+
 					userLimitedData = {
 						_id: chatListUserSingle._id,
 						firstName: chatListUserSingle.firstName,
 						lastName: chatListUserSingle.lastName,
-						profilePic: chatListUserSingle.othersData.profilePic,
+						profilePicPathName: chatListUserSingle.othersData.profilePicPathName,
 						lastOnlineTime: chatListUserSingle.othersData.lastOnlineTime,
 						lastMessage,
 						lastMessageTime: involvedConversations[i].conversations[totalMessagesLen - 1].msgSendTime,
@@ -99,9 +102,12 @@ exports.searchUsersToChat_ApiController = async (req, res, next) => {
 			let foundUser = "";
 			if (findUserToConversation[0]) {
 				for (var i = 0; i < findUserToConversation.length; i++) {
+					// Make profile pic right path
+					findUserToConversation[i].othersData.profilePicPathName = findUserToConversation[i].othersData.profilePicPath ? `${findUserToConversation[i].othersData.profilePicPath}${findUserToConversation[i].othersData.profilePic}` : findUserToConversation[i].othersData.profilePic;
+
 					foundUser += `<div class="search-single-user" onclick="fetchUserChats_ApiRequest('${findUserToConversation[i]._id}', true);">
                                     <div class="img-wrap">
-                                        <img src="/images/users/profile-photo/${findUserToConversation[i].othersData.profilePic}" alt="">
+                                        <img src="${findUserToConversation[i].othersData.profilePicPathName}" alt="">
                                     </div>
                                     <p>${findUserToConversation[i].firstName} ${findUserToConversation[i].lastName}</p>
                                 </div>`;
@@ -172,13 +178,16 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 					firstName: "User not",
 					lastName: "Exist",
 					othersData: {
-						profilePic: "not-exist_profile_pic.jpg",
+						profilePic: "/images/users/profile-photo/not-exist_profile_pic.jpg",
 						lastOnlineTime: 0,
 					},
 				};
 			}
 
 			if (participantData) {
+				// Make profile pic right path
+				participantData.othersData.profilePicPathName = participantData.othersData.profilePicPath ? `${participantData.othersData.profilePicPath}${participantData.othersData.profilePic}` : participantData.othersData.profilePic;
+
 				// after search new user append in chat list
 				if (isItSearch) {
 					// generate unique css class from user obj ID
@@ -187,7 +196,7 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 
 					var newChatToAppendChatUserList = `<div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${participantData._id}')">
                             <div class="img-wrap">
-                                <img src="/images/users/profile-photo/${participantData.othersData.profilePic}" alt="">
+                                <img src="${participantData.othersData.profilePicPathName}" alt="">
                             </div>
                             <div class="meta">
                                 <p class="name">${participantData.firstName} ${participantData.lastName}</p>
@@ -198,12 +207,12 @@ exports.fetchUserChats_ApiController = async (req, res, next) => {
 				}
 				var fullName = `${participantData.firstName} ${participantData.lastName}`;
 				var username = participantData.username;
-				var profilePic = participantData.othersData.profilePic;
+				var profilePicPathName = participantData.othersData.profilePicPathName;
 				var lastOnlineTime = participantData.othersData.lastOnlineTime;
 			}
 		}
 
-		return res.json({ conversations, allMessagesFetched, fullName, username, profilePic, lastOnlineTime, newChatToAppendChatUserList });
+		return res.json({ conversations, allMessagesFetched, fullName, username, profilePicPathName, lastOnlineTime, newChatToAppendChatUserList });
 	} catch (err) {
 		next(err);
 	}

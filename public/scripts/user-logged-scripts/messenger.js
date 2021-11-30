@@ -396,7 +396,7 @@ function chatUserList_ApiRequest() {
 					chatUserListHTML += `
                             <div class="single-user ${setUniqueCssClass}" onclick="fetchUserChats_ApiRequest('${chatListUsers[i]._id}');">
                                 <div class="img-wrap">
-                                    <img src="/images/users/profile-photo/${chatListUsers[i].profilePic}" alt="">
+                                    <img src="${chatListUsers[i].profilePicPathName}" alt="">
                                     <i class="${circleColor} ${circleVisibility} fas fa-circle"></i>
                                     <span class="${inactiveTimeVisibility}">${inactiveTime}</span>
                                 </div>
@@ -545,7 +545,7 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 
 				// chat header name and profile pic update when switched to other chat
 				document.querySelector(".chatbox-header .meta .name").innerText = data.fullName;
-				document.querySelector(".chatbox-header .img-wrap .pic").src = `/images/users/profile-photo/${data.profilePic}`;
+				document.querySelector(".chatbox-header .img-wrap .pic").src = `${data.profilePicPathName}`;
 
 				document.querySelector(".msg-form-wrap .msg-input-form").classList.remove("hide");
 				document.querySelector(".unavailable-to-sent-msg").style = "display: none";
@@ -622,7 +622,7 @@ function fetchUserChats_ApiRequest(participant, isItSearch, pagination) {
 							messageAuthorPic = selfProfilePic;
 						} else {
 							incomingOrOutgoing = "incoming-message";
-							messageAuthorPic = `/images/users/profile-photo/${data.profilePic}`;
+							messageAuthorPic = `${data.profilePicPathName}`;
 						}
 
 						const cssClass = conversations[i].attachmentName ? "attachment-style" : "";

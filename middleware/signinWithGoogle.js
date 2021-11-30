@@ -49,6 +49,7 @@ exports.signInWithGoogle = (req, res, next) => {
 								othersData: {
 									userCreateTime: currentEpochTime,
 									profilePic: picture,
+									profilePicPath: "",
 									lastOnlineTime: currentEpochTime,
 									lastServerReq: currentEpochTime,
 									keyWord: `${firstName} ${lastName}`,
@@ -78,6 +79,7 @@ exports.signInWithGoogle = (req, res, next) => {
 				} else {
 					authMsg = "You are not authenticated by Google";
 				}
+				console.log({ loginSuccess, msg, authMsg });
 				return res.json({ loginSuccess, msg, authMsg });
 			}
 			verify().catch((err) => {
