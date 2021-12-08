@@ -147,7 +147,6 @@ exports.editVerifyEmail_ApiController = async (req, res, next) => {
 			if (!invalidChangeReq) {
 				const emailExist = await User.findOne({ email: editedEmail });
 				if (!emailExist) {
-					console.log(editedEmail);
 					const emailUpdate = await User.updateOne({ _id: userData._id, "othersData.emailVerified": false }, { email: editedEmail });
 
 					if (emailUpdate.nModified == 1) {

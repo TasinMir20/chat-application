@@ -44,7 +44,15 @@ exports.generalInfoUpdate_ApiController = async (req, res, next) => {
 					const nameChangeAble = userData.othersData.nameLastChange + nameChangePeriod < currentEpochTime;
 
 					if (userData.othersData.nameLastChange === 0 || nameChangeAble) {
-						const nameUpdate = await User.updateOne({ _id: userData._id }, { firstName, lastName, "othersData.nameLastChange": currentEpochTime });
+						const nameUpdate = await User.updateOne(
+							{ _id: userData._id },
+							{
+								firstName,
+								lastName,
+								"othersData.keyWord": `${firstName} ${lastName}`,
+								"othersData.nameLastChange": currentEpochTime,
+							}
+						);
 
 						if (nameUpdate.nModified == 1) {
 							const theUpdatedName = { firstName, lastName };
@@ -234,7 +242,7 @@ exports.securityPassUpdate_ApiController = async (req, res, next) => {
 		const passwordOk = currentPassF && newPassF && passLng && passwordEnoughStrong && cnfrmPassF && newAndConfirmPassMatched ? true : false;
 
 		if (passwordOk) {
-			const matched = await bcrypt.compare(currentPass, userData.password); // authentication
+			const matched = userData.password === " " ? true : await bcrypt.compare(currentPass, userData.password); // authentication
 
 			if (matched) {
 				// Old password could not be new password

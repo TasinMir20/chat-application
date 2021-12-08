@@ -28,7 +28,7 @@
 			<div class="container">
 				<h1>Privacy Policy for Chat app</h1>
 
-				<p>At chat app, accessible from https://chat-app-tasin.glitch.me/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by chat app and how we use it.</p>
+				<p>At chat app, accessible from <a href="/" class="site-origin"></a>, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by chat app and how we use it.</p>
 
 				<p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
 
@@ -108,5 +108,9 @@
 				<p>chat app does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>
 			</div>
 		</section>
+		<script>
+			document.querySelector(".site-origin").innerHTML = window.location.origin;
+			document.querySelector(".site-origin").href = window.location.origin;
+		</script>
 	</body>
 </html>

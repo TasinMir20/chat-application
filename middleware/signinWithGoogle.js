@@ -79,7 +79,6 @@ exports.signInWithGoogle = (req, res, next) => {
 				} else {
 					authMsg = "You are not authenticated by Google";
 				}
-				console.log({ loginSuccess, msg, authMsg });
 				return res.json({ loginSuccess, msg, authMsg });
 			}
 			verify().catch((err) => {

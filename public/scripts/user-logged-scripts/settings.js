@@ -2,7 +2,6 @@ const IsGeneralInformationPath = document.querySelector(".general-information-ar
 
 if (IsGeneralInformationPath) {
 	function nameEdit() {
-		console.log("NAME");
 		document.querySelector(".user-property.name .inner").classList.add("hide");
 		document.querySelector(".user-property.name .edit-area").classList.remove("hide");
 
@@ -15,8 +14,6 @@ if (IsGeneralInformationPath) {
 	document.querySelector(".user-property.name .edit-btn").onclick = nameEdit;
 
 	function usernameEdit() {
-		console.log("USERNAME");
-
 		document.querySelector(".user-property.username .inner").classList.add("hide");
 		document.querySelector(".user-property.username .edit-area").classList.remove("hide");
 
@@ -29,8 +26,6 @@ if (IsGeneralInformationPath) {
 	document.querySelector(".user-property.username .edit-btn").onclick = usernameEdit;
 
 	function emailEdit() {
-		console.log("EMAIL");
-
 		document.querySelector(".user-property.email .inner").classList.add("hide");
 		document.querySelector(".user-property.email .edit-area").classList.remove("hide");
 
@@ -262,7 +257,11 @@ if (IsSecurityInfoEditPath) {
 			this.classList.add("fa-eye");
 		}
 	}
-	document.querySelector(".security-info form .current-pass-cont i.fas").onclick = currentPassInputValueHideSHow;
+
+	const currentPassElement = document.querySelector("#current-password");
+	if (currentPassElement) {
+		document.querySelector(".security-info form .current-pass-cont i.fas").onclick = currentPassInputValueHideSHow;
+	}
 
 	function newPassInputValueHideSHow() {
 		const input = document.querySelector("#new-password");
@@ -295,27 +294,8 @@ if (IsSecurityInfoEditPath) {
 	document.querySelector(".security-info form .confirm-pass-cont i.fas").onclick = confirmPassInputValueHideSHow;
 	// Password input value hide show func - END
 
-	function passEnteringEnableDisable() {
-		const currentPassVal = document.querySelector("#current-password").value;
-		const newPass = document.querySelector("#new-password");
-		const confirmPass = document.querySelector("#confirm-password");
-		if (currentPassVal.length > 0) {
-			newPass.removeAttribute("disabled");
-			confirmPass.removeAttribute("disabled");
-		} else {
-			newPass.setAttribute("disabled", "disabled");
-			confirmPass.setAttribute("disabled", "disabled");
-		}
-	}
-	document.querySelector("#current-password").onkeyup = passEnteringEnableDisable;
-
 	function passwordGenerate(event) {
 		event.preventDefault();
-
-		const currentPassVal = document.querySelector("#current-password").value;
-		if (currentPassVal.length < 1) {
-			return;
-		}
 
 		// Password generating -> START
 		const length = 12;
@@ -386,7 +366,8 @@ if (IsSecurityInfoEditPath) {
 	function securityPassUpdate_ApiRequest(event) {
 		event.preventDefault();
 
-		const currentPass = document.querySelector("#current-password").value;
+		const currentPassElement = document.querySelector("#current-password");
+		const currentPass = currentPassElement ? currentPassElement.value : "NO_NEED_PASSWORD";
 		const newPass = document.querySelector("#new-password").value;
 		const confirmPass = document.querySelector("#confirm-password").value;
 
@@ -440,8 +421,6 @@ if (IsSecurityInfoEditPath) {
 
 				const response = data;
 
-				console.log(response);
-
 				if (response.passwordUpdated) {
 					// Error message remove if password changed successfully
 					document.querySelector(".crnt-pass-msg").innerHTML = "";
@@ -449,7 +428,8 @@ if (IsSecurityInfoEditPath) {
 					document.querySelector(".cnfrm-pass-msg").innerHTML = "";
 
 					// Password input box empty if password changed successfully
-					document.querySelector("#current-password").value = "";
+					const currentPassElement = document.querySelector("#current-password");
+					currentPassElement ? (currentPassElement.value = "") : "";
 					document.querySelector("#new-password").value = "";
 					document.querySelector("#confirm-password").value = "";
 
@@ -459,6 +439,10 @@ if (IsSecurityInfoEditPath) {
 					element.classList.add("show");
 					setTimeout(() => {
 						element.classList.remove("show");
+						const currentPassElement = document.querySelector("#current-password");
+						if (!currentPassElement) {
+							location.reload();
+						}
 					}, 3000);
 				} else {
 					let target = document.querySelector(".crnt-pass-msg");
@@ -498,7 +482,6 @@ if (IsSecurityInfoEditPath) {
                         </div>
                     </div>`;
 
-		console.log(logId);
 		const dataObj = { logId };
 		const apiUrl = "/api/user/settings/logout-from-logged-devices";
 		fetch(apiUrl, {

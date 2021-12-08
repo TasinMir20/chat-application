@@ -137,16 +137,14 @@ function emailVerifyResendCode_ApiRequest(event) {
 			const response = data;
 
 			if (response.seconds) {
-				document.querySelector("#temporarily-store-seconds").value = response.seconds;
+				let seconds = response.seconds;
 
 				if (interval != null) {
 					clearInterval(interval);
 				}
 
 				interval = setInterval(function () {
-					let seconds = document.querySelector("#temporarily-store-seconds").value;
 					seconds = Number(seconds) - 1;
-					document.querySelector("#temporarily-store-seconds").value = seconds; // temporarily store seconds
 
 					if (seconds >= 0) {
 						const min = Math.floor(seconds / 60);
