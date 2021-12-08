@@ -16,7 +16,8 @@ function regPgShow(event) {
 	document.querySelector(".login-form").classList.add("hide");
 	document.querySelector(".register-form").classList.add("show");
 
-	document.querySelector("title").innerHTML = "Create a new account!";
+	document.title = "Create a new account!";
+	document.querySelector(".other-links .title").innerText = "Or register with";
 }
 document.querySelector(".register-pg").onclick = regPgShow;
 
@@ -29,7 +30,8 @@ function loginPgShow(event) {
 	document.querySelector(".login-form").classList.remove("hide");
 	document.querySelector(".register-form").classList.remove("show");
 
-	document.querySelector("title").innerHTML = "Login to your Account!";
+	document.title = "Login to your Account!";
+	document.querySelector(".other-links .title").innerText = "Or login with";
 }
 document.querySelector(".login-pg").onclick = loginPgShow;
 
@@ -39,7 +41,7 @@ function forgetPgShow(event) {
 	document.querySelector(".login-register").classList.add("hide");
 	document.querySelector(".forget-pass-form").classList.add("show");
 
-	document.querySelector("title").innerHTML = "Forget your password?";
+	document.title = "Forget your password?";
 }
 document.querySelector(".forget-pg").onclick = forgetPgShow;
 
@@ -51,7 +53,7 @@ function forgetPgHide(event) {
 	document.querySelector(".login-register").classList.remove("hide");
 	document.querySelector(".forget-pass-form").classList.remove("show");
 
-	document.querySelector("title").innerHTML = "Login to your Account!";
+	document.title = "Login to your Account!";
 }
 document.querySelector(".forget-pg-hide").onclick = forgetPgHide;
 
@@ -92,10 +94,7 @@ async function onSignIn(googleUser) {
 			if (!data) {
 				return;
 			}
-
 			const response = data;
-
-			console.log(response);
 
 			const alertType = response.authMsg ? "danger-alert" : response.msg ? "success-alert" : "";
 			const serverMsg = response.authMsg || response.msg;

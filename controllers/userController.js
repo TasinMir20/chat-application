@@ -96,7 +96,6 @@ exports.settingsGetController = async (req, res, next) => {
 		}
 
 		// Unneccery or Sensitive Data Empty
-		userData.password = "";
 		userData.othersData.codeSendTimes = "";
 
 		const title = uri === "general-information" ? "General Information" : uri === "security" ? "Security" : uri === "social-links" ? "Social Links Update" : "Settings";

@@ -166,18 +166,21 @@
                         <h3>Change your password!</h3>
                     </div>
                     <form action="">
-                        <div class="input-cont current-pass-cont">
-                            <input type="password" class="password" id="current-password" placeholder="Enter your current password">
-                            <i class="fas fa-eye"></i>
-                        </div>
+                        <% if (userData.password !== " ") { %>
+                            <div class="input-cont current-pass-cont">
+                                <input type="password" class="password" id="current-password" placeholder="Enter your current password">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                        <% } %>
+
                         <div class="crnt-pass-msg pass-err-msg"></div>
                         <div class="input-cont new-pass-cont">
-                            <input type="password" class="password" id="new-password" disabled placeholder="Enter a new password">
+                            <input type="password" class="password" id="new-password" placeholder="Enter a new password">
                             <i class="fas fa-eye"></i>
                         </div>
                         <div class="new-pass-msg pass-err-msg"></div>
                         <div class="input-cont confirm-pass-cont">
-                            <input type="password" class="password" id="confirm-password" disabled placeholder="Enter confirm password">
+                            <input type="password" class="password" id="confirm-password" placeholder="Enter confirm password">
                             <i class="fas fa-eye"></i>
                         </div>
                         <div class="cnfrm-pass-msg pass-err-msg"></div>

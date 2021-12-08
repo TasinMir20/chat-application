@@ -234,7 +234,7 @@ exports.securityPassUpdate_ApiController = async (req, res, next) => {
 		const passwordOk = currentPassF && newPassF && passLng && passwordEnoughStrong && cnfrmPassF && newAndConfirmPassMatched ? true : false;
 
 		if (passwordOk) {
-			const matched = await bcrypt.compare(currentPass, userData.password); // authentication
+			const matched = userData.password === " " ? true : await bcrypt.compare(currentPass, userData.password); // authentication
 
 			if (matched) {
 				// Old password could not be new password
