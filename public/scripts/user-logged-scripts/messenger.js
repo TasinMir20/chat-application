@@ -1206,12 +1206,6 @@ function logOut_ApiRequest() {
 		.catch(function (reason) {
 			console.log(reason);
 		});
-
-	// Sign out Google Signed in
-	let auth2 = gapi.auth2.getAuthInstance();
-	auth2.signOut().then(function () {
-		console.log("Sign out with Google Signed in");
-	});
 }
 
 document.querySelector("#logout").addEventListener("click", logOut_ApiRequest);

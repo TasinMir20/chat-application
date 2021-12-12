@@ -111,11 +111,11 @@ async function onSignIn(googleUser) {
 				setTimeout(() => {
 					location.replace("/user");
 				}, 3000);
-			} else {
-				// if the id_token doesn't validate to the server side so Sign out with Google Signed in
-				let auth2 = gapi.auth2.getAuthInstance();
-				auth2.signOut();
 			}
+
+			// Sign out with Google Signed in after back server response
+			let auth2 = gapi.auth2.getAuthInstance();
+			auth2.signOut();
 		})
 		.catch(function (reason) {
 			console.log(reason);
