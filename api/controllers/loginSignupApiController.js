@@ -85,7 +85,7 @@ exports.signupApiController = async (req, res, next) => {
 					lastOnlineTime: currentEpochTime,
 					lastServerReq: currentEpochTime,
 					keyWord: `${firstName} ${lastName}`,
-					emailVerified: false,
+					emailVerified: true,
 					codeSendTimes: {
 						email_verify_code: 1,
 						recovery_code: 0,

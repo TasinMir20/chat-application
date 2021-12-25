@@ -198,9 +198,9 @@ async function codeSaveDBandMailSend(userData, subject, plainTextMsg, codeName) 
                             </div>`;
 
 			let mail = {};
-			mail = await mailSending(sentTo, subject, themMailMsg);
+			// mail = await mailSending(sentTo, subject, themMailMsg);
 			mail.saveCodeData = saveCode;
-			// mail.accepted = true;
+			mail.accepted = true;
 
 			return mail;
 		} else {
