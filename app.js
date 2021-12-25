@@ -44,15 +44,18 @@ const config = {
 	DB_USERNAME: process.env.DB_USERNAME,
 	DB_USER_PASSWORD: process.env.DB_USER_PASSWORD,
 	DATABASE_NAME: process.env.DATABASE_NAME,
+	NODE_ENV: process.env.NODE_ENV,
 };
 
-// const URL = `mongodb+srv://${config.DB_USERNAME}:${config.DB_USER_PASSWORD}@cluster0.h7kk2.mongodb.net/${config.DATABASE_NAME}`;
-const URL = "mongodb://127.0.0.1:27017/login-register-new";
+const cloudDatabase = `mongodb+srv://${config.DB_USERNAME}:${config.DB_USER_PASSWORD}@cluster0.h7kk2.mongodb.net/${config.DATABASE_NAME}`;
+const localDatabase = "mongodb://127.0.0.1:27017/login-register-new";
+
+const URL = config.NODE_ENV === "production" ? cloudDatabase : localDatabase;
 
 mongoose
 	.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
 	.then(() => {
-		console.log("Database connected");
+		console.log(`Database connected ${config.NODE_ENV || "development"}`);
 
 		server.listen(config.PORT, () => {
 			console.log(`Server is Running on ${config.PORT}`);
