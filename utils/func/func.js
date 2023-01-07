@@ -62,25 +62,27 @@ function generate_cookie_token(length) {
 async function mailSending(sentTo, subject, htmlMsg) {
 	const nodemailer = require("nodemailer");
 
-	const transporter = nodemailer.createTransport({
-		// host: 'smtp.gmail.com',
-		// port: 587,
-		service: "hotmail",
-		auth: {
-			user: process.env.mail_sending_account,
-			pass: process.env.mail_password,
-		},
-	});
+	try {
+		const transport = nodemailer.createTransport({
+			service: "gmail",
+			host: "smtp.gmail.com",
+			auth: {
+				user: process.env.MAIL_ADDRESS,
+				pass: process.env.MAIL_APP_PASSWORD,
+			},
+		});
 
-	const mailOptions = {
-		from: `Support <${process.env.mail_send_from}>`,
-		to: sentTo,
-		subject,
-		html: htmlMsg,
-	};
-	const mailSend = await transporter.sendMail(mailOptions);
+		const response = await transport.sendMail({
+			from: `Support ${process.env.MAIL_ADDRESS}`,
+			to: sentTo,
+			subject,
+			html: htmlMsg,
+		});
 
-	return mailSend;
+		return response;
+	} catch (err) {
+		return err;
+	}
 }
 
 // login process

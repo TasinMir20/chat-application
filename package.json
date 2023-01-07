@@ -4,7 +4,8 @@
 	"description": "This is a real-time chatting web application made with Nodejs",
 	"main": "app.js",
 	"scripts": {
-		"start": "nodemon app.js"
+		"start": "node app.js",
+		"dev": "nodemon app.js"
 	},
 	"keywords": [],
 	"author": "Tasin Mir",

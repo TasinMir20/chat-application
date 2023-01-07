@@ -39,23 +39,14 @@ app.use(middleware);
 app.use("/", routes);
 
 /* Configuration */
-const config = {
-	PORT: process.env.PORT || 2000,
-	DB_USERNAME: process.env.DB_USERNAME,
-	DB_USER_PASSWORD: process.env.DB_USER_PASSWORD,
-	DATABASE_NAME: process.env.DATABASE_NAME,
-};
-
-// const URL = `mongodb+srv://${config.DB_USERNAME}:${config.DB_USER_PASSWORD}@cluster0.h7kk2.mongodb.net/${config.DATABASE_NAME}`;
-const URL = "mongodb://127.0.0.1:27017/login-register-new";
+const { PORT, NODE_ENV, DB_URI } = process.env;
 
 mongoose
-	.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
+	.connect(DB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
 	.then(() => {
-		console.log("Database connected");
-
-		server.listen(config.PORT, () => {
-			console.log(`Server is Running on ${config.PORT}`);
+		console.log(`Database connected ${NODE_ENV || "development"}`);
+		server.listen(PORT, () => {
+			console.log(`Server is Running on ${PORT}`);
 		});
 	})
 	.catch((e) => {
